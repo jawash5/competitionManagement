@@ -1,0 +1,30 @@
+#wrap {
+    background-color: #f2f2f2;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+#login_wrap {
+    background-color: #FFFFFF;
+    min-height: 320px;
+    min-width: 320px;
+    height: 320px;
+    width: 320px;
+    padding: 20px;
+    margin: 0 auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
+
+.login_title {
+    color: black;
+    margin: 30px;
+    font-weight: bolder;
+    font-size: 30px;
+    font-family: 幼圆;
+}
+
+#wrap_bg {
+    background-image: url(",/src/assets/login/main.jpg");
+}
