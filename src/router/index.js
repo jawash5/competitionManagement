@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router'
-import index from "../views/index.vue";
 
 Vue.use(Router);
 
@@ -8,12 +7,7 @@ export default new Router({
     routes:[
         {
             path: '/',
-            redirect:'index'
-        },
-        {
-            path: '/index',
-            name: 'index',
-            component: index
+            redirect:'login'
         },
         {
             path: '/login',
@@ -29,6 +23,26 @@ export default new Router({
             path: '/footer',
             name: 'footer',
             component: ()  => import("../components/footer.vue")
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: ()  => import("../views/register.vue")
+        },
+        {
+            path: '/loginAdmin',
+            name: '/loginAdmin',
+            component: ()  => import("../views/loginAdmin.vue")
+        },
+        {
+            path: '/checkCompetition',
+            name: '/checkCompetition',
+            component: ()  => import("../views/checkCompetition.vue")
+        },
+        {
+            path: '/headMenu',
+            name: '/headMenu',
+            component: ()  => import("../components/headMenu.vue")
         },
     ]
 })

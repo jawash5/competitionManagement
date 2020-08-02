@@ -3,10 +3,10 @@
         <head-login></head-login>
         <div id="wrap">
             <div id="login_with_img">
-                <img id="login_img" alt="讨论" src="../assets/main/login.png">
+                <img id="login_img" alt="讨论" src="../assets/main/loginAdmin.png">
                 <span class="login_hr"></span>
                 <div id="login_wrap">
-                    <h1 class="login_title">登&nbsp;&nbsp;录</h1>
+                    <h1 class="login_title">管 理 员 登 录</h1>
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="login-ruleForm">
                         <el-form-item prop="username">
                             <el-input placeholder="账号" prefix-icon="iconshequ" v-model="ruleForm.username" autocomplete="off"></el-input>
@@ -16,7 +16,6 @@
                         </el-form-item>
                     </el-form>
                     <el-button type="primary" round="true">登录</el-button>
-                    <el-button round="true" @click="gotoRegister">注册</el-button>
                 </div>
             </div>
         </div>
@@ -61,9 +60,6 @@
             };
         },
         methods: {
-            gotoRegister: function () {
-                this.$router.push("/register");
-            }
         }
     }
 </script>

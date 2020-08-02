@@ -11,7 +11,6 @@
 </script>
 
 <style scoped>
-
     #footer {
         background-color: #333;
         height: 60px;
