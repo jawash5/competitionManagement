@@ -26,13 +26,13 @@
 
 <script>
     import headLogin from "@/components/headLogin";
-    import footer from "@/components/footer";
+    import myFooter from "@/components/myFooter";
 
     export default {
         name: "login",
         components: {
             'headLogin': headLogin,
-            'myFooter': footer
+            'myFooter': myFooter
         },
         data() {
             const checkUsername = (rule, value, callback) => {

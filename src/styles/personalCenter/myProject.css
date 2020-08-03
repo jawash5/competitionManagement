@@ -1,0 +1,33 @@
+#myProject {
+    display: flex;
+    flex-direction: row;
+}
+
+.el-tabs__item {
+    font-size: 16px;
+}
+
+#createProject {
+
+}
+
+.newProject {
+    width: 300px;
+    height: 280px;
+    background-color: #FFFFFF;
+}
+
+.newProject :hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
+
+#new_icon {
+    font-size: 150px;
+    margin: 0 auto;
+    color: #dcdcdc;
+}
+
+#new_p {
+    font-size: 16px;
+    color: #999;
+}

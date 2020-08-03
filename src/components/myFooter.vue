@@ -1,21 +1,23 @@
 <template>
-    <div id="footer">
+    <div id="myFooter">
         <p class="footer_title">&copy;&nbsp;杭州电子科技大学 All Rights Reserved</p>
     </div>
 </template>
 
 <script>
     export default {
-        name: "footer"
+        name: "myFooter"
     }
 </script>
 
 <style scoped>
-    #footer {
+    #myFooter {
         background-color: #333;
         height: 60px;
         display: flex;
         align-items: center;
+        min-height: 60px;
+        min-width: 1200px;
     }
 
     .footer_title {

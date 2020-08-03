@@ -1,8 +1,9 @@
-#checkCompetition {
+#personalCenter {
     background-color: #f2f2f2;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-width: 1200px;
-    min-height: 800px;
+    min-width: 800px;
+    min-height: 700px;
 }

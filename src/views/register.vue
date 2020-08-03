@@ -41,13 +41,13 @@
 
 <script>
     import headLogin from "@/components/headLogin";
-    import footer from "@/components/footer";
+    import myFooter from "@/components/myFooter";
 
     export default {
         name: "register",
         components: {
             'headLogin': headLogin,
-            'myFooter': footer
+            'myFooter': myFooter
         },
         data() {
             const validateUsername = (rule, value, callback) => {
@@ -131,6 +131,6 @@
 </script>
 
 <style scoped>
-    @import "../styles/global.css";
+    /*@import "../styles/global.css";*/
     @import "../styles/register/register.css";
 </style>

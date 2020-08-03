@@ -15,16 +15,6 @@ export default new Router({
             component: ()  => import("../views/login.vue")
         },
         {
-            path: '/headLogin',
-            name: 'headLogin',
-            component: ()  => import("../components/headLogin.vue")
-        },
-        {
-            path: '/footer',
-            name: 'footer',
-            component: ()  => import("../components/footer.vue")
-        },
-        {
             path: '/register',
             name: 'register',
             component: ()  => import("../views/register.vue")
@@ -40,9 +30,19 @@ export default new Router({
             component: ()  => import("../views/checkCompetition.vue")
         },
         {
-            path: '/headMenu',
-            name: '/headMenu',
-            component: ()  => import("../components/headMenu.vue")
+            path: '/signUp',
+            name: '/signUp',
+            component: ()  => import("../views/signUp")
+        },
+        {
+            path: '/announcement',
+            name: '/announcement',
+            component: ()  => import("../views/announcement")
+        },
+        {
+            path: '/myProject',
+            name: '/myProject',
+            component: ()  => import("../views/myProject")
         },
     ]
 })
