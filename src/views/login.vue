@@ -25,6 +25,7 @@
 </template>
 
 <script>
+    import { login } from "@/api/login";
     import headLogin from "@/components/headLogin";
     import myFooter from "@/components/myFooter";
 
