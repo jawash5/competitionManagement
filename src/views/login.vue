@@ -15,7 +15,7 @@
                             <el-input placeholder="请输入密码" prefix-icon="iconmima" type="password" show-password clearable v-model="ruleForm.pass" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-form>
-                    <el-button type="primary" round="true">登录</el-button>
+                    <el-button type="primary" round="true" @click="submitInfo">登录</el-button>
                     <el-button round="true" @click="gotoRegister">注册</el-button>
                 </div>
             </div>
@@ -48,8 +48,8 @@
             };
             return {
                 ruleForm: {
-                    pass: '',
-                    username: ''
+                    username: '',
+                    pass: ''
                 },
                 rules: {
                     pass: [
@@ -64,8 +64,16 @@
         methods: {
             gotoRegister: function () {
                 this.$router.push("/register");
-            }
-        }
+            },
+
+            submitInfo: function () {
+                let data = {
+                    username: this.ruleForm.username,
+                    password: this.ruleForm.pass
+                }
+                login(data);
+            },
+        },
     }
 </script>
 <style scoped>

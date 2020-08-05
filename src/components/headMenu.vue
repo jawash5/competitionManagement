@@ -1,5 +1,5 @@
 <template>
-    <div id="head">
+    <div id="headMenu">
         <h1 id="login_head_title">竞赛管理系统</h1>
         <el-menu router class="el-menu" :default-active="activeIndex" mode="horizontal"
                  background-color="#409EFF" text-color="#fff" active-text-color="yellow">

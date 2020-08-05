@@ -1,9 +1,9 @@
 import service from "@/utils/request";
 
-export function login(){
+export function login(data){
     service.request( {
         method:"post",
-        url:'/user/12345',
-        data:{}
+        url:'/auth/signin',
+        data: data
     })
 }
