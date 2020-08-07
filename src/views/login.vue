@@ -1,6 +1,6 @@
 <template>
     <div id="login">
-        <head-login></head-login>
+        <head-login :state="statement"></head-login>
         <div id="wrap">
             <div id="login_with_img">
                 <img id="login_img" alt="讨论" src="../assets/main/login.png">
@@ -15,8 +15,8 @@
                             <el-input placeholder="请输入密码" prefix-icon="iconmima" type="password" show-password clearable v-model="ruleForm.pass" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-form>
-                    <el-button type="primary" round="true" @click="submitInfo">登录</el-button>
-                    <el-button round="true" @click="gotoRegister">注册</el-button>
+                    <el-button type="primary" round @click="submitInfo">登录</el-button>
+                    <el-button round @click="gotoRegister">注册</el-button>
                 </div>
             </div>
         </div>
@@ -47,6 +47,7 @@
                 }
             };
             return {
+                statement:true,
                 ruleForm: {
                     username: '',
                     pass: ''

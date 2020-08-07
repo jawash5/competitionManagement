@@ -36,12 +36,11 @@ module.exports = {
     // css预设器配置项
     loaderOptions: {
       // 如发现 css.modules 报错，请查看这里：http://www.web-jshtml.cn/#/detailed?id=12
-      sass: { 
+      sass: {
         data: `@import "./src/styles/main.scss";`
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
-    modules: false
   },
   // use thread-loader for babel & TS in production build
   // enabled by default if the machine has more than 1 cores

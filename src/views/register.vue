@@ -1,6 +1,6 @@
 <template>
     <div id="register">
-        <head-login></head-login>
+        <head-login :state="statement"></head-login>
         <div id="wrap">
             <div id="register_with_img">
                 <img id="register_img" alt="讨论" src="../assets/main/register.png">
@@ -30,8 +30,8 @@
                             <el-input placeholder="学院" prefix-icon="iconshouye" v-model="ruleForm.college" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-form>
-                    <el-button type="primary" round="true">立即注册</el-button>
-                    <el-button round="true" @click="gotoLogin">登录</el-button>
+                    <el-button type="primary" round>立即注册</el-button>
+                    <el-button round @click="gotoLogin">登录</el-button>
                 </div>
             </div>
         </div>
@@ -84,6 +84,7 @@
                     }
                 };
             return {
+                statement: true,
                 ruleForm: {
                     username: '',
                     pass: '',
@@ -92,7 +93,6 @@
                     ID:'',
                     mail:'',
                     college:'',
-
                 },
                 rules: {
                     username: [
@@ -131,6 +131,6 @@
 </script>
 
 <style scoped>
-    /*@import "../styles/global.css";*/
+    @import "../styles/global.css";
     @import "../styles/register/register.css";
 </style>

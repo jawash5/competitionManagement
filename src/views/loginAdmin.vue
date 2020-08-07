@@ -1,6 +1,6 @@
 <template>
     <div id="login">
-        <head-login></head-login>
+        <head-login :state="statement"></head-login>
         <div id="wrap">
             <div id="login_with_img">
                 <img id="login_img" alt="讨论" src="../assets/main/loginAdmin.png">
@@ -45,6 +45,7 @@
                 }
             };
             return {
+                statement:true,
                 ruleForm: {
                     pass: '',
                     username: ''

@@ -1,7 +1,9 @@
 <template>
     <div id="login_head">
-        <router-link to="login"><h1 id="login_head_title">竞赛管理系统</h1></router-link>
-        <div id="rooter">
+        <router-link to="myProject"><h1 id="login_head_title">竞赛管理系统</h1></router-link>
+        <div id="rooter" v-if="state">
+            <router-link to="login" class="router_url">登录</router-link>
+            <span class="register_hr"></span>
             <router-link to="loginAdmin" class="router_url">管理员入口</router-link>
             <span class="register_hr"></span>
             <router-link to="checkCompetition" class="router_url">查看比赛</router-link>
@@ -11,9 +13,9 @@
 
 <script>
     export default {
-        name: "head",
+        name: "headLogin",
         props: {
-            state: String
+            state: Boolean
         },
     }
 </script>
@@ -40,6 +42,7 @@
 
     a:hover {
         text-decoration: none;
+        color: yellow;
     }
 
     .router_url {

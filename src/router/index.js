@@ -7,7 +7,7 @@ export default new Router({
     routes:[
         {
             path: '/',
-            redirect:'login'
+            redirect:'checkCompetition'
         },
         {
             path: '/login',
@@ -37,12 +37,22 @@ export default new Router({
         {
             path: '/announcement',
             name: '/announcement',
-            component: ()  => import("../views/announcement")
+            component: ()  => import("../views/myMessage")
         },
         {
             path: '/myProject',
             name: '/myProject',
             component: ()  => import("../views/myProject")
+        },
+        {
+            path: '/myMessage',
+            name: '/myMessage',
+            component: ()  => import("../views/myMessage")
+        },
+        {
+            path: '/personalInfo',
+            name: '/personalInfo',
+            component: ()  => import("../views/personalInfo")
         },
     ]
 })

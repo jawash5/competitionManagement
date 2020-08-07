@@ -8,22 +8,22 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">我的项目</span>
             </el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item index="myMessage">
                 <i class="el-icon-document"></i>
                 <span slot="title">我的消息</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item index="personalInfo">
                 <i class="el-icon-setting"></i>
                 <span slot="title">个人信息</span>
             </el-menu-item>
         </el-menu>
-        <img id="personalCenter_Img" src="../assets/main/personalCenter_Img.png">
+        <router-link to="checkCompetition" id="exit">退出账号</router-link>
     </div>
 </template>
 
 <script>
     export default {
-        name: "personalMenu"
+        name: "personalMenu",
     }
 </script>
 
@@ -41,9 +41,11 @@
         border-radius: 2px;
     }
 
-    #personalCenter_Img {
-        width: 120px;
-        margin: 0 auto;
+    #exit {
+        font-size: 14px;
+        font-family: "等线" , serif;
+        margin-bottom: 20px;
+        text-decoration: none;
     }
 
 </style>

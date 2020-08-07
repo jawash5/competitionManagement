@@ -1,6 +1,6 @@
 <template>
     <div id="checkCompetition">
-        <head-menu active-index="checkCompetition"></head-menu>
+        <head-login :state="statement"></head-login>
         <div>
             <competition :competitionInfo="competitionInfo"></competition>
             <competition :competitionInfo="competitionInfo"></competition>
@@ -12,19 +12,20 @@
 </template>
 
 <script>
-    import headMenu from "@/components/headMenu.vue";
+    import headLogin from "@/components/headLogin";
     import myFooter from "@/components/myFooter";
     import competition from "@/components/competition";
 
     export default {
         name: "index",
         components:{
-            "headMenu": headMenu,
+            "headLogin": headLogin,
             "myFooter": myFooter,
             "competition": competition
         },
         data(){
             return{
+                statement:true,
                 competitionInfo: {
                     name: '浙江省电子商务大赛',
                     time: '2020年7月25日',
