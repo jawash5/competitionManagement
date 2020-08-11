@@ -77,7 +77,8 @@
         },
     }
 </script>
+
+<style scoped src="../styles/login/login.css"></style>
 <style scoped>
     @import "../styles/global.css";
-    @import "../styles/login/login.css";
 </style>

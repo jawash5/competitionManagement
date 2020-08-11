@@ -130,7 +130,5 @@
     }
 </script>
 
-<style scoped>
-    @import "../styles/global.css";
-    @import "../styles/register/register.css";
+<style scoped src="../styles/register/register.css">
 </style>

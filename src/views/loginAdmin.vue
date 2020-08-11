@@ -15,7 +15,7 @@
                             <el-input placeholder="请输入密码" prefix-icon="iconmima" type="password" show-password clearable v-model="ruleForm.pass" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-form>
-                    <el-button type="primary" round="true">登录</el-button>
+                    <el-button type="primary" round="true" @click="gotoAdmin">登录</el-button>
                 </div>
             </div>
         </div>
@@ -61,10 +61,12 @@
             };
         },
         methods: {
+            gotoAdmin:function () {
+                this.$router.push("/competitionRelease")
+            }
         }
     }
 </script>
-<style scoped>
-    @import "../styles/global.css";
-    @import "../styles/login/login.css";
-</style>
+
+
+<style scoped src="../styles/login/login.css"></style>

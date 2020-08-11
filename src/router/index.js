@@ -30,9 +30,9 @@ export default new Router({
             component: ()  => import("../views/checkCompetition.vue")
         },
         {
-            path: '/signUp',
-            name: '/signUp',
-            component: ()  => import("../views/signUp")
+            path: '/projectDetail',
+            name: '/projectDetail',
+            component: ()  => import("../views/projectDetail")
         },
         {
             path: '/announcement',
@@ -53,6 +53,26 @@ export default new Router({
             path: '/personalInfo',
             name: '/personalInfo',
             component: ()  => import("../views/personalInfo")
+        },
+        {
+            path: '/competitionRelease',
+            name: '/competitionRelease',
+            component: ()  => import("../views/competitionRelease")
+        },
+        {
+            path: '/teamManagement',
+            name: '/teamManagement',
+            component: ()  => import("../views/teamManagement")
+        },
+        {
+            path: '/gradesManagement',
+            name: '/gradesManagement',
+            component: ()  => import("../views/gradesManagement")
+        },
+        {
+            path: '/releaseAnnouncement',
+            name: '/releaseAnnouncement',
+            component: ()  => import("../views/releaseAnnouncement")
         },
     ]
 })

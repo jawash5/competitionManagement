@@ -2,19 +2,23 @@
     <div id="personal_menu">
         <el-menu
                 router
-                default-active="active"
+                default-active = "myProject"
                 class="el-menu-vertical-demo">
-            <el-menu-item index="myProject">
-                <i class="el-icon-menu"></i>
-                <span slot="title">我的项目</span>
+            <el-menu-item index="competitionRelease">
+                <i class="el-icon-date"></i>
+                <span slot="title">发布赛事</span>
             </el-menu-item>
-            <el-menu-item index="myMessage">
-                <i class="el-icon-document"></i>
-                <span slot="title">我的消息</span>
+            <el-menu-item index="teamManagement">
+                <i class="el-icon-user"></i>
+                <span slot="title">队伍操作</span>
             </el-menu-item>
-            <el-menu-item index="personalInfo">
-                <i class="el-icon-setting"></i>
-                <span slot="title">个人信息</span>
+            <el-menu-item index="releaseAnnouncement">
+                <i class="el-icon-tickets"></i>
+                <span slot="title">公告发布</span>
+            </el-menu-item>
+            <el-menu-item index="gradesManagement">
+                <i class="el-icon-trophy"></i>
+                <span slot="title">成绩发布</span>
             </el-menu-item>
         </el-menu>
         <router-link to="checkCompetition" id="exit">退出账号</router-link>
@@ -23,12 +27,7 @@
 
 <script>
     export default {
-        name: "personalMenu",
-        // data(){
-        //     return {
-        //         activeTab: "myProject"
-        //     }
-        // },
+        name: "adminMenu",
         props:{
             active:String
         }

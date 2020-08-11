@@ -2,10 +2,14 @@
     <div id="checkCompetition">
         <head-login :state="statement"></head-login>
         <div>
-            <competition :competitionInfo="competitionInfo"></competition>
-            <competition :competitionInfo="competitionInfo"></competition>
-            <competition :competitionInfo="competitionInfo"></competition>
-            <competition :competitionInfo="competitionInfo"></competition>
+            <el-tabs v-model="activeName" tab-position="left" type="border-card" id="tabWrap" >
+                <el-tab-pane label="比赛1" name="first">
+                    <competition :competition-info="competitionInfo"></competition>
+                </el-tab-pane>
+                <el-tab-pane label="比赛2" name="second"></el-tab-pane>
+                <el-tab-pane label="比赛3" name="third"></el-tab-pane>
+                <el-tab-pane label="比赛4" name="fourth"></el-tab-pane>
+            </el-tabs>
         </div>
         <my-footer></my-footer>
     </div>
@@ -17,18 +21,20 @@
     import competition from "@/components/competition";
 
     export default {
-        name: "index",
+        name: "checkCompetition2",
         components:{
             "headLogin": headLogin,
             "myFooter": myFooter,
-            "competition": competition
+            "competition":competition
         },
         data(){
             return{
                 statement:true,
+                activeName:"first",
                 competitionInfo: {
                     name: '浙江省电子商务大赛',
-                    time: '2020年7月25日',
+                    competitionTime: '2020年7月25日-2020年8月25日',
+                    deadline:'020年7月20日',
                     request: '队伍人数三人以下',
                     type: '线上答辩',
                     discribe:'全国大学生电子商务“创新、创意及创业”挑战赛' +
@@ -44,7 +50,4 @@
     }
 </script>
 
-<style scoped>
-    @import "../styles/global.css";
-    @import "../styles/checkCompetition/checkCompetition.css";
-</style>
+<style scoped src="../styles/checkCompetition/checkCompetition.css"></style>

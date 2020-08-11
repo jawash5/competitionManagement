@@ -2,12 +2,17 @@
     <div id="competition">
         <h1 id="competitionName">比赛名称:&nbsp;&nbsp;&nbsp;&nbsp;{{ competitionInfo.name }}</h1>
         <div id="competitionDetail">
-            <p><span class="subTitle">比赛时间：</span>{{ competitionInfo.time }}</p>
+            <p><span class="subTitle">比赛时间：</span>{{ competitionInfo.competitionTime }}</p>
+            <el-divider direction="vertical"></el-divider>
+            <p><span class="subTitle">报名截止时间：</span>{{ competitionInfo.deadline }}</p>
             <el-divider direction="vertical"></el-divider>
             <p><span class="subTitle">比赛要求：</span>{{ competitionInfo.request }}</p>
+
         </div>
         <el-divider></el-divider>
         <p id="competitionDisc"><span class="subTitle">赛事简介：</span>{{ competitionInfo.discribe }}</p>
+        <el-divider></el-divider>
+        <el-button class="signUpButton" @click="gotoSignUp">报名</el-button>
     </div>
 </template>
 
@@ -19,22 +24,24 @@
         },
         data() {
             return {}
-        }
+        },
+        methods:{
+            gotoSignUp:function () {
+                this.$router.push("/projectDetail");
+            }
+    }
     }
 </script>
 
 <style scoped>
     #competition{
+        height: 400px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
         margin: 70px 10px;
         padding: 20px 20px;
-        border-radius: 30px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-        border: 1px solid #409EFF;
-        background-color: #FFFFFF;
     }
 
     #competitionName {

@@ -28,6 +28,7 @@
         align-items: center;
         justify-content: space-between;
         min-width: 1200px;
+        min-height: 60px;
     }
 
     #login_head_title {

@@ -1,0 +1,25 @@
+#myProject {
+    display: flex;
+    flex-direction: row;
+}
+
+#infoForm {
+    width: 500px;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+}
+
+#infoWrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 50px 0;
+    width: 1000px;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
+
+/deep/.el-input.is-disabled .el-input__inner {
+    cursor: auto;
+}

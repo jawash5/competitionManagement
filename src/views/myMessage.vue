@@ -2,7 +2,13 @@
     <div id="personalCenter">
         <head-login :state="statement"></head-login>
         <div id="myProject">
-            <personal-menu></personal-menu>
+            <personal-menu active="myMessage"></personal-menu>
+            <el-tabs type="border-card" tab-position="left" class="message">
+                <el-tab-pane label="消息1" class="tabTitle"></el-tab-pane>
+                <el-tab-pane label="消息2" class="tabTitle"></el-tab-pane>
+                <el-tab-pane label="消息3" class="tabTitle"></el-tab-pane>
+                <el-tab-pane label="消息4" class="tabTitle"></el-tab-pane>
+            </el-tabs>
         </div>
         <my-footer></my-footer>
     </div>
@@ -29,7 +35,6 @@
     }
 </script>
 
-<style scoped>
-    @import "../styles/global.css";
-    @import "../styles/personalCenter/personalCenter.css";
-</style>
+<style scoped src="../styles/personalCenter/personalCenter.css"></style>
+<style scoped src="../styles/personalCenter/myMessage.css"></style>
+
