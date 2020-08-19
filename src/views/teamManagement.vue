@@ -2,9 +2,8 @@
     <div id="adminManagement">
         <head-login></head-login>
         <div id="wrap">
-            <admin-menu></admin-menu>
+            <admin-menu active="teamManagement"></admin-menu>
             <div id="teamManagement">
-
                 <div id="teamPromotion">
                     <el-table
                             ref="multipleTable"
@@ -13,49 +12,23 @@
                             style="width: 100%">
                         <el-table-column
                                 type="selection"
-                                width="55">
+                                width="50">
                         </el-table-column>
                         <el-table-column
                                 type="index"
                                 width="50">
                         </el-table-column>
-                        <el-table-column
-                                prop="no"
-                                label="队伍序号"
-                                width="50">
-                        </el-table-column>
-                        <el-table-column
-                                prop="projectName"
-                                label="项目名称"
-                                width="200"
-                                show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column
-                                prop="name"
-                                label="队长姓名"
-                                width="100">
-                        </el-table-column>
-                        <el-table-column
-                                prop="teamName"
-                                label="队伍名称"
-                                width="120"
-                                show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column
-                                prop="mail"
-                                label="队伍邮箱"
-                                width="180"
-                                show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column
-                                prop="submit"
-                                label="上交情况"
-                                width="80">
-                        </el-table-column>
-                        <el-table-column
-                                prop="Promotion"
-                                label="晋级情况"
-                                width="80">
+                        <el-table-column v-for="item in titleData" :key="item.id"
+                                :prop="item.prop"
+                                :label="item.label"
+                                :width="item.width">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.isSet">
+                                    <el-input size="mini" placeholder="请输入内容" v-model="tableData[scope.$index][item.prop]">
+                                    </el-input>
+                                </span>
+                                <span v-else>{{tableData[scope.$index][item.prop]}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column
                                 align="right">
@@ -68,14 +41,24 @@
                             <template slot-scope="scope">
                                 <el-button
                                         size="mini"
-                                        @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+                                        @click="handleEdit(scope.$index)"
+                                        v-if="!scope.row.isSet">编辑</el-button>
                                 <el-button
                                         size="mini"
                                         type="danger"
-                                        @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                        @click="handleDelete(scope.$index)"
+                                        v-if="!scope.row.isSet">删除</el-button>
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                        @click="handleConform(scope.$index)"
+                                        v-if="scope.row.isSet">确定</el-button>
+                                <el-button
+                                        size="mini"
+                                        @click="handleCancel(scope.$index)"
+                                        v-if="scope.row.isSet">取消</el-button>
                             </template>
                         </el-table-column>
-
                     </el-table>
                 </div>
 
@@ -112,6 +95,16 @@
                 search:'',
                 currentPage:1,
                 total: 1,
+                edit:false,
+                titleData:[
+                    { prop:"no", label:"队伍序号", width:"70"},
+                    { prop:"projectName", label:"项目名称", width:"200"},
+                    { prop:"name", label:"队长姓名", width:"100"},
+                    { prop:"teamName", label:"队伍名称", width:"120"},
+                    { prop:"mail", label:"队伍邮箱", width:"180"},
+                    { prop:"submit", label:"上交情况", width:"70"},
+                    { prop:"promotion", label:"晋级情况", width:"70"},
+                ],
                 tableData: [
                     {
                         no: '1',
@@ -120,7 +113,8 @@
                         teamName:'12456',
                         mail:'857723555@qq.com',
                         submit:'是',
-                        Promotion:'是',
+                        promotion:'是',
+                        isSet:false,
                     },
                     {
                         no: '1',
@@ -129,7 +123,8 @@
                         teamName:'12456',
                         mail:'857723555@qq.com',
                         submit:'是',
-                        Promotion:'是',
+                        promotion:'是',
+                        isSet:false,
                     },
                     {
                         no: '1',
@@ -138,7 +133,48 @@
                         teamName:'12456',
                         mail:'857723555@qq.com',
                         submit:'是',
-                        Promotion:'是',
+                        promotion:'是',
+                        isSet:false,
+                    },
+                    {
+                        no: '1',
+                        name: '小明',
+                        projectName: '竞赛管理平台',
+                        teamName:'12456',
+                        mail:'857723555@qq.com',
+                        submit:'是',
+                        promotion:'是',
+                        isSet:false,
+                    },
+                    {
+                        no: '1',
+                        name: '小明',
+                        projectName: '竞赛管理平台',
+                        teamName:'12456',
+                        mail:'857723555@qq.com',
+                        submit:'是',
+                        promotion:'是',
+                        isSet:false,
+                    },
+                    {
+                        no: '1',
+                        name: '小明',
+                        projectName: '竞赛管理平台',
+                        teamName:'12456',
+                        mail:'857723555@qq.com',
+                        submit:'是',
+                        promotion:'是',
+                        isSet:false,
+                    },
+                    {
+                        no: '1',
+                        name: '小明',
+                        projectName: '竞赛管理平台',
+                        teamName:'12456',
+                        mail:'857723555@qq.com',
+                        submit:'是',
+                        promotion:'是',
+                        isSet:false,
                     },
                 ],
 
@@ -147,7 +183,20 @@
         methods: {
             current_change:function (currentPage) {
                 this.currentPage = currentPage;
+            },
+            handleEdit:function (index) {
+                this.tableData[index].isSet = true;
+            },
+            handleDelete:function (index) {
+                this.tableData.splice(index,1)
+            },
+            handleConform:function (index) {
+                this.tableData[index].isSet = false;
+            },
+            handleCancel:function (index) {
+                this.tableData[index].isSet = false;
             }
+
         }
     }
 </script>

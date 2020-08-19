@@ -35,6 +35,11 @@ export default new Router({
             component: ()  => import("../views/projectDetail")
         },
         {
+            path: '/editProject',
+            name: '/editProject',
+            component: ()  => import("../views/editProject")
+        },
+        {
             path: '/announcement',
             name: '/announcement',
             component: ()  => import("../views/myMessage")
@@ -73,6 +78,11 @@ export default new Router({
             path: '/releaseAnnouncement',
             name: '/releaseAnnouncement',
             component: ()  => import("../views/releaseAnnouncement")
+        },
+        {
+            path: '/editAnnouncement',
+            name: '/editAnnouncement',
+            component: ()  => import("../views/editAnnouncement")
         },
     ]
 })

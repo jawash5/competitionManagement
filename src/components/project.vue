@@ -23,7 +23,13 @@
         },
         methods:{
             editMaterials:function () {
-                this.$router.push("/projectDetail");
+                this.$router.push({
+                    path: "/editProject",
+                    query:{
+                        isLeader: 'isLeader'
+                    }
+
+                });
             }
         }
     }

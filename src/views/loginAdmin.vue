@@ -11,7 +11,7 @@
                         <el-form-item prop="username">
                             <el-input placeholder="账号" prefix-icon="iconshequ" v-model="ruleForm.username" autocomplete="off"></el-input>
                         </el-form-item>
-                        <el-form-item prop="pass">
+                        <el-form-item prop="password">
                             <el-input placeholder="请输入密码" prefix-icon="iconmima" type="password" show-password clearable v-model="ruleForm.pass" autocomplete="off"></el-input>
                         </el-form-item>
                     </el-form>
@@ -26,6 +26,7 @@
 <script>
     import headLogin from "@/components/headLogin";
     import myFooter from "@/components/myFooter";
+    import { login } from "@/api/login";
 
     export default {
         name: "login",
@@ -47,11 +48,11 @@
             return {
                 statement:true,
                 ruleForm: {
-                    pass: '',
+                    password: '',
                     username: ''
                 },
                 rules: {
-                    pass: [
+                    password: [
                         { validator: validatePass, trigger: 'blur' }
                     ],
                     username: [
@@ -61,10 +62,31 @@
             };
         },
         methods: {
-            gotoAdmin:function () {
-                this.$router.push("/competitionRelease")
-            }
-        }
+            gotoRegister: function () {
+                this.$router.push("/register");
+            },
+
+            submitInfo: function () {
+                if(this.ruleForm.username === '' || this.ruleForm.pass === '') {
+                    this.$message.error('用户名或密码不能为空!');
+                    return false;
+                }
+
+                const data = new FormData();
+                data.append('username',this.ruleForm.username);
+                data.append('password',this.ruleForm.password);
+
+                login(data).then(response => {
+                    console.log(response);
+                    this.$router.push({
+                        path:'/myProject'
+                    })
+                }).catch(error => {
+                    this.$message.error('账号或密码错误');
+                    console.log(error);
+                });
+            },
+        },
     }
 </script>
 

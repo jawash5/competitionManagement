@@ -2,7 +2,7 @@
     <div id="adminManagement">
         <head-login></head-login>
         <div id="wrap">
-            <admin-menu></admin-menu>
+            <admin-menu active="competitionRelease"></admin-menu>
             <div id="competitionRelease">
                 <div id="mainInfo">
                     <el-col :span="3">

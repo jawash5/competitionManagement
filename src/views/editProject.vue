@@ -7,7 +7,12 @@
                 <div id="projectForm">
                     <h1 id="competitionName">{{ competitionName }}</h1>
                     <el-divider></el-divider>
-                    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                    <el-form :model="ruleForm"
+                             :rules="rules"
+                             ref="ruleForm"
+                             label-width="100px"
+                             class="demo-ruleForm"
+                             :disabled="isEdit">
                         <el-form-item label="项目名称" prop="name">
                             <el-input v-model="ruleForm.name"></el-input>
                         </el-form-item>
@@ -38,7 +43,17 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-form-item label="项目成员" prop="members">
+                        <el-form-item label="项目成员" prop="members" v-if="!isLeader">
+                            <el-tag
+                                    :key="tag"
+                                    v-for="tag in ruleForm.members"
+                                    :disable-transitions="false"
+                                    @close="handleClose(tag)">
+                                成员学号：{{tag}}
+                            </el-tag>
+                        </el-form-item>
+
+                        <el-form-item label="项目成员" prop="members" v-if="isLeader">
                             <el-tag
                                     :key="tag"
                                     v-for="tag in ruleForm.members"
@@ -61,7 +76,7 @@
                             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加新成员</el-button>
                         </el-form-item>
 
-                        <el-form-item label="文件上传" prop="upload">
+                        <el-form-item :label="uploadFiles" prop="upload">
                             <el-upload
                                     class="upload-demo"
                                     action="https://jsonplaceholder.typicode.com/posts/"
@@ -72,15 +87,15 @@
                                     :on-error="handleError"
                                     multiple
                                     :file-list="fileList">
-                                <el-button size="small" type="primary" >点击上传</el-button>
-                                <div slot="tip" class="el-upload__tip">格式为pdf、word，不超过20M，文件数量限一个。</div>
+                                <el-button size="small" type="primary" v-if="isLeader">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip" v-if="isLeader">格式为pdf、word，不超过20M，文件数量限一个。</div>
                             </el-upload>
                         </el-form-item>
                     </el-form>
                 </div>
-                <div id="buttons">
-                    <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                <div id="buttons" v-if="isLeader">
+                    <el-button type="primary" @click="editForm" v-if="isEdit">立即修改</el-button>
+                    <el-button type="success" @click="submitForm('ruleForm')" v-if="!isEdit">确认修改</el-button>
                 </div>
             </div>
         </div>
@@ -94,20 +109,22 @@
     import personalMenu from "@/components/personalMenu";
 
     export default {
-        name: "projectDetail" ,
+        name: "editProject" ,
         data() {
             const validateFiles = (rule, value, callback) => {
-                    if (this.fileList === '') {
-                        callback(new Error('请上传文件'));
-                    } else {
-                        callback();
-                    }
-                };
-
+                if (this.fileList === '') {
+                    callback(new Error('请上传文件'));
+                } else {
+                    callback();
+                }
+            };
             return{
                 inputVisible: false,
+                isLeader: Boolean,
+                uploadFiles:'',
+                isEdit:true,
                 inputValue: '',
-                competitionName:'浙江省电子商务竞赛',
+                competitionName:'项目名称',
                 fileList: [],
                 ruleForm: {
                     name: '',
@@ -148,6 +165,9 @@
             "myFooter":myFooter,
             "personalMenu":personalMenu,
         },
+        created(){
+            this.getParams()
+        },
         methods: {
             //前端验证还没有加
             submitForm(formName) {
@@ -172,8 +192,8 @@
                 //     }
                 // )
             },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
+            editForm() {
+                this.isEdit = false;
             },
 
             //标签删除成员事件
@@ -231,6 +251,16 @@
 
             handleError() {
                 this.$message.error("文件上传失败，请重试")
+            },
+
+            getParams() {
+                if(this.$route.query.isLeader === 'isLeader') {
+                    this.isLeader = true;
+                    this.uploadFiles = '文件上传';
+                } else {
+                    this.isLeader = false
+                    this.uploadFiles = '上传的文件';
+                }
             }
 
         },

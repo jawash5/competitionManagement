@@ -1,35 +1,45 @@
 <template>
     <div id="competition">
-        <h1 id="competitionName">比赛名称:&nbsp;&nbsp;&nbsp;&nbsp;{{ competitionInfo.name }}</h1>
+        <h1 id="competitionName">比赛名称:&nbsp;&nbsp;&nbsp;&nbsp;{{ competitionInfo }}</h1>
         <div id="competitionDetail">
             <p><span class="subTitle">比赛时间：</span>{{ competitionInfo.competitionTime }}</p>
             <el-divider direction="vertical"></el-divider>
             <p><span class="subTitle">报名截止时间：</span>{{ competitionInfo.deadline }}</p>
-            <el-divider direction="vertical"></el-divider>
-            <p><span class="subTitle">比赛要求：</span>{{ competitionInfo.request }}</p>
-
         </div>
         <el-divider></el-divider>
-        <p id="competitionDisc"><span class="subTitle">赛事简介：</span>{{ competitionInfo.discribe }}</p>
-        <el-divider></el-divider>
+        <div>
+            <p class="competitionDisc"><span class="subTitle">比赛要求：</span>{{ competitionInfo.request }}</p>
+            <p class="competitionDisc"><span class="subTitle">赛事简介：</span>{{ competitionInfo.discribe }}</p>
+        </div>
         <el-button class="signUpButton" @click="gotoSignUp">报名</el-button>
     </div>
 </template>
 
 <script>
+
     export default {
         name: "competition",
         props:{
-          competitionInfo: Object,
+          competitionName: String,
         },
         data() {
-            return {}
+            return {
+                competitionInfo:{}
+            }
         },
         methods:{
             gotoSignUp:function () {
                 this.$router.push("/projectDetail");
             }
-    }
+        },
+
+        mounted: {
+            // getcompetition(this.competitionName).then(response => {
+            //     this.competitionInfo = response.data;
+            // }).catch(error => {
+            //     console.log(error)
+            // })
+        }
     }
 </script>
 
@@ -56,7 +66,7 @@
         font-size: 16px;
     }
 
-    .el-divider {
+    /deep/.el-divider {
         background-color: #409EFF;
     }
 
@@ -65,10 +75,11 @@
         font-size: 16px;
     }
 
-    #competitionDisc {
+    .competitionDisc{
         font-size: 14px;
         text-align: left;
         text-indent: 2em;
         line-height: 1.5em;
+        margin-bottom: 10px;
     }
 </style>

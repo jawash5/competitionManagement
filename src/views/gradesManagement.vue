@@ -2,7 +2,7 @@
     <div id="adminManagement">
         <head-login></head-login>
         <div id="wrap">
-            <admin-menu></admin-menu>
+            <admin-menu active="gradesManagement"></admin-menu>
             <div id="teamManagement">
                 <div id="teamPromotion">
                     <el-table

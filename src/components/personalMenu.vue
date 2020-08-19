@@ -2,7 +2,7 @@
     <div id="personal_menu">
         <el-menu
                 router
-                default-active="active"
+                :default-active="active"
                 class="el-menu-vertical-demo">
             <el-menu-item index="myProject">
                 <i class="el-icon-menu"></i>
@@ -24,11 +24,9 @@
 <script>
     export default {
         name: "personalMenu",
-        // data(){
-        //     return {
-        //         activeTab: "myProject"
-        //     }
-        // },
+        data(){
+            return {}
+        },
         props:{
             active:String
         }
@@ -36,8 +34,6 @@
 </script>
 
 <style scoped>
-    @import "../styles/global.css";
-
     #personal_menu {
         width: 150px;
         height: 600px;
@@ -48,6 +44,7 @@
         margin: 0 20px;
         border-radius: 2px;
         min-height: 600px;
+        min-width: 150px;
     }
 
     #exit {

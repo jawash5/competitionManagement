@@ -2,7 +2,7 @@
     <div id="personal_menu">
         <el-menu
                 router
-                default-active = "myProject"
+                :default-active = "active"
                 class="el-menu-vertical-demo">
             <el-menu-item index="competitionRelease">
                 <i class="el-icon-date"></i>
@@ -12,10 +12,16 @@
                 <i class="el-icon-user"></i>
                 <span slot="title">队伍操作</span>
             </el-menu-item>
-            <el-menu-item index="releaseAnnouncement">
-                <i class="el-icon-tickets"></i>
-                <span slot="title">公告发布</span>
-            </el-menu-item>
+            <el-submenu index="1">
+                <template slot="title">
+                    <i class="el-icon-tickets"></i>
+                    <span>公告管理</span>
+                </template>
+                <el-menu-item-group>
+                    <el-menu-item index="editAnnouncement">公告查看</el-menu-item>
+                    <el-menu-item index="releaseAnnouncement">新建公告</el-menu-item>
+                </el-menu-item-group>
+            </el-submenu>
             <el-menu-item index="gradesManagement">
                 <i class="el-icon-trophy"></i>
                 <span slot="title">成绩发布</span>
@@ -29,7 +35,7 @@
     export default {
         name: "adminMenu",
         props:{
-            active:String
+            active: String
         }
     }
 </script>
@@ -38,7 +44,7 @@
     @import "../styles/global.css";
 
     #personal_menu {
-        width: 150px;
+        width: 180px;
         height: 600px;
         display: flex;
         flex-direction: column;
@@ -47,6 +53,7 @@
         margin: 0 20px;
         border-radius: 2px;
         min-height: 600px;
+        min-width: 180px;
     }
 
     #exit {

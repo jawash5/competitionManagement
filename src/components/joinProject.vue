@@ -16,16 +16,23 @@
         name: "project",
         data() {
             return {
-                projectName:'竞赛管理系统项目',
-                founder:'小明',
+                projectName: '竞赛管理系统项目',
+                founder: '小明',
             }
         },
-        methods:{
-            editMaterials:function () {
-                this.$router.push('/projectDetail')
+        methods: {
+            editMaterials: function () {
+                this.$router.push({
+                    path: "/editProject",
+                    query: {
+                        isLeader: 'teammate'
+                    }
+
+                });
             }
         }
     }
+
 </script>
 
 <style scoped>

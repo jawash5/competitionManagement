@@ -48,7 +48,9 @@
         },
         methods: {
             gotoProjectDetail: function () {
-                this.$router.push("/projectDetail");
+                this.$router.push({
+                    path: "/projectDetail",
+                });
             }
         }
     }

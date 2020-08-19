@@ -2,7 +2,7 @@
     <div id="adminManagement">
         <head-login></head-login>
         <div id="wrap">
-            <admin-menu></admin-menu>
+            <admin-menu active="releaseAnnouncement"></admin-menu>
             <div id="releaseAnnouncement">
                 <div id="announcementForm">
                     <el-form ref="form" :model="form" label-width="100px">
@@ -38,10 +38,7 @@
 
                         <div class="formButton">
                             <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                            <el-button>取消</el-button>
                         </div>
-
-
                     </el-form>
                 </div>
             </div>
@@ -79,6 +76,12 @@
             };
         },
         methods: {
+            handleChange(file, fileList) {
+                this.fileList = fileList.slice(-3);
+            },
+            onSubmit() {
+                console.log('submit')
+            }
         }
     }
 </script>

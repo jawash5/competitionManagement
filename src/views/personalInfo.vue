@@ -1,9 +1,10 @@
 <template>
     <div id="personalCenter">
-        <head-login :state="statement"></head-login>
+        <head-login></head-login>
         <div id="myProject">
-            <personal-menu></personal-menu>
+            <personal-menu active="personalInfo"></personal-menu>
             <div id="infoWrap">
+                <h3 id="wrapTitle">个人信息</h3>
                 <div id="infoForm">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-row>
@@ -48,7 +49,6 @@
         data() {
             return{
                 activeName:'create',
-                statement: false,
                 isDisabled: true,
                 editInfo: false,
                 form: {

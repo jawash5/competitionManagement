@@ -29,7 +29,7 @@
     height: 600px;
 }
 
-#buttoms {
+#buttons {
     margin-bottom: 50px;
 }
 
@@ -53,4 +53,12 @@
     width: 120px;
     margin-left: 10px;
     vertical-align: bottom;
+}
+
+/deep/.el-input.is-disabled .el-input__inner {
+    cursor: default;
+}
+
+/deep/.el-button.is-disabled, .el-button.is-disabled:focus, .el-button.is-disabled:hover {
+    cursor: default;
 }

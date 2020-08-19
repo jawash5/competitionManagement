@@ -36,8 +36,7 @@ module.exports = {
     // css预设器配置项
     loaderOptions: {
       // 如发现 css.modules 报错，请查看这里：http://www.web-jshtml.cn/#/detailed?id=12
-      sass: {
-        data: `@import "./src/styles/main.scss";`
+      sass:{
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
@@ -59,10 +58,11 @@ module.exports = {
     hotOnly: false,
     // 设置代理
     proxy: {
-      '/apis':{
-        pathRewrite: { '^/apis': '' },
-        target: 'false',
-        changOrigin: true
+      '/devApi':{
+        target: "http://122.51.66.105:7890",
+        // target:'http://www.web-jshtml.cn/productapi',
+        changeOrigin: true,
+        pathRewrite: { '^/devApi': '' },
       }
     },
     overlay: { // 全屏模式下是否显示脚本错误
