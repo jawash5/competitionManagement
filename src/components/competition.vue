@@ -1,6 +1,6 @@
 <template>
     <div id="competition">
-        <h1 id="competitionName">比赛名称:&nbsp;&nbsp;&nbsp;&nbsp;{{ competitionInfo }}</h1>
+        <h1 id="competitionName">比赛名称:&nbsp;&nbsp;&nbsp;&nbsp;{{ competitionName }}</h1>
         <div id="competitionDetail">
             <p><span class="subTitle">比赛时间：</span>{{ competitionInfo.competitionTime }}</p>
             <el-divider direction="vertical"></el-divider>
@@ -9,9 +9,9 @@
         <el-divider></el-divider>
         <div>
             <p class="competitionDisc"><span class="subTitle">比赛要求：</span>{{ competitionInfo.request }}</p>
-            <p class="competitionDisc"><span class="subTitle">赛事简介：</span>{{ competitionInfo.discribe }}</p>
+            <p class="competitionDisc"><span class="subTitle">赛事简介：</span>{{ competitionInfo.disc }}</p>
         </div>
-        <el-button class="signUpButton" @click="gotoSignUp">报名</el-button>
+<!--        <el-button class="signUpButton" @click="gotoSignUp">报名</el-button>-->
     </div>
 </template>
 
@@ -24,13 +24,22 @@
         },
         data() {
             return {
-                competitionInfo:{}
+                competitionInfo:{
+                    competitionTime:'2020/08/08-2020/08/08',
+                    deadline:'2020/08/08-2020/08/08',
+                    request:'三人一下',
+                    disc:'全国大学生电子商务“创新、创意及创业”挑战赛（以下简称“三创赛”）' +
+                        '是由全国电子商务创新产教联盟主办，由“三创赛”竞赛组织委员会统一策' +
+                        '划、组织、管理与实施。“三创赛”由校赛、省赛和国赛三级竞赛组成，分别' +
+                        '由教育部认可的全国高校提出申请，经“三创赛”竞赛组织委员批准分别组成' +
+                        '全国决赛承办单位、分省选拔赛承办单位和各参赛学校具体实施全国性三级学科性竞赛。'
+                }
             }
         },
         methods:{
-            gotoSignUp:function () {
-                this.$router.push("/projectDetail");
-            }
+            // gotoSignUp:function () {
+            //     this.$router.push("/projectDetail");
+            // }
         },
 
         mounted: {
@@ -46,11 +55,7 @@
 <style scoped>
     #competition{
         height: 400px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        margin: 70px 10px;
+        margin: 30px 10px;
         padding: 20px 20px;
     }
 
@@ -62,7 +67,8 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        margin: 10px 20px 0 20px;
+        justify-content: center;
+        margin: 20px 20px 0 20px;
         font-size: 16px;
     }
 
@@ -79,7 +85,7 @@
         font-size: 14px;
         text-align: left;
         text-indent: 2em;
-        line-height: 1.5em;
+        line-height: 2em;
         margin-bottom: 10px;
     }
 </style>

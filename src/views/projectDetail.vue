@@ -5,9 +5,21 @@
             <personal-menu active="myProject"></personal-menu>
             <div id="exitProject">
                 <div id="projectForm">
-                    <h1 id="competitionName">{{ competitionName }}</h1>
-                    <el-divider></el-divider>
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
+                        <el-form-item label=" " prop="type">
+                            <el-select v-model="competitionValue" placeholder="请选择比赛" style="float: left">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-divider></el-divider>
+
                         <el-form-item label="项目名称" prop="name">
                             <el-input v-model="ruleForm.name"></el-input>
                         </el-form-item>
@@ -107,8 +119,15 @@
             return{
                 inputVisible: false,
                 inputValue: '',
-                competitionName:'浙江省电子商务竞赛',
                 fileList: [],
+                options: [{
+                    value: '选项1',
+                    label: '电子商务竞赛'
+                }, {
+                    value: '选项2',
+                    label: '互联网+'
+                }],
+                competitionValue: '',
                 ruleForm: {
                     name: '',
                     teamName:'',
@@ -119,6 +138,9 @@
                     members: [],
                 },
                 rules: {
+                    type: [
+                        { required: true, message: '请选择比赛', trigger: 'blur' },
+                    ],
                     name: [
                         { required: true, message: '请输入项目名称', trigger: 'blur' },
                     ],

@@ -27,7 +27,11 @@
         data(){
             return{
                 activeName: 1,
-                competitionInfo: {}
+                competitionInfo: [
+                    {
+                        name:'电子商务竞赛',
+                    }
+                ]
             }
         },
         method:{

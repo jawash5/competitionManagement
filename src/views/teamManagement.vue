@@ -4,6 +4,17 @@
         <div id="wrap">
             <admin-menu active="teamManagement"></admin-menu>
             <div id="teamManagement">
+                <div id="competitionSelect">
+                    <el-select v-model="competitionValue" placeholder="请选择比赛">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </div>
+
                 <div id="teamPromotion">
                     <el-table
                             ref="multipleTable"
@@ -24,7 +35,7 @@
                                 :width="item.width">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.isSet">
-                                    <el-input size="mini" placeholder="请输入内容" v-model="tableData[scope.$index][item.prop]">
+                                    <el-input size="mini" v-model="tableData[scope.$index][item.prop]">
                                     </el-input>
                                 </span>
                                 <span v-else>{{tableData[scope.$index][item.prop]}}</span>
@@ -96,6 +107,11 @@
                 currentPage:1,
                 total: 1,
                 edit:false,
+                options: [{
+                    value: '选项1',
+                    label: '电子商务竞赛'
+                }],
+                competitionValue: '',
                 titleData:[
                     { prop:"no", label:"队伍序号", width:"70"},
                     { prop:"projectName", label:"项目名称", width:"200"},
@@ -188,7 +204,22 @@
                 this.tableData[index].isSet = true;
             },
             handleDelete:function (index) {
-                this.tableData.splice(index,1)
+                this.tableData.splice(index,1);
+                this.$confirm('此操作将永久删除该队伍, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             handleConform:function (index) {
                 this.tableData[index].isSet = false;

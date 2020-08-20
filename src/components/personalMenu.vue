@@ -4,6 +4,10 @@
                 router
                 :default-active="active"
                 class="el-menu-vertical-demo">
+            <el-menu-item index="viewCompetition">
+                <i class="el-icon-search"></i>
+                <span slot="title">查看比赛</span>
+            </el-menu-item>
             <el-menu-item index="myProject">
                 <i class="el-icon-menu"></i>
                 <span slot="title">我的项目</span>

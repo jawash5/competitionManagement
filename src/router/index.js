@@ -45,6 +45,11 @@ export default new Router({
             component: ()  => import("../views/myMessage")
         },
         {
+            path: '/viewCompetition',
+            name: '/viewCompetition',
+            component: ()  => import("../views/viewCompetition")
+        },
+        {
             path: '/myProject',
             name: '/myProject',
             component: ()  => import("../views/myProject")

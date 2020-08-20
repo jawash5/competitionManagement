@@ -4,7 +4,7 @@
         <div id="myProject">
             <personal-menu active="personalInfo"></personal-menu>
             <div id="infoWrap">
-                <h3 id="wrapTitle">个人信息</h3>
+                <h3 id="wrapTitle">个人资料</h3>
                 <div id="infoForm">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-row>

@@ -32,13 +32,13 @@
 }
 
 .fontTitle {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: bold;
     font-family: "幼圆" , serif;
 }
 
-/deep/ .el-input__inner {
-    font-size: 18px;
+#mainInfo /deep/.el-input__inner {
+    font-size: 16px;
 }
 
 #signUpTime {
@@ -63,6 +63,7 @@
 }
 
 #formDesign {
-    width: 800px;
-    background-color: #409EFF;
+    width: 900px;
+    margin: 0 auto;
 }
+
