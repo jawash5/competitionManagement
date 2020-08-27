@@ -48,8 +48,8 @@
 </template>
 
 <script>
-    import headLogin from "@/components/headLogin";
-    import myFooter from "@/components/myFooter";
+    import headLogin from "@/views/login/components/headLogin";
+    import myFooter from "@/views/login/components/myFooter";
     import adminMenu from "@/components/adminMenu";
 
     export default {
@@ -86,6 +86,46 @@
     }
 </script>
 
-<style scoped src="../styles/adminManagement/releaseAnnouncement.css">
+<style lang="scss" scoped>
+    #adminManagement {
+        background-color: #f2f2f2;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 1200px;
+        min-height: 700px;
+    }
+
+    #wrap {
+        background-color: #f2f2f2;
+        padding: 50px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #releaseAnnouncement {
+        background-color: #FFFFFF;
+        width: 1000px;
+        margin: 0 auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        padding: 50px
+    }
+
+    #announcementForm {
+        width: 600px;
+        margin: 0 auto;
+    }
+
+    /deep/.el-form-item__content {
+        text-align: left;
+        line-height: 40px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    .formButton {
+        margin: 50px auto;
+    }
 
 </style>

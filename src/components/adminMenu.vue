@@ -41,7 +41,6 @@
 </script>
 
 <style scoped>
-    @import "../styles/global.css";
 
     #personal_menu {
         width: 180px;

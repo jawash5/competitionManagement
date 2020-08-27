@@ -35,11 +35,12 @@ module.exports = {
     sourceMap: false,
     // css预设器配置项
     loaderOptions: {
-      // 如发现 css.modules 报错，请查看这里：http://www.web-jshtml.cn/#/detailed?id=12
-      sass:{
+      sass: {
+        prependData: `@import "./src/styles/main.scss";`
       }
     },
     // 启用 CSS modules for all css / pre-processor files.
+    modules: false
   },
   // use thread-loader for babel & TS in production build
   // enabled by default if the machine has more than 1 cores
@@ -56,13 +57,11 @@ module.exports = {
     https: false, // 编译失败时刷新页面
     hot: true, // 开启热加载
     hotOnly: false,
-    // 设置代理
     proxy: {
-      '/devApi':{
+      '/devApi': {
         target: "http://122.51.66.105:7890",
-        // target:'http://www.web-jshtml.cn/productapi',
         changeOrigin: true,
-        pathRewrite: { '^/devApi': '' },
+        pathRewrite: {'^/devApi': ''},
       }
     },
     overlay: { // 全屏模式下是否显示脚本错误

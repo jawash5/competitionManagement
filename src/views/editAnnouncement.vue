@@ -21,8 +21,8 @@
 </template>
 
 <script>
-    import headLogin from "@/components/headLogin";
-    import myFooter from "@/components/myFooter";
+    import headLogin from "@/views/login/components/headLogin";
+    import myFooter from "@/views/login/components/myFooter";
     import adminMenu from "@/components/adminMenu";
     import announcement from "@/components/announcement";
 
@@ -51,6 +51,55 @@
     }
 </script>
 
-<style scoped src="../styles/adminManagement/editAnnouncement.css">
+<style lang="scss" scoped>
+
+    #adminManagement {
+        background-color: #f2f2f2;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 1200px;
+        min-height: 700px;
+    }
+
+    #wrap {
+        background-color: #f2f2f2;
+        padding: 50px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #tabWrap {
+        width: 1050px;
+        min-width: 1050px;
+        height: 600px;
+        margin: 0 auto;
+    }
+
+    /deep/.el-form-item__content {
+        text-align: left;
+        line-height: 40px;
+        position: relative;
+        font-size: 14px;
+    }
+
+    /deep/.el-tabs__item {
+        width: 150px;
+        padding: 0 20px;
+        height: 60px;
+        box-sizing: border-box;
+        line-height: 40px;
+        display: inline-block;
+        list-style: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: #303133;
+        position: relative;
+    }
+
+    /deep/.el-tabs__nav .is-left {
+        width: 150px;
+    }
 
 </style>

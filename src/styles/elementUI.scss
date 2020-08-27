@@ -1,0 +1,10 @@
+.el-menu-item{
+  font-size: 14px;
+  &.is-active{
+    background-color: #f56c6c !important;
+  }
+}
+
+.el-menu {
+  border-right: solid 0 #e6e6e6;
+}

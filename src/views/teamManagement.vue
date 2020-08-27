@@ -89,8 +89,8 @@
 </template>
 
 <script>
-    import headLogin from "@/components/headLogin";
-    import myFooter from "@/components/myFooter";
+    import headLogin from "@/views/login/components/headLogin";
+    import myFooter from "@/views/login/components/myFooter";
     import adminMenu from "@/components/adminMenu";
 
     export default {
@@ -232,6 +232,47 @@
     }
 </script>
 
-<style scoped src="../styles/adminManagement/teamManagement.css">
+<style lang="scss" scoped>
 
+    #adminManagement {
+        background-color: #f2f2f2;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 1200px;
+        min-height: 700px;
+    }
+
+    #wrap {
+        background-color: #f2f2f2;
+        padding: 50px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #teamManagement {
+        background-color: #FFFFFF;
+        width: 1100px;
+        margin: 0 auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        padding: 30px
+    }
+
+    #search {
+        width: 200px;
+        margin-bottom: 40px;
+    }
+
+    #teamPromotion {
+        height: 450px;
+    }
+
+    #page {
+        margin-top: 40px;
+    }
+
+    #competitionSelect {
+        float: left;
+    }
 </style>

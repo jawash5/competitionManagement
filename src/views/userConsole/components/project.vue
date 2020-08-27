@@ -6,7 +6,8 @@
         <el-divider></el-divider>
         <div id="projectBottom">
             <h5 id="founder">项目创始人：{{ founder }}</h5>
-            <el-button type="primary" class="founderButton" @click="editMaterials">查看信息</el-button>
+            <el-button type="primary" class="founderButton" @click="editMaterials">编辑资料</el-button>
+            <el-button class="founderButton">删除项目</el-button>
         </div>
     </div>
 </template>
@@ -16,23 +17,22 @@
         name: "project",
         data() {
             return {
-                projectName: '竞赛管理系统项目',
-                founder: '小明',
+                projectName:'竞赛管理系统项目',
+                founder:'小明',
             }
         },
-        methods: {
-            editMaterials: function () {
+        methods:{
+            editMaterials:function () {
                 this.$router.push({
                     path: "/editProject",
-                    query: {
-                        isLeader: 'teammate'
+                    query:{
+                        isLeader: 'isLeader'
                     }
 
                 });
             }
         }
     }
-
 </script>
 
 <style lang="scss" scoped>
@@ -51,7 +51,7 @@
 
     #project:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, .12), 0 0 12px rgba(0, 0, 0, .04);
-        transition: box-shadow 0.5s;
+        transition: box-shadow 0.3s;
     }
 
     #projectName{
@@ -83,4 +83,5 @@
         display: block;
         width: 100%;
     }
+
 </style>
