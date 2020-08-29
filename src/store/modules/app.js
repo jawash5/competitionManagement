@@ -1,12 +1,15 @@
 import { login } from "@/api/login";
-import { getUsername, setCode, setUsername } from "@/utils/app";
+import {getUsername, removeCode, removeUsername, setCode, setUsername} from "@/utils/app";
 
 const state = {
+    roles: 0,
     code:'',
     userName: getUsername() || ''
 }
 
 const getters = {
+    roles: state => state.roles,
+    code: state => state.code,
 }
 
 const mutations = {
@@ -15,6 +18,9 @@ const mutations = {
     },
     SET_USERNAME(state, value) {
         state.userName = value
+    },
+    SET_ROLES(state, value) {
+        state.roles = value;
     },
 }
 
@@ -33,6 +39,16 @@ const actions = {
             })
         })
     },
+    exit({ commit }) {
+        return new Promise((resolve => {
+            removeCode();
+            removeUsername();
+            commit('SET_USERNAME', '');
+            commit('SET_CODE', '');
+            commit('SET_ROLES', 0);
+            resolve();
+        }))
+    }
 
 }
 

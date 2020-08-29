@@ -1,7 +1,8 @@
 <template>
     <div id="myProject">
-        <el-tabs type="card" tab-position="left" class="message">
+        <el-tabs type="border-card" tab-position="left" class="message">
             <el-tab-pane label="消息1" class="tabTitle"></el-tab-pane>
+            <el-tab-pane label="消息2" class="tabTitle"></el-tab-pane>
             <el-tab-pane label="消息2" class="tabTitle"></el-tab-pane>
         </el-tabs>
     </div>
@@ -26,7 +27,8 @@
     }
 
     .message {
-        width: 1200px;
+        width: 100%;
+        height: 80vh;
         margin: 0 auto;
     }
 

@@ -8,3 +8,7 @@
 .el-menu {
   border-right: solid 0 #e6e6e6;
 }
+
+.el-table th.gutter {
+  display: table-cell!important;
+}

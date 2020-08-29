@@ -1,28 +1,38 @@
 <template>
     <div id="myProject">
-        <competition-card-user competition-name="电子商务竞赛"></competition-card-user>
+        <competition-card-user :competition="competition"></competition-card-user>
+        <competition-card-user v-for="item in competitionList"
+                          :key="item.id"
+                          :competition="item">
+        </competition-card-user>
     </div>
 </template>
 
 <script>
     import competitionCardUser from "@/views/userConsole/components/competitionCardUser";
+    import {competitionList} from "@/api/login";
+
     export default {
         name: "viewCompetition",
         data() {
             return{
-                activeName:'create',
-                statement:false,
+                competition:{name:'电子商务竞赛', start:'2020/01/01', end:'2020/01/01'},
+                competitionList:[],
             }
         },
-        components:{
-            "competitionCardUser":competitionCardUser
-        },
-        methods:{
-            signUp:function () {
-                this.$router.push({
-                    path:'/projectDetail'
-                })
+        components:{ competitionCardUser },
+        methods: {
+            getCompetitionList:function () {
+                competitionList().then(response => {
+                    this.competitionList = response.data.data
+                }).catch(error => {
+                    this.$message.error('服务器开小差啦~');
+                    console.log(error);
+                });
             }
+        },
+        mounted() {
+            this.getCompetitionList()
         }
     }
 </script>

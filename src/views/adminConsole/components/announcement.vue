@@ -1,7 +1,6 @@
 <template>
     <div id="announcement">
         {{ announcementName }}
-
     </div>
 </template>
 

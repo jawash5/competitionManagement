@@ -4,7 +4,7 @@
         <div id="projectForm">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item label=" " prop="type">
-                    <el-select v-model="competitionValue" placeholder="请选择比赛" style="float: left">
+                    <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left">
                         <el-option
                                 v-for="item in options"
                                 :key="item.value"
@@ -13,7 +13,6 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-
                 <el-divider></el-divider>
 
                 <el-form-item label="项目名称" prop="name">
@@ -23,14 +22,19 @@
                     <el-input v-model="ruleForm.teamName"></el-input>
                 </el-form-item>
                 <el-row>
-                    <el-col :span="12">
+                    <el-col :span="8">
                         <el-form-item label="队长姓名"  prop="leader">
                             <el-input v-model="ruleForm.leader"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="8">
                         <el-form-item label="队长学号" prop="leaderId">
                             <el-input v-model="ruleForm.leaderId"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="指导老师" prop="teacher">
+                            <el-input v-model="ruleForm.teacher"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -46,33 +50,29 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+
                 <el-form-item label="项目成员" prop="members">
-                    <el-tag
-                            :key="tag"
-                            v-for="tag in ruleForm.members"
-                            closable
-                            :disable-transitions="false"
-                            @close="handleClose(tag)">
-                        成员学号：{{tag}}
-                    </el-tag>
-                    <el-input
-                            class="input-new-tag"
-                            placeholder="请输入学号"
-                            v-if="inputVisible"
-                            v-model="inputValue"
-                            ref="saveTagInput"
-                            size="small"
-                            @keyup.enter.native="$event.target.blur"
-                            @blur="handleInputConfirm"
-                    >
-                    </el-input>
-                    <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加新成员</el-button>
+                    <div class="teammates">
+                        <el-row v-for="(item, index) in ruleForm.members" :key="item.id">
+                            <el-col :span="8">
+                                <label for="">姓名</label>
+                                <el-input class="labelFor" v-model="ruleForm.members[index].name" placeholder="请输入姓名" size="small"></el-input>
+                            </el-col>
+                            <el-col :span="8">
+                                <label for="">学号</label>
+                                <el-input class="labelFor" v-model="ruleForm.members[index].no" placeholder="请输入学号" size="small"></el-input>
+                            </el-col>
+                            <el-col :span="6" :offset="2">
+                                <el-button size="small" type="danger" v-if="index !== 0" @click="deleteTeammate(index)">删除</el-button>
+                                <el-button size="small" type="success" @click="addTeammate">新增</el-button>
+                            </el-col>
+                        </el-row>
+                    </div>
                 </el-form-item>
             </el-form>
         </div>
         <div id="buttons">
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
         </div>
     </div>
 </template>
@@ -108,7 +108,10 @@
                     leaderId:'',
                     telephoneNumber:'',
                     mail: '',
-                    members: [],
+                    members: [
+                        { name:'', no:'' }
+                        ],
+                    teacher:''
                 },
                 rules: {
                     type: [
@@ -131,6 +134,9 @@
                     ],
                     mail: [
                         { required: true, message: '请填写队长手机', trigger: 'blur' }
+                    ],
+                    teacher: [
+                        { required: true, message: '请填写指导老师', trigger: 'blur' }
                     ],
                     upload:[
                         { required: true, validator: validateFiles, trigger: 'blur'}
@@ -162,66 +168,18 @@
                 //     }
                 // )
             },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
+
+            addTeammate() {
+                this.ruleForm.members.push({name:'', no: ''})
             },
 
-            //标签删除成员事件
-            handleClose(tag) {
-                this.ruleForm.members.splice(this.ruleForm.members.indexOf(tag), 1);
-                // console.log(this.ruleForm.members)
-            },
-
-            //添加新成员按钮
-            showInput() {
-                this.inputVisible = true;
-                this.$nextTick( ()=> {
-                    this.$refs.saveTagInput.$refs.input.focus();
-                });
-            },
-
-            //学号输入框的键盘enter事件与失去焦点事件
-            handleInputConfirm() {
-                let inputValue = this.inputValue;
-                console.log(inputValue)
-                if ((inputValue+'').length !== 8){
-                    this.$message.error("学号输入错误");
-                    console.log(inputValue)
-                } else if (this.ruleForm.members.indexOf(inputValue) !== -1){
-                    this.$message.error("学号重复输入");
-                } else if (inputValue) {
-                    this.ruleForm.members.push(inputValue);
+            deleteTeammate(index) {
+                if(index === 0) {
+                    return false
+                } else {
+                    this.ruleForm.members.splice(index, 1)
                 }
-                this.inputVisible = false;
-                this.inputValue = '';
             },
-
-            //文件列表移除文件时的钩子
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-                // console.log(fileList);
-            },
-
-            //点击文件列表中已上传的文件时的钩子
-            handlePreview(file) {
-                console.log(file);
-            },
-
-            //删除文件之前的钩子，参数为上传的文件和文件列表，若返回 false 或者返回 Promise 且被 reject，则停止删除。
-            beforeRemove(file) {
-                return this.$confirm(`确定移除 ${ file.name }？`);
-            },
-
-            //文件上传成功时的钩子
-            handleSuccess(response, file, fileList) {
-                this.fileList.name = file.name;
-                this.fileList.url = file.url;
-                console.log(response, file, fileList);
-            },
-
-            handleError() {
-                this.$message.error("文件上传失败，请重试")
-            }
 
         },
     }
@@ -235,47 +193,34 @@
         justify-content: space-between;
         margin: 0 auto;
         background-color: #FFFFFF;
+
+        #wrapTitle {
+            font-size: 26px;
+            margin: 0 auto;
+            font-family: "幼圆" , serif;
+        }
+
+        #projectForm {
+            margin: 0 auto;
+            background-color: #FFFFFF;
+            padding: 50px;
+        }
+
+        #buttons {
+            margin: 20px auto;
+        }
+
+        .teammates {
+            border: 1px dashed #bebebe;
+            border-radius: 4px;
+            padding: 10px 20px;
+        }
+
+        .labelFor {
+            width: 70%;
+            margin-left: 10px;
+        }
     }
 
-    #wrapTitle {
-        font-size: 26px;
-        margin: 0 auto;
-        font-family: "幼圆" , serif;
-    }
 
-    #projectForm {
-        margin: 0 auto;
-        background-color: #FFFFFF;
-        padding: 50px;
-    }
-
-    #buttons {
-        margin: 20px auto;
-    }
-
-    /deep/.el-tag + .el-tag {
-        margin-left: 10px;
-    }
-
-    /deep/.button-new-tag {
-        margin-left: 10px;
-        height: 32px;
-        line-height: 30px;
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-
-    /deep/.input-new-tag {
-        width: 120px;
-        margin-left: 10px;
-        vertical-align: bottom;
-    }
-
-    /deep/.el-input.is-disabled .el-input__inner {
-        cursor: default;
-    }
-
-    /deep/.el-button.is-disabled, .el-button.is-disabled:focus, .el-button.is-disabled:hover {
-        cursor: default;
-    }
 </style>

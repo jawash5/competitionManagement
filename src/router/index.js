@@ -51,16 +51,6 @@ export const defaultRouterMap = [
             name:'查看比赛'
         },
         component: ()  => import("../views/login/checkCompetition.vue")
-    },
-    //=========================================================================================
-    {
-        path: '/competition',
-        name: 'competition',
-        hidden:true,
-        meta:{
-            name:'登录'
-        },
-        component: ()  => import("../views/login/components/competition.vue")
     }]
 
 
@@ -77,7 +67,7 @@ export const asnycRouterMap = [
         path: '/userConsole',
         name: '/userConsole',
         meta:{
-            systemID: 1,
+            systemID: 2,
             name:'用户中心'
         },
         component: ()  => import("../views/layout/index.vue"),
@@ -164,7 +154,7 @@ export const asnycRouterMap = [
                 icon:'el-icon-date'
 
             },
-            component: ()  => import("../views/competitionRelease")
+            component: ()  => import("../views/adminConsole/competitionRelease")
         },
             {
                 path: '/teamManagement',
@@ -173,7 +163,7 @@ export const asnycRouterMap = [
                     name:'队伍管理',
                     icon:'el-icon-user'
                 },
-                component: ()  => import("../views/teamManagement")
+                component: ()  => import("../views/adminConsole/teamManagement")
             },
             {
                 path: '/gradesManagement',
@@ -182,26 +172,18 @@ export const asnycRouterMap = [
                     name:'成绩管理',
                     icon:'el-icon-trophy'
                 },
-                component: ()  => import("../views/gradesManagement")
-            },
-            {
-                path: '/releaseAnnouncement',
-                name: '/releaseAnnouncement',
-                meta:{
-                    name:'公告发布',
-                    icon:'el-icon-tickets'
-                },
-                component: ()  => import("../views/releaseAnnouncement")
+                component: ()  => import("../views/adminConsole/gradesManagement")
             },
             {
                 path: '/editAnnouncement',
                 name: '/editAnnouncement',
                 meta:{
-                    name:'修改公告',
-                    icon:'el-icon-setting'
+                    name:'公告管理',
+                    icon:'el-icon-tickets'
                 },
-                component: ()  => import("../views/editAnnouncement")
-            }]
+                component: ()  => import("../views/adminConsole/editAnnouncement")
+            },]
+
     },
 ]
 

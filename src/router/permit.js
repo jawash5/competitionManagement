@@ -14,15 +14,17 @@ router.beforeEach((to, from, next) =>{
             store.commit('app/SET_USERNAME', '')
             next();
         } else {
-            if(store.getters["permission/roles"] === 0) {
+            if(store.getters["app/roles"] === 0) {
                 // eslint-disable-next-line no-unused-vars
                 store.dispatch('permission/getRoles').then(response => {
+                    let role = response;
+                    store.commit('app/SET_ROLES', role);
                     // eslint-disable-next-line no-unused-vars
-                    store.dispatch('permission/creatRouter').then(response => {
+                    store.dispatch('permission/creatRouter', role).then(response => {
                         let addRouters = store.getters['permission/addRoutes'];
                         //更新路由
                         router.options.routes = store.getters['permission/allRouter'];
-                        console.log(router.options.routes);
+                        // console.log(router.options.routes);
                         router.addRoutes(addRouters);
                         //添加动态路由
                         next({...to, replace: true});

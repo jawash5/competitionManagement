@@ -23,8 +23,10 @@
         },
         methods:{
             exit:function () {
-                this.$router.push({
-                    path:'/login'
+                this.$store.dispatch('app/exit').then(() => {
+                    this.$router.push({
+                        path:'/login'
+                    })
                 })
             }
         },
@@ -45,6 +47,7 @@
         left: $navMenu;
         height: 60px;
         background-color: #fff;
+        z-index:1;
         -webkit-box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
     }
 

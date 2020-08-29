@@ -2,11 +2,11 @@
     <div id="checkCompetition">
         <head-login :state="true"></head-login>
         <div class="competitionList">
-            <competition-card competition-name="电子商务竞赛">
+            <competition-card :competition="competition">
             </competition-card>
             <competition-card v-for="item in competitionList"
                               :key="item.id"
-                              :competition-name="item">
+                              :competition="item">
             </competition-card>
         </div>
         <my-footer></my-footer>
@@ -30,6 +30,7 @@
         },
         data(){
             return{
+                competition:{name:'电子商务竞赛', start:'2020/01/01', end:'2020/01/01'},
                 competitionList:[]
             }
         },

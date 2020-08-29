@@ -1,25 +1,33 @@
 <template>
     <div id="myProject">
-        <el-tabs v-model="activeName">
-            <el-tab-pane label="我创建的项目" name="create">
-                <div id="createdProject">
-                    <div id="newProject" @click="gotoProjectDetail">
-                        <span id="new_icon">+</span>
-                        <p id="new_p">新建项目</p>
-                    </div>
-                    <project></project>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="我参加的项目" name="join">
-                <join-project></join-project>
-            </el-tab-pane>
-        </el-tabs>
+<!--        <el-tabs v-model="activeName">-->
+<!--            <el-tab-pane label="我创建的项目" name="create">-->
+<!--                <div id="createdProject">-->
+<!--                    <div id="newProject" @click="gotoProjectDetail">-->
+<!--                        <span id="new_icon">+</span>-->
+<!--                        <p id="new_p">新建项目</p>-->
+<!--                    </div>-->
+<!--                    <project></project>-->
+<!--                </div>-->
+<!--            </el-tab-pane>-->
+<!--            <el-tab-pane label="我参加的项目" name="join">-->
+<!--                <join-project></join-project>-->
+<!--            </el-tab-pane>-->
+<!--        </el-tabs>-->
+
+        <div id="createdProject">
+            <div id="newProject" @click="gotoProjectDetail">
+                <span id="new_icon">+</span>
+                <p id="new_p">新建项目</p>
+            </div>
+            <project></project>
+        </div>
     </div>
 </template>
 
 <script>
     import project from "@/views/userConsole/components/project";
-    import joinProject from "@/components/joinProject";
+    // import joinProject from "@/components/joinProject";
 
     export default {
         name: "personalCenter",
@@ -30,7 +38,7 @@
         },
         components: {
             "project":project,
-            "joinProject":joinProject
+            // "joinProject":joinProject
         },
         methods: {
             gotoProjectDetail: function () {
