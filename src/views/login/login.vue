@@ -96,7 +96,7 @@
                 // eslint-disable-next-line no-unused-vars
                 this.$store.dispatch("app/login", data).then(response => {
                     this.$router.push({
-                        path:'/competitionRelease'
+                        path:'/viewCompetition'
                     });
 
                 }).catch(error => {

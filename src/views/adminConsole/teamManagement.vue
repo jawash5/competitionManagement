@@ -16,7 +16,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="关键字">
-                        <el-select v-model="competitionValue" placeholder="搜索关键字" size="small" style="width: 120px">
+                        <el-select v-model="searchKeyValue" placeholder="搜索关键字" size="small" style="width: 120px">
                             <el-option
                                     v-for="item in options"
                                     :key="item.value"
@@ -42,7 +42,7 @@
 
         <el-table
                 ref="multipleTable"
-                :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                :data="tableData"
                 tooltip-effect="dark"
                 border
                 style="width: 100%">
@@ -65,66 +65,130 @@
                              align="center"
                              show-overflow-tooltip>
                 <template slot-scope="scope">
-                    <span v-if="scope.row.isSet">
-                        <el-input size="mini" v-model="tableData[scope.$index][item.prop]">
-                        </el-input>
-                    </span>
-                    <span v-else>{{tableData[scope.$index][item.prop]}}</span>
+                    <span>{{ tableData[scope.$index][item.prop] }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column
                     prop="submit"
                     label="上交情况"
-                    width="60px"
+                    width="60"
                     align="center">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.isSet">
-                        <el-checkbox v-model="tableData[scope.$index].submit"></el-checkbox>
-                    </span>
-                    <span v-else>{{tableData[scope.$index].submit === true? '是':'否' }}</span>
+                    <span v-for="item in tableData[scope.$index].isSubmit"
+                          :key="item.id">{{item.state === true? '〇':'✖' }}</span>
                 </template>
             </el-table-column>
             <el-table-column
                     prop="promotion"
                     label="晋级情况"
-                    width="60px"
+                    width="60"
                     align="center">
                 <template slot-scope="scope">
-                            <span v-if="scope.row.isSet">
-                                <el-checkbox v-model="tableData[scope.$index].promotion"></el-checkbox>
-                            </span>
-                    <span v-else>{{tableData[scope.$index].promotion === true? '是':'否' }}</span>
+                    <span v-for="item in tableData[scope.$index].isPromote"
+                          :key="item.id">{{item.state === true? '〇':'✖' }}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" label="操作" width="180">
+            <el-table-column
+                    width="80"
+                    align="center"
+                    label="作品审核">
+                <template slot-scope="scope">
+                    <span>{{tableData[scope.$index].isCheck === true? '已审核':'未审核' }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="操作" width="160">
                 <template slot-scope="scope" >
                     <el-button
                             size="mini"
-                            @click="handleEdit(scope.$index)"
-                            v-if="!scope.row.isSet">编辑</el-button>
+                            @click="handleEdit()"
+                            >编辑</el-button>
                     <el-button
                             size="mini"
                             type="danger"
                             @click="handleDelete(scope.$index)"
-                            v-if="!scope.row.isSet">删除</el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleConform(scope.$index)"
-                            v-if="scope.row.isSet">确定</el-button>
-                    <el-button
-                            size="mini"
-                            @click="handleCancel(scope.$index)"
-                            v-if="scope.row.isSet">取消</el-button>
+                            >删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <el-dialog
+                title="修改资料"
+                :visible.sync="dialogVisible"
+                center
+                width="50%">
+            <div style="margin: 0 50px">
+                <el-form ref="editForm" :model="editForm" label-width="80px">
+                    <el-row gutter="20">
+                        <el-col span="12">
+                            <el-form-item label="队伍序号">
+                                <el-input v-model="editForm.teamID"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col span="12">
+                            <el-form-item label="队长姓名">
+                                <el-input v-model="editForm.name"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-form-item label="项目名称">
+                        <el-input v-model="editForm.projectName"></el-input>
+                    </el-form-item>
+
+                    <el-row gutter="20">
+                        <el-col span="12">
+                            <el-form-item label="队伍名称">
+                                <el-input v-model="editForm.teamName"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col span="12">
+                            <el-form-item label="队伍邮箱">
+                                <el-input v-model="editForm.mail"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-form-item label="上交情况">
+                        <el-checkbox v-for="item in editForm.isSubmit"
+                                     :key="item.id"
+                                     v-model="item.state">{{item.name}}</el-checkbox>
+                    </el-form-item>
+
+                    <el-form-item label="晋级情况">
+                        <el-checkbox v-for="item in editForm.isPromote"
+                                     :key="item.id"
+                                     v-model="item.state">{{item.name}}</el-checkbox>
+                    </el-form-item>
+
+                    <el-form-item label="权限管理">
+                        <el-checkbox v-for="item in editForm.authority"
+                                     :key="item.id"
+                                     v-model="item.state">{{item.name}}</el-checkbox>
+                    </el-form-item>
+
+                    <el-form-item label="作品审核">
+                        <el-switch v-model="editForm.projectCheck"></el-switch>
+                    </el-form-item>
+
+                </el-form>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitEditForm">确 定</el-button>
+            </span>
+        </el-dialog>
+
 
         <div class="div-30"></div>
         <el-row>
             <el-col :span="12">
                 <el-button size="medium">批量删除</el-button>
+                <el-button size="medium">批量修改权限</el-button>
+                <el-button size="medium">批量下载信息</el-button>
+                <el-button size="medium">批量发送通知</el-button>
             </el-col>
             <el-col :span="12">
                 <el-pagination
@@ -149,20 +213,23 @@
         },
         data() {
             return {
-                statement:false,
-                search:'',
-                currentPage:1,
-                total: 1,
-                edit:false,
+                currentPage:1,//当前页码
+                total: 1,//总数据数量
+                dialogVisible:false, //编辑对话框
+                //比赛选项
                 competitionOptions: [{
                     value: '选项1',
                     label: '电子商务竞赛'
                 }],
+                //比赛选择值
+                competitionValue: '',
+                //关键词选项
                 searchOptions: [{
                     value: '选项1',
                     label: '电子商务竞赛'
                 }],
-                competitionValue: '',
+                //关键词
+                searchKeyValue: '',
                 titleData:[
                     { prop:"no", label:"队伍序号", width:"60"},
                     { prop:"projectName", label:"项目名称", width:""},
@@ -177,9 +244,17 @@
                         projectName: '竞赛管理平台',
                         teamName:'12456',
                         mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
+                        isSubmit:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isPromote:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isCheck:true,
                     },
                     {
                         no: '1',
@@ -187,9 +262,17 @@
                         projectName: '竞赛管理平台',
                         teamName:'12456',
                         mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
+                        isSubmit:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isPromote:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isCheck:true,
                     },
                     {
                         no: '1',
@@ -197,9 +280,17 @@
                         projectName: '竞赛管理平台',
                         teamName:'12456',
                         mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
+                        isSubmit:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isPromote:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isCheck:true,
                     },
                     {
                         no: '1',
@@ -207,9 +298,17 @@
                         projectName: '竞赛管理平台',
                         teamName:'12456',
                         mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
+                        isSubmit:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isPromote:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isCheck:true,
                     },
                     {
                         no: '1',
@@ -217,31 +316,41 @@
                         projectName: '竞赛管理平台',
                         teamName:'12456',
                         mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
-                    },
-                    {
-                        no: '1',
-                        name: '小明',
-                        projectName: '竞赛管理平台',
-                        teamName:'12456',
-                        mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
-                    },
-                    {
-                        no: '1',
-                        name: '小明',
-                        projectName: '竞赛管理平台',
-                        teamName:'12456',
-                        mail:'857723555@qq.com',
-                        submit:'是',
-                        promotion:'是',
-                        isSet:false,
+                        isSubmit:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isPromote:{
+                            first: {state:false, name:'初赛'},
+                            second:{state:false, name:'复赛'},
+                            third:{state:false, name:'决赛'}
+                        },
+                        isCheck:true,
                     },
                 ],
+                editForm:{
+                    teamID:'',
+                    name:'',
+                    teamName:'',
+                    projectName:'',
+                    mail:'',
+                    isSubmit:{
+                        first: {state:true, name:'初赛'},
+                        second:{state:false, name:'复赛'},
+                        third:{state:false, name:'决赛'}
+                    },
+                    isPromote:{
+                        first: {state:true, name:'初赛'},
+                        second:{state:false, name:'复赛'},
+                        third:{state:false, name:'决赛'}
+                    },
+                    authority:{
+                        first:{state: true, name:'权限1'},
+                        second:{state: false, name:'权限2'}
+                    },
+                    projectCheck:false,
+                }
 
             };
         },
@@ -249,8 +358,8 @@
             current_change:function (currentPage) {
                 this.currentPage = currentPage;
             },
-            handleEdit:function (index) {
-                this.tableData[index].isSet = true;
+            handleEdit:function () {
+                this.dialogVisible = true;
             },
             handleDelete:function (index) {
                 this.tableData.splice(index,1);
@@ -270,12 +379,15 @@
                     });
                 });
             },
-            handleConform:function (index) {
-                this.tableData[index].isSet = false;
-            },
-            handleCancel:function (index) {
-                this.tableData[index].isSet = false;
+            submitEditForm:function () {
+
             }
+            // handleConform:function (index) {
+            //     this.tableData[index].isSet = false;
+            // },
+            // handleCancel:function (index) {
+            //     this.tableData[index].isSet = false;
+            // }
 
         }
     }

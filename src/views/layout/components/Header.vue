@@ -32,7 +32,8 @@
         },
         computed:{
             username: function (){
-                return this.$store.state.app.userName
+                console.log(this.$store.state.app.userName);
+                return this.$store.state.app.userName;
             }
         }
     }

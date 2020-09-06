@@ -12,27 +12,24 @@
         <el-dialog
                 title="比赛详情"
                 :visible.sync="competitionInfo">
-                <el-form ref="form" :model="form" label-width="80px" disabled>
+                <el-form ref="form" :model="competition" label-width="80px" disabled>
                     <el-form-item label="比赛名称">
-                        <el-input v-model="form.name"></el-input>
+                        <el-input v-model="competition.name"></el-input>
                     </el-form-item>
                     <el-row :gutter="20">
                         <el-col :span="12">
                             <el-form-item label="报名时间">
-                                <el-input v-model="form.competitionTime"></el-input>
+                                <el-input v-model="competition.competitionTime"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="比赛时间">
-                                <el-input v-model="form.deadline"></el-input>
+                                <el-input v-model="competition.deadline"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-form-item label="比赛要求">
-                        <el-input type="textarea" :rows="6" autosize resize="none" v-model="form.request"></el-input>
-                    </el-form-item>
                     <el-form-item label="比赛介绍">
-                        <el-input  type="textarea" :rows="12" autosize resize="none" v-model="form.disc"></el-input>
+                        <el-input  type="textarea" :rows="12" autosize resize="none" v-model="competition.information"></el-input>
                     </el-form-item>
                 </el-form>
         </el-dialog>

@@ -18,12 +18,16 @@
             </el-tab-pane>
         </el-tabs>
 
-        <el-button type="primary"
-                   icon="el-icon-plus"
-                   circle
-                   class="addAnnouncement"
-                   @click="newAnnouncement = true">
-        </el-button>
+
+        <el-tooltip content="新增公告" placement="left" effect="light">
+            <el-button type="primary"
+                       icon="el-icon-plus"
+                       circle
+                       class="addAnnouncement"
+                       @click="newAnnouncement = true">
+            </el-button>
+        </el-tooltip>
+
 
         <el-dialog
                 title="新增公告"
@@ -135,6 +139,7 @@
     }
 
     .addAnnouncement {
+        font-size: 20px;
         width: 50px;
         height: 50px;
         position: fixed;

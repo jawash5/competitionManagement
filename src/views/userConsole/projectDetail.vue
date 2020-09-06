@@ -63,14 +63,61 @@
                                 <el-input class="labelFor" v-model="ruleForm.members[index].no" placeholder="请输入学号" size="small"></el-input>
                             </el-col>
                             <el-col :span="6" :offset="2">
-                                <el-button size="small" type="danger" v-if="index !== 0" @click="deleteTeammate(index)">删除</el-button>
-                                <el-button size="small" type="success" @click="addTeammate">新增</el-button>
+                                <el-button type="text" @click="addTeammate" style="font-size: 30px;">
+                                    <i class="el-icon-circle-plus"></i>
+                                </el-button>
+                                <el-button type="text" @click="deleteTeammate(index)" style="font-size: 30px;">
+                                    <i class="el-icon-remove"></i>
+                                </el-button>
                             </el-col>
                         </el-row>
                     </div>
                 </el-form-item>
+                <el-form-item label="作品上传" prop="upload">
+                    <el-button type="primary" size="small" @click="DialogVisible = true">上传</el-button>
+
+                    <el-dialog
+                            title="作品上传"
+                            :visible.sync="DialogVisible"
+                            width="50%"
+                            center>
+
+
+                        <div class="step">
+                            <el-steps :active="1" finish-status="success" align-center>
+                                <el-step title="初赛"></el-step>
+                                <el-step title="复赛"></el-step>
+                                <el-step title="决赛"></el-step>
+                            </el-steps>
+                        </div>
+
+                        <div class="div-30"></div>
+
+                        <div class="upload">
+                            <el-upload
+                                    class="upload-demo"
+                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :on-preview="handlePreview"
+
+                                    multiple
+                                    :limit="3"
+                                    :file-list="fileList">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            </el-upload>
+                        </div>
+
+
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="DialogVisible = false">取 消</el-button>
+                            <el-button type="primary" @click="DialogVisible = false">确 定</el-button>
+                        </span>
+                    </el-dialog>
+
+                </el-form-item>
             </el-form>
         </div>
+
         <div id="buttons">
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
         </div>
@@ -81,18 +128,19 @@
     export default {
         name: "projectDetail" ,
         data() {
-            const validateFiles = (rule, value, callback) => {
-                    if (this.fileList === '') {
-                        callback(new Error('请上传文件'));
-                    } else {
-                        callback();
-                    }
-                };
+            // const validateFiles = (rule, value, callback) => {
+            //         if (this.fileList === '') {
+            //             callback(new Error('请上传文件'));
+            //         } else {
+            //             callback();
+            //         }
+            //     };
 
             return{
                 inputVisible: false,
                 inputValue: '',
                 fileList: [],
+                DialogVisible:false,//文件上传框
                 options: [{
                     value: '选项1',
                     label: '电子商务竞赛'
@@ -138,9 +186,6 @@
                     teacher: [
                         { required: true, message: '请填写指导老师', trigger: 'blur' }
                     ],
-                    upload:[
-                        { required: true, validator: validateFiles, trigger: 'blur'}
-                    ]
                 }
             }
         },
@@ -206,6 +251,16 @@
             padding: 50px;
         }
 
+        .step {
+            line-height: normal;
+
+        }
+
+        .upload {
+            height: 100px;
+            text-align: center;
+        }
+
         #buttons {
             margin: 20px auto;
         }
@@ -214,6 +269,10 @@
             border: 1px dashed #bebebe;
             border-radius: 4px;
             padding: 10px 20px;
+
+            .el-button {
+                padding: 5px;
+            }
         }
 
         .labelFor {

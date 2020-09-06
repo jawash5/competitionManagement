@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@form-create/element-ui": "^1.0.18",
     "cookie_js": "^1.4.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",

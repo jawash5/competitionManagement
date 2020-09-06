@@ -15,7 +15,7 @@ Router.prototype.push = function push(location, onResolve, onReject) {
 export const defaultRouterMap = [
     {
         path: '/',
-        redirect:'checkCompetition',
+        redirect:'/checkCompetition',
         meta:{
             name:'首页'
         },
@@ -66,6 +66,7 @@ export const asnycRouterMap = [
     {
         path: '/userConsole',
         name: '/userConsole',
+        redirect:'viewCompetition',
         meta:{
             systemID: 2,
             name:'用户中心'
@@ -136,11 +137,21 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/userConsole/editProject")
             },
+            {
+                path: '/filesManagement',
+                name: '/filesManagement',
+                meta:{
+                    name:'文件管理',
+                    icon:'el-icon-tickets'
+                },
+                component: ()  => import("../views/adminConsole/filesManagement")
+            },
         ]
     },
     {
         path: '/adminConsole',
         name: '/adminConsole',
+        redirect:'teamManagement',
         meta: {
             systemID: 2,
             name: '管理中心'

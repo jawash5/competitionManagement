@@ -1,10 +1,21 @@
 <template>
     <div id="myProject">
-        <competition-card-user :competition="competition"></competition-card-user>
-        <competition-card-user v-for="item in competitionList"
-                          :key="item.id"
-                          :competition="item">
-        </competition-card-user>
+        <div class="competitionSelect">
+            <el-select v-model="selectValue" size="small" placeholder="请选择">
+                <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+        </div>
+        <div class="competitionList">
+            <competition-card-user v-for="item in competitionList"
+                                   :key="item.id"
+                                   :competition="item">
+            </competition-card-user>
+        </div>
     </div>
 </template>
 
@@ -16,8 +27,22 @@
         name: "viewCompetition",
         data() {
             return{
-                competition:{name:'电子商务竞赛', start:'2020/01/01', end:'2020/01/01'},
-                competitionList:[],
+                competitionList:[],//比赛列表
+                selectValue:'全部比赛',//过滤器值
+                //过滤器
+                options:[
+                    {
+                        value: '选项1',
+                        label: '全部比赛'
+                    }, {
+                        value: '选项2',
+                        label: '标签2'
+                    }, {
+                        value: '选项3',
+                        label: '标签3'
+                    }
+                ]
+
             }
         },
         components:{ competitionCardUser },
@@ -41,6 +66,18 @@
     .message {
         width: 1200px;
         margin: 0 auto;
+    }
+
+    .competitionList {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: flex-start;
+    }
+
+    .competitionSelect {
+        width: 95%;
+        margin-left: 15px;
     }
 
     /deep/.el-tabs__item {

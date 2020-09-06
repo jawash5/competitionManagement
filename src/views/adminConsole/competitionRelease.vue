@@ -27,138 +27,56 @@
                             type="datetimerange"
                             range-separator="至"
                             start-placeholder="开始日期"
-                            end-placeholder="结束日期">
+                            end-placeholder="结束日期"
+                            value-format="yyyy-MM-dd HH:mm:ss">
                     </el-date-picker>
                 </el-form-item>
 
-                <el-form-item label="作品提交时间">
-                    <el-date-picker
-                            v-model="form.competitionTime"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期">
-                    </el-date-picker>
+                <el-form-item label="人数限制">
+                    <el-row>
+                        <el-col :span="3">
+                            <el-input v-model="form.signForm.minPeople" maxlength="2" placeholder="最少人数"></el-input>
+                        </el-col>
+                        <el-col :span="1">
+                            <span style="margin:0 0 0 .6rem">至</span>
+                        </el-col>
+                        <el-col :span="3">
+                            <el-input v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+
+                <el-form-item label="是否需要队名">
+                    <el-switch
+                        v-model="form.signForm.requireGroupName">
+                    </el-switch>
                 </el-form-item>
 
                 <el-form-item label="比赛简介">
-                    <el-input type="textarea" v-model="form.desc" :rows="2"></el-input>
+                    <el-input type="textarea" v-model="form.information" :rows="2"></el-input>
                 </el-form-item>
-
-                <el-form-item label="比赛要求">
-                    <el-input type="textarea" v-model="form.request" :rows="2"></el-input>
-                </el-form-item>
-
-<!--                <el-form-item>-->
-<!--                    <el-button type="primary" @click="onSubmit">立即创建</el-button>-->
-<!--                    <el-button>取消</el-button>-->
-<!--                </el-form-item>-->
             </el-form>
 
-            <el-card class="formCard"  v-for="i in num" :key="i">
-                <el-tag >{{i}}</el-tag>
+            <el-card class="formCard" v-for="i in num" :key="i">
+                <el-tag>{{i}}</el-tag>
                 <el-input
-                        placeholder="请输入标题内容"
+                        placeholder="请输入赛事阶段名称"
                         v-model="inputBT[i-1]"
                         clearable
-                        style="width: 70%; margin-left: 30px">
+                        style="width: 50%; margin-left: 30px">
                 </el-input>
-                <el-select
-                        v-model="value[i-1]"
-                        placeholder="请选择"
-                        style="width: 18%; float:right;">
-                    <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
                 <el-divider></el-divider>
-                <div v-if="value[i-1]==='input'" style="color:#c0c4cc;">
-                    待填写者写入文本
-                </div>
-                <div v-if="value[i-1]==='InputNumber'" style="color:#c0c4cc;">
-                    待填写者写入数字
-                </div>
+                <label for="" style="margin-right: 20px">作品提交时间</label>
+                <el-date-picker
+                        v-model="form.competitionTime[i-1].stageTime"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd HH:mm:ss">
+                </el-date-picker>
 
-                <div class="radio"
-                     v-if="value[i-1]==='radio'"
-                     style="color: #c0c4cc;margin-top: 20px;">
-                    <div v-for="j in radio[i-1].num" :key="j">
-                        ○
-                        <el-input
-                                placeholder="请输入选项名"
-                                v-model = "radio[i-1].data[j-1]"
-                                clearable
-                                style="width: 80%;">
-                        </el-input>
-                    </div>
-                    <div>
-                        <el-button type="text" @click="addRadio(i)">
-                            <i class="el-icon-circle-plus-outline"
-                               style="font-size: 20px;margin-top: 10px">
-                            </i>
-                        </el-button>
-                        <el-button type="text" @click="deleteRadio(i)">
-                            <i class="el-icon-remove-outline"
-                               style="font-size: 20px;margin-top: 10px">
-                            </i>
-                        </el-button>
-                    </div>
-                </div>
 
-                <div class="radio"
-                     v-if="value[i-1]==='checkbox'"
-                     style="color: #c0c4cc;margin-top: 20px;">
-                        <div v-for="j in checkbox[i-1].num" :key="j">
-                            □
-                            <el-input
-                                    placeholder="请输入选项名"
-                                    v-model="checkbox[i-1].data[j-1]"
-                                    clearable
-                                    style="width: 80%;">
-                            </el-input>
-                        </div>
-                    <div>
-                        <el-button type="text"
-                                   @click="addCheckbox(i)">
-                            <i class="el-icon-circle-plus-outline"
-                               style="font-size: 20px;margin-top: 10px">
-                            </i>
-                        </el-button>
-                        <el-button type="text" @click="deleteCheckbox(i)">
-                            <i class="el-icon-remove-outline" style="font-size: 20px;margin-top: 10px">
-                            </i>
-                        </el-button>
-                    </div>
-                </div>
-
-                <div class="radio"
-                     v-if="value[i-1]==='select'"
-                     style="color: #c0c4cc;margin-top: 20px;">
-                    <div v-for="j in select[i-1].num" :key="j">
-                        {{ j }}
-                        <el-input
-                                placeholder="请输入选项名"
-                                v-model="select[i-1].data[j-1]"
-                                clearable
-                                style="width: 80%;">
-                        </el-input>
-                    </div>
-                    <div>
-                        <el-button type="text" @click="addSelect(i)">
-                            <i class="el-icon-circle-plus-outline"
-                               style="font-size: 20px;margin-top: 10px">
-                            </i>
-                        </el-button>
-                        <el-button type="text" @click="deleteSelect(i)">
-                            <i class="el-icon-remove-outline"
-                               style="font-size: 20px;margin-top: 10px">
-                            </i>
-                        </el-button>
-                    </div>
-                </div>
             </el-card>
 
             <div class="addCard">
@@ -174,6 +92,22 @@
                     </el-button>
                 </el-tooltip>
             </div>
+
+            <el-dialog
+                    title="预览"
+                    :visible.sync="dialogVisible"
+                    center>
+                <form-create v-model="totalForm" :rule="preViewForm" :option="options"></form-create>
+
+                <div style="text-align: center;">
+                    <el-button type="primary" @click="changeDialog">返回修改</el-button>
+                    <el-button type="primary" @click="submit">立即发布</el-button>
+                </div>
+            </el-dialog>
+
+            <div style="text-align: center;">
+                <el-button type="primary" @click="preView">预览发布</el-button>
+            </div>
         </div>
     </div>
 </template>
@@ -185,100 +119,75 @@
         },
         data() {
             return {
-                num:1, // 卡片的数量
+                dialogVisible: false,
+                num: 1, // 卡片的数量
                 inputBT:[], //输入框
-                //下拉选择框
-                options: [{
-                    value: 'input',
-                    label: '文本'
-                }, {
-                    value: 'InputNumber',
-                    label: '数字'
-                }, {
-                    value: 'radio',
-                    label: '单选按钮'
-                }, {
-                    value: 'checkbox',
-                    label: '多选按钮'
-                }, {
-                    value: 'select',
-                    label: '下拉选择'
-                }],
-                value: [], //选项栏
-                //单选框
-                radio: [
-                    {
-                        num: 2,
-                        data: []
-                    }
-                ],
-
-                //多选按钮
-                checkbox: [
-                    {
-                        num: 2,
-                        data: []
-                    }
-                ],
-
-                //下拉框
-                select: [
-                    {
-                        num: 2,
-                        data: []
-                    }
-                ],
                 form:{
                     session:'',
                     competitionName:'',
                     signUptime:'',
-                    competitionTime:'',
-                    desc:'',
-                    request:''
+                    competitionTime: [
+                        {name:'', stageTime:''}
+                    ],
+                    information:'',
+                    signForm:{
+                        maxPeople: '',
+                        minPeople: '',
+                        requireGroupName:false
+                    }
+                },
+                preViewForm:[],//表单规则
+                totalForm: {},//表单实例
+
+                options:{
+                    submitBtn:{
+                        show:false
+                    }
                 }
 
             };
         },
         methods: {
-            addRadio:function(cardNo) {
-                this.radio[cardNo-1].num += 1;
-            },
-            deleteRadio: function(cardNo) {
-                this.radio[cardNo-1].num -= 1;
-            },
-            addCheckbox: function(cardNo) {
-                this.checkbox[cardNo-1].num += 1;
-            },
-            deleteCheckbox: function(cardNo) {
-                this.checkbox[cardNo-1].num -= 1;
-            },
-            addSelect: function(cardNo) {
-                this.select[cardNo-1].num += 1;
-            },
-            deleteSelect: function(cardNo) {
-                this.select[cardNo-1].num -= 1;
-            },
             //增加组件
-            addDiv() {
+            addDiv:function() {
                 this.num += 1;
                 this.inputBT.push()
-                this.radio.push({num:2, data:[]});
-                this.checkbox.push({num:2, data:[]});
-                this.select.push({num:2, data:[]});
-
-
+                this.form.competitionTime.push({name:'', stageTime:''});
             },
             //删除组件
-            deleteDiv() {
+            deleteDiv:function() {
                 if(this.num > 1){
                     this.num -= 1;
                     this.inputBT.pop()
-                    this.radio.pop();
-                    this.checkbox.pop()
-                    this.select.pop();
+                    this.form.competitionTime.pop();
                 }
-
             },
+
+            //发布预览
+            preView:function () {
+                this.preViewForm = [];
+                this.preViewForm.push({
+                    type:"input",
+                    title:"比赛名称",
+                    field:"比赛名称",
+                    value:'第' + this.form.session + '届 ' + this.form.competitionName,
+                    // props:{
+                    //     disabled:true
+                    // }
+                });
+                // for(let i=0; i<this.inputBT.length; i++) {
+                //
+                // }
+                this.dialogVisible = true;
+            },
+
+            changeDialog:function(){
+                this.dialogVisible = false;
+            },
+            submit:function(){
+                console.log(this.totalForm)
+                console.log(this.totalForm)
+            }
         }
     }
 </script>

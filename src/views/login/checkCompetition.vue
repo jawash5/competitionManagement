@@ -1,9 +1,18 @@
 <template>
     <div id="checkCompetition">
         <head-login :state="true"></head-login>
+        <div class="div-30"></div>
+        <div class="competitionSelect">
+            <el-select v-model="selectValue" placeholder="请选择">
+                <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+        </div>
         <div class="competitionList">
-            <competition-card :competition="competition">
-            </competition-card>
             <competition-card v-for="item in competitionList"
                               :key="item.id"
                               :competition="item">
@@ -30,8 +39,20 @@
         },
         data(){
             return{
-                competition:{name:'电子商务竞赛', start:'2020/01/01', end:'2020/01/01'},
-                competitionList:[]
+                competitionList:[],
+                selectValue:'全部比赛',
+                options:[
+                    {
+                        value: '选项1',
+                        label: '全部比赛'
+                    }, {
+                        value: '选项2',
+                        label: '标签2'
+                    }, {
+                        value: '选项3',
+                        label: '标签3'
+                    }
+                ]
             }
         },
         methods: {
@@ -62,11 +83,15 @@
 
     .competitionList {
         display: flex;
-        display: -webkit-flex;
         flex-direction: row;
         flex-wrap: wrap;
         align-content: flex-start;
         height: 650px;
+    }
+
+    .competitionSelect {
+        width: 95%;
+        margin-left: 15px;
     }
 
     /deep/.el-tabs__item {

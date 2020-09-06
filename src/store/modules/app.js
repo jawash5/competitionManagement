@@ -43,6 +43,7 @@ const actions = {
         return new Promise((resolve => {
             removeCode();
             removeUsername();
+            sessionStorage.clear();
             commit('SET_USERNAME', '');
             commit('SET_CODE', '');
             commit('SET_ROLES', 0);
