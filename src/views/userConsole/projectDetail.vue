@@ -3,7 +3,7 @@
         <div id="wrapTitle">新建项目</div>
         <div id="projectForm">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label=" " prop="type">
+                <el-form-item>
                     <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left">
                         <el-option
                                 v-for="item in options"
@@ -15,38 +15,18 @@
                 </el-form-item>
                 <el-divider></el-divider>
 
-                <el-form-item label="项目名称" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
-                </el-form-item>
                 <el-form-item label="队伍名称" prop="teamName">
                     <el-input v-model="ruleForm.teamName"></el-input>
                 </el-form-item>
                 <el-row>
-                    <el-col :span="8">
+                    <el-col :span="12">
                         <el-form-item label="队长姓名"  prop="leader">
                             <el-input v-model="ruleForm.leader"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="12">
                         <el-form-item label="队长学号" prop="leaderId">
                             <el-input v-model="ruleForm.leaderId"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="指导老师" prop="teacher">
-                            <el-input v-model="ruleForm.teacher"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="联系手机" prop="telephoneNumber">
-                            <el-input v-model="ruleForm.telephoneNumber"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="邮箱地址" prop="mail">
-                            <el-input v-model="ruleForm.mail"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -60,7 +40,7 @@
                             </el-col>
                             <el-col :span="8">
                                 <label for="">学号</label>
-                                <el-input class="labelFor" v-model="ruleForm.members[index].no" placeholder="请输入学号" size="small"></el-input>
+                                <el-input class="labelFor" v-model="ruleForm.members[index].studentNo" placeholder="请输入学号" size="small"></el-input>
                             </el-col>
                             <el-col :span="6" :offset="2">
                                 <el-button type="text" @click="addTeammate" style="font-size: 30px;">
@@ -82,7 +62,6 @@
                             width="50%"
                             center>
 
-
                         <div class="step">
                             <el-steps :active="1" finish-status="success" align-center>
                                 <el-step title="初赛"></el-step>
@@ -97,8 +76,6 @@
                             <el-upload
                                     class="upload-demo"
                                     action="https://jsonplaceholder.typicode.com/posts/"
-                                    :on-preview="handlePreview"
-
                                     multiple
                                     :limit="3"
                                     :file-list="fileList">
@@ -106,7 +83,6 @@
                                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                             </el-upload>
                         </div>
-
 
                         <span slot="footer" class="dialog-footer">
                             <el-button @click="DialogVisible = false">取 消</el-button>
@@ -119,55 +95,37 @@
         </div>
 
         <div id="buttons">
-            <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+            <el-button type="primary" @click="submitForm()">立即创建</el-button>
         </div>
     </div>
 </template>
 
 <script>
+    import {competitionList} from "@/api/login";
+    import {applyCompetition} from "@/api/userConsole";
     export default {
         name: "projectDetail" ,
         data() {
-            // const validateFiles = (rule, value, callback) => {
-            //         if (this.fileList === '') {
-            //             callback(new Error('请上传文件'));
-            //         } else {
-            //             callback();
-            //         }
-            //     };
-
             return{
-                inputVisible: false,
-                inputValue: '',
-                fileList: [],
+                fileList: [],//文件
                 DialogVisible:false,//文件上传框
-                options: [{
-                    value: '选项1',
-                    label: '电子商务竞赛'
-                }, {
-                    value: '选项2',
-                    label: '互联网+'
-                }],
-                competitionValue: '',
+                options: [],//比赛选择框
+                competitionValue: '',//选择的比赛
                 ruleForm: {
-                    name: '',
                     teamName:'',
                     leader:'',
                     leaderId:'',
-                    telephoneNumber:'',
-                    mail: '',
                     members: [
-                        { name:'', no:'' }
+                        { name:'', studentNo:''}
                         ],
-                    teacher:''
+                },
+                //提交的表单
+                finalForm:{
+                    competitionId: 0,
+                    groupName: "",
+                    teammateSet:[]
                 },
                 rules: {
-                    type: [
-                        { required: true, message: '请选择比赛', trigger: 'blur' },
-                    ],
-                    name: [
-                        { required: true, message: '请输入项目名称', trigger: 'blur' },
-                    ],
                     teamName: [
                         { required: true, message: '请填写队伍名称', trigger: 'blur' }
                     ],
@@ -177,47 +135,81 @@
                     leaderId: [
                         { required: true, message: '请填写队长学号', trigger: 'blur' }
                     ],
-                    telephoneNumber: [
-                        { required: true, message: '请填写联系手机', trigger: 'blur' }
-                    ],
-                    mail: [
-                        { required: true, message: '请填写队长手机', trigger: 'blur' }
-                    ],
-                    teacher: [
-                        { required: true, message: '请填写指导老师', trigger: 'blur' }
-                    ],
                 }
             }
         },
         methods: {
-            //前端验证还没有加
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
+            //获取比赛列表
+            getCompetitionList() {
+                competitionList().then(response => {
+                    const data = response.data.data;
+                    for(let i=0; i<data.length; i++) {
+                        this.options.push({
+                            value: data[i].id,
+                            label: data[i].name
+                        })
+                    }
+                })
+            },
+            //前表单提交，端验证还没有加
+            submitForm() {
+                //前端验证
+                if(this.competitionValue === "") {
+                    this.$message.error('请选择比赛!');
+                    return false;
+                }
+                if(this.ruleForm.teamName === '') {
+                    this.$message.error('请输入队伍名称!');
+                    return false;
+                }
+                if(this.ruleForm.leader === "" || this.ruleForm.leaderId === "") {
+                    this.$message.error('请输入队长信息!');
+                    return false;
+                }
+
+                this.finalForm.competitionId = this.competitionValue;
+                this.finalForm.groupName = this.ruleForm.teamName;
+                this.finalForm.teammateSet.push({
+                    name:this.ruleForm.leader,
+                    studentNo:parseInt(this.ruleForm.leaderId),
+                    isLeader:true
+                })
+                const members = this.ruleForm.members;
+                if(members.length > 1) {
+                    for(let i=0; i<members.length; i++) {
+                        this.finalForm.teammateSet.push({
+                            name: members[i].name,
+                            studentNo:parseInt(members[i].studentNo),
+                            isLeader:false
+                        })
+                    }
+                }
+                console.log(this.finalForm.teammateSet)
+
+
+                applyCompetition(this.finalForm).then(response => {
+                    const code = response.data.code;
+                    if(code === 0) {
                         this.$message({
                             showClose: true,
                             message: '创建成功！',
                             type: 'success'
                         });
-                        this.$router.push("/myProject")
-                    } else {
-                        console.log('创建失败!!');
-                        return false;
                     }
-                });
-                // submitTeam().then(response => {
-                //
-                //     }
-                // ).catch(error =>{
-                //
-                //     }
-                // )
+                }).catch(error => {
+                    console.log(error.response.data.message);
+                    this.$message({
+                        showClose: true,
+                        message: error.response.data.message + '!',
+                        type: 'error'
+                    });
+                })
             },
-
+            //添加队员
             addTeammate() {
-                this.ruleForm.members.push({name:'', no: ''})
+                this.ruleForm.members.push({name:'', studentNo: ''})
             },
-
+            //删除队员
             deleteTeammate(index) {
                 if(index === 0) {
                     return false
@@ -225,8 +217,10 @@
                     this.ruleForm.members.splice(index, 1)
                 }
             },
-
         },
+        mounted() {
+            this.getCompetitionList();
+        }
     }
 </script>
 

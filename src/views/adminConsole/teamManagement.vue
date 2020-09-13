@@ -186,9 +186,10 @@
         <el-row>
             <el-col :span="12">
                 <el-button size="medium">批量删除</el-button>
-                <el-button size="medium">批量修改权限</el-button>
-                <el-button size="medium">批量下载信息</el-button>
-                <el-button size="medium">批量发送通知</el-button>
+                <el-button size="medium">修改权限</el-button>
+                <el-button size="medium">下载信息</el-button>
+                <el-button size="medium">发送通知</el-button>
+                <el-button size="medium">文件下载</el-button>
             </el-col>
             <el-col :span="12">
                 <el-pagination

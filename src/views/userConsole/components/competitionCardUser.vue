@@ -1,35 +1,36 @@
 <template>
     <div class="card">
         <div class="competitionName">
-            <div class="title">{{ competition.name }}</div>
+            <div class="title"><span style="font-size: 20px">{{ competition.id }}. </span>{{ competition.name }}</div>
             <div class="div-30"></div>
-            <div class="time">开始时间：{{ competition.start }}</div>
-            <div class="time">结束时间：{{ competition.end }}</div>
+            <div class="time">报名开始：{{ competition.start }}</div>
+            <div class="time">报名结束：{{ competition.end }}</div>
             <div class="div-60"></div>
-            <el-button type="danger" size="small" @click="competitionInfo = true">查看详情</el-button>
+            <el-button type="danger" size="small" @click="getCompetitionDetail">查看详情</el-button>
         </div>
 
         <el-dialog
                 title="比赛详情"
-                :visible.sync="competitionInfo">
-            <el-form ref="form" :model="competition" label-width="80px" disabled>
+                :visible.sync="competitionInfo"
+                width="700px">
+            <el-form ref="form" :model="competitionDetail" label-width="80px" disabled>
                 <el-form-item label="比赛名称">
-                    <el-input v-model="competition.name"></el-input>
+                    <el-input v-model="competitionDetail.name"></el-input>
                 </el-form-item>
                 <el-row :gutter="20">
                     <el-col :span="12">
-                        <el-form-item label="报名时间">
-                            <el-input v-model="competition.competitionTime"></el-input>
+                        <el-form-item label="报名开始">
+                            <el-input v-model="competitionDetail.start"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="比赛时间">
-                            <el-input v-model="competition.deadline"></el-input>
+                        <el-form-item label="报名结束">
+                            <el-input v-model="competitionDetail.end"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-form-item label="比赛介绍">
-                    <el-input  type="textarea" :rows="12" autosize resize="none" v-model="competition.information"></el-input>
+                    <el-input  type="textarea" :rows="12" autosize resize="none" v-model="competitionDetail.information"></el-input>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -37,14 +38,24 @@
 </template>
 
 <script>
+    import {competitionDetail} from "@/api/login";
+
     export default {
         name: "competitionCardUser",
         data() {
             return{
                 competitionInfo: false,
+                competitionDetail:{},
             }
         },
-        methods:{},
+        methods:{
+            getCompetitionDetail:function () {
+                this.competitionInfo = true;
+                competitionDetail(this.competition.id).then(response => {
+                    this.competitionDetail = response.data.data;
+                })
+            }
+        },
         props:{
             competition:{
                 required: true,

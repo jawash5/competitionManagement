@@ -23,8 +23,7 @@ const actions = {
      * 获取用户角色
      */
     getRoles() {
-        // eslint-disable-next-line no-unused-vars
-        return new Promise((resolve,reject) => {
+        return new Promise((resolve) => {
             getRoles().then(response => {
                 // console.log(response.data.data[0].id);
                 let role = response.data.data[0].id;

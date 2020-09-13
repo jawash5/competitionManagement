@@ -8,7 +8,10 @@ Router.prototype.push = function push(location, onResolve, onReject) {
     if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
     return originalPush.call(this, location).catch(err => err)
 }
-
+//重复点击路由报错解决
+Router.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
 /**
  * 默认路由
  */
@@ -66,7 +69,6 @@ export const asnycRouterMap = [
     {
         path: '/userConsole',
         name: '/userConsole',
-        redirect:'viewCompetition',
         meta:{
             systemID: 2,
             name:'用户中心'
@@ -151,7 +153,6 @@ export const asnycRouterMap = [
     {
         path: '/adminConsole',
         name: '/adminConsole',
-        redirect:'teamManagement',
         meta: {
             systemID: 2,
             name: '管理中心'

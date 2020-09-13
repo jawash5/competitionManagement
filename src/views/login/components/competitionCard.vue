@@ -1,35 +1,36 @@
 <template>
     <div class="card">
         <div class="competitionName">
-            <div class="title">{{ competition.name }}</div>
+            <div class="title"><span style="font-size: 20px">{{ competition.id }}. </span>{{ competition.name }}</div>
             <div class="div-30"></div>
-            <div class="time">开始时间：{{ competition.start }}</div>
-            <div class="time">结束时间：{{ competition.end }}</div>
+            <div class="time">报名开始：{{ competition.start }}</div>
+            <div class="time">报名结束：{{ competition.end }}</div>
             <div class="div-60"></div>
-            <el-button type="danger" size="small" @click="competitionInfo = true">查看详情</el-button>
+            <el-button type="danger" size="small" @click="getCompetitionDetail()">查看详情</el-button>
         </div>
 
         <el-dialog
                 title="比赛详情"
-                :visible.sync="competitionInfo">
-                <el-form ref="form" :model="competition" label-width="80px" disabled>
+                :visible.sync="competitionInfo"
+                width="700px">
+                <el-form ref="form" :model="competitionDetail" label-width="80px" disabled>
                     <el-form-item label="比赛名称">
-                        <el-input v-model="competition.name"></el-input>
+                        <el-input v-model="competitionDetail.name"></el-input>
                     </el-form-item>
                     <el-row :gutter="20">
                         <el-col :span="12">
-                            <el-form-item label="报名时间">
-                                <el-input v-model="competition.competitionTime"></el-input>
+                            <el-form-item label="报名开始">
+                                <el-input v-model="competitionDetail.start"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="比赛时间">
-                                <el-input v-model="competition.deadline"></el-input>
+                            <el-form-item label="报名结束">
+                                <el-input v-model="competitionDetail.end"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="比赛介绍">
-                        <el-input  type="textarea" :rows="12" autosize resize="none" v-model="competition.information"></el-input>
+                        <el-input  type="textarea" :rows="12" autosize resize="none" v-model="competitionDetail.information"></el-input>
                     </el-form-item>
                 </el-form>
         </el-dialog>
@@ -37,25 +38,22 @@
 </template>
 
 <script>
+    import {competitionDetail} from "@/api/login";
     export default {
         name: "competitionCard",
         data() {
             return{
                 competitionInfo: false,
-                form:{
-                    name:'电子商务竞赛',
-                    competitionTime:'2020/08/08-2020/08/08',
-                    deadline:'2020/08/08-2020/08/08',
-                    request:'三人一下',
-                    disc:'全国大学生电子商务“创新、创意及创业”挑战赛（以下简称“三创赛”）' +
-                        '是由全国电子商务创新产教联盟主办，由“三创赛”竞赛组织委员会统一策' +
-                        '划、组织、管理与实施。“三创赛”由校赛、省赛和国赛三级竞赛组成，分别' +
-                        '由教育部认可的全国高校提出申请，经“三创赛”竞赛组织委员批准分别组成' +
-                        '全国决赛承办单位、分省选拔赛承办单位和各参赛学校具体实施全国性三级学科性竞赛。'
-                },
+                competitionDetail:{},
             }
         },
         methods:{
+            getCompetitionDetail:function () {
+                this.competitionInfo = true;
+                competitionDetail(this.competition.id).then(response => {
+                    this.competitionDetail = response.data.data;
+                })
+            }
         },
         props:{
             competition:{

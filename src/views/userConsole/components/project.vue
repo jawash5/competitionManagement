@@ -31,6 +31,13 @@
 
                 });
             }
+        },
+        props:{
+            projectDetail:{
+                type:Object,
+                require:true,
+
+            }
         }
     }
 </script>

@@ -33,6 +33,16 @@ export function competitionList(){
 }
 
 /**
+ * 获取比赛信息
+ */
+export function competitionDetail(data){
+    return service.request({
+        method: "get",
+        url: '/competition/detail/' + data,
+    })
+}
+
+/**
  * 获取用户角色
  */
 export function getRoles(){

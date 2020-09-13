@@ -54,7 +54,7 @@
         name: "Nav",
         data() {
             return {
-                active: 'viewCompetition' || sessionStorage.getItem("active"),
+                active: '/viewCompetition' || sessionStorage.getItem("active"),
                 routers: this.$router.options.routes
             }
         },

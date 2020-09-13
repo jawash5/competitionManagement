@@ -2,14 +2,12 @@
     <div id="headWrap">
         <div class="close">
             <div class="userInfo">
-                {{ username }}
+                {{ username }}，您好！
             </div>
             <div>
                 <img alt="关闭" src="../../../assets/main/close.png" @click="exit">
             </div>
-
         </div>
-
     </div>
 </template>
 
@@ -32,7 +30,6 @@
         },
         computed:{
             username: function (){
-                console.log(this.$store.state.app.userName);
                 return this.$store.state.app.userName;
             }
         }
