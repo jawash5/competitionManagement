@@ -20,3 +20,34 @@ export function checkGroup(){
         url: '/user/groups',
     })
 }
+
+/**
+ * 查看个人信息
+ */
+export function personalInfo() {
+    return service.request({
+        method:"get",
+        url: '/user/info',
+    })
+}
+
+/**
+ * 修改个人信息
+ */
+export function modifyPersonalInfo(data) {
+    return service.request({
+        method:"post",
+        url: '/user/modify',
+        data:data
+    })
+}
+
+/**
+ * 查看组信息
+ */
+export function getGroupInfo(data) {
+    return service.request({
+        method:"get",
+        url: 'groups/info?groupId=' + data,
+    })
+}

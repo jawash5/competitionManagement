@@ -1,4 +1,4 @@
-import { getRoles } from "@/api/login";
+// import { getRoles } from "@/api/login";
 import { asnycRouterMap, defaultRouterMap } from "@/router";
 
 const state = {
@@ -24,11 +24,13 @@ const actions = {
      */
     getRoles() {
         return new Promise((resolve) => {
-            getRoles().then(response => {
-                // console.log(response.data.data[0].id);
-                let role = response.data.data[0].id;
-                resolve(role)
-            })
+            //角色修改
+            resolve(2)
+            // getRoles().then(response => {
+            //     // console.log(response.data.data[0].id);
+            //     let role = response.data.data[0].id;
+            //     resolve(role)
+            // })
         })
     },
 

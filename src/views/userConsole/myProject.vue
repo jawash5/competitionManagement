@@ -5,8 +5,7 @@
                 <span id="new_icon">+</span>
                 <p id="new_p">新建项目</p>
             </div>
-
-            <project :project-detail="projectDetail"></project>
+            <project v-for="(item,index) in projectDetail" :key="index" :project-detail="item"></project>
         </div>
     </div>
 </template>
@@ -21,11 +20,11 @@
             return{
                 activeName:'create',
                 leader:'',
-                projectDetail: {}
+                projectDetail: []
             }
         },
         components: {
-            "project":project,
+            "project": project,
             // "joinProject":joinProject
         },
         methods: {
@@ -36,7 +35,8 @@
             },
             checkGroup() {
                 checkGroup().then(response => {
-                    this.projectDetail = response.data;
+                    this.projectDetail = response.data.data;
+                    // console.log(this.projectDetail)
                 })
             }
         },

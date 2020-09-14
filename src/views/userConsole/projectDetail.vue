@@ -1,5 +1,6 @@
 <template>
     <div id="exitProject">
+        <el-page-header @back="goBack" content="我的项目" class="pull-left"></el-page-header>
         <div id="wrapTitle">新建项目</div>
         <div id="projectForm">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -139,6 +140,10 @@
             }
         },
         methods: {
+            //页头返回
+            goBack() {
+                this.$router.push('/myProject')
+            },
             //获取比赛列表
             getCompetitionList() {
                 competitionList().then(response => {

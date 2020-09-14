@@ -6,7 +6,7 @@ import service from "@/utils/request";
 export function creatCompetition(data) {
     return service.request({
         method: "put",
-        url: '/competition/apply',
+        url: '/manager/create',
         data: data
     })
 }

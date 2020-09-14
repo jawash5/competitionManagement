@@ -24,4 +24,12 @@ export function removeUsername() {
     return cookie.remove('username')
 }
 
+export function setGroupId(value) {
+    return cookie.set('groupId', value);
+}
+
+export function getGroupId() {
+    return cookie.get('groupId');
+}
+
 

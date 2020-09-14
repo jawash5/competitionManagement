@@ -21,6 +21,10 @@
 
         <div id="formDesign">
             <el-form ref="form" :model="form" label-width="100px">
+                <el-form-item label="比赛年">
+                    <el-input placeholder="请输入比赛年" style="width: 150px" v-model="form.year" maxlength="4"></el-input>
+                </el-form-item>
+
                 <el-form-item label="报名时间">
                     <el-date-picker
                             v-model="form.signUptime"
@@ -55,6 +59,8 @@
                 <el-form-item label="比赛简介">
                     <el-input type="textarea" v-model="form.information" :rows="2"></el-input>
                 </el-form-item>
+
+
             </el-form>
 
             <el-card class="formCard" v-for="i in num" :key="i">
@@ -66,17 +72,18 @@
                         style="width: 50%; margin-left: 30px">
                 </el-input>
                 <el-divider></el-divider>
-                <label for="" style="margin-right: 20px">作品提交时间</label>
-                <el-date-picker
-                        v-model="form.competitionTime[i-1].stageTime"
-                        type="datetimerange"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd HH:mm:ss">
-                </el-date-picker>
+                <div>
+                    <label for="" style="margin-right: 20px">作品提交时间</label>
+                    <el-date-picker
+                            v-model="form.competitionTime[i-1].stageTime"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            value-format="yyyy-MM-dd HH:mm:ss">
+                    </el-date-picker>
 
-
+                </div>
             </el-card>
 
             <div class="addCard">
@@ -93,26 +100,22 @@
                 </el-tooltip>
             </div>
 
-            <el-dialog
-                    title="预览"
-                    :visible.sync="dialogVisible"
-                    center>
-                <form-create v-model="totalForm" :rule="preViewForm" :option="options"></form-create>
-
-                <div style="text-align: center;">
-                    <el-button type="primary" @click="changeDialog">返回修改</el-button>
-                    <el-button type="primary" @click="submit">立即发布</el-button>
-                </div>
-            </el-dialog>
-
+            <template v-if="inputBT.length >= 1">
+                <label for="" style="margin-right: 20px" >初始阶段</label>
+                <el-radio v-for="(item,index) in inputBT" :key="item.id" v-model="stage" :label="index">
+                    {{ item }}
+                </el-radio>
+            </template>
+            <div class="div-30"></div>
             <div style="text-align: center;">
-                <el-button type="primary" @click="preView">预览发布</el-button>
+                <el-button type="primary" @click="createCompetition">发布比赛</el-button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import {creatCompetition} from '@/api/adminConsole'
     export default {
         name: "competitionRelease",
         components: {
@@ -122,7 +125,9 @@
                 dialogVisible: false,
                 num: 1, // 卡片的数量
                 inputBT:[], //输入框
+                stage: '',//阶段
                 form:{
+                    year:'',
                     session:'',
                     competitionName:'',
                     signUptime:'',
@@ -136,64 +141,62 @@
                         requireGroupName:false
                     }
                 },
-                preViewForm:[],//表单规则
-                totalForm: {},//表单实例
-
-                options:{
-                    submitBtn:{
-                        show:false
-                    }
-                }
+                //提交的表单
+                submitForm:{},
 
             };
         },
         methods: {
             //增加组件
-            addDiv:function() {
+            addDiv() {
                 this.num += 1;
-                this.inputBT.push()
+                this.inputBT.push('')
                 this.form.competitionTime.push({name:'', stageTime:''});
             },
             //删除组件
-            deleteDiv:function() {
+            deleteDiv() {
                 if(this.num > 1){
                     this.num -= 1;
                     this.inputBT.pop()
                     this.form.competitionTime.pop();
                 }
             },
-
-            //发布预览
-            preView:function () {
-                this.preViewForm = [];
-                this.preViewForm.push({
-                    type:"input",
-                    title:"比赛名称",
-                    field:"比赛名称",
-                    value:'第' + this.form.session + '届 ' + this.form.competitionName,
-                    // props:{
-                    //     disabled:true
-                    // }
-                });
-                // for(let i=0; i<this.inputBT.length; i++) {
-                //
-                // }
-                this.dialogVisible = true;
-            },
-
-            changeDialog:function(){
-                this.dialogVisible = false;
-            },
-            submit:function(){
-                console.log(this.totalForm)
-                console.log(this.totalForm)
+            //创建比赛
+            createCompetition() {
+                // console.log(this.form)
+                const form = this.form;
+                this.submitForm.year = parseInt(form.year);
+                this.submitForm.information = form.information;
+                this.submitForm.start = form.signUptime[0];
+                this.submitForm.end = form.signUptime[1];
+                this.submitForm.stages = [];
+                const stages = this.submitForm.stages;
+                for(let i=0; i<form.competitionTime.length; i++) {
+                    stages.push({
+                        name: this.inputBT[i],
+                        startDate:form.signUptime[0],
+                        endDate:form.signUptime[1],
+                        uploadStartDate: form.competitionTime[i].stageTime[0],
+                        uploadEndDate: form.competitionTime[i].stageTime[1],
+                    })
+                }
+                this.submitForm.state = stages[this.stage];
+                form.signForm.minPeople = parseInt(form.signForm.minPeople);
+                form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
+                this.submitForm.signForm = form.signForm;
+                console.log(this.submitForm)
+                creatCompetition(this.submitForm).then(response => {
+                    this.$message({
+                        type:"success",
+                        message:response.data.data
+                    })
+                })
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-
     #competitionRelease {
         background-color: #FFFFFF;
         margin: 0 auto;

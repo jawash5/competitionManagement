@@ -1,11 +1,11 @@
 <template>
     <div id="project">
         <div id="projectTop">
-            <h3 id="projectName">{{ projectName }}</h3>
+            <h3 id="projectName">{{ projectDetail.name }}</h3>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
-            <h5 id="founder">项目创始人：{{ founder }}</h5>
+            <h5 id="founder">项目创始人：{{ projectDetail.captain.name }}</h5>
             <el-button type="primary" class="founderButton" @click="editMaterials">编辑资料</el-button>
             <el-button class="founderButton">删除项目</el-button>
         </div>
@@ -17,26 +17,67 @@
         name: "project",
         data() {
             return {
-                projectName:'竞赛管理系统项目',
-                founder:'小明',
             }
         },
         methods:{
             editMaterials:function () {
+                this.$store.dispatch('group/setGroupId', this.projectDetail.id)
                 this.$router.push({
                     path: "/editProject",
-                    query:{
-                        isLeader: 'isLeader'
-                    }
-
                 });
-            }
+            },
         },
         props:{
-            projectDetail:{
+            projectDetail: {
                 type:Object,
                 require:true,
-
+                default: () => {
+                    return {
+                        "id": -1,
+                        "name": '',
+                        "competition": {
+                            "id": -1,
+                            "information": "",
+                            "year": "2019",
+                            "startDate": "2019-01-01 00:00:00",
+                            "endDate": "2019-01-01 00:00:00",
+                            "signForm": {
+                                "id": -1,
+                                "maxPeople": 0,
+                                "minPeople": 0,
+                                "requireGroupName": false
+                            },
+                            "notice": [],
+                            "nowStage": []
+                        },
+                        "teammates": [
+                            {
+                                "studentNo": -1,
+                                "name": "",
+                                "school": "",
+                                "university": "",
+                                "phoneNo": "",
+                                "email": "",
+                                "state": "",
+                                "id": -1,
+                                "password": "",
+                                "username": "",
+                                "roles": []
+                            }
+                        ],
+                        "captain": {
+                            "studentNo": -1,
+                            "name": "",
+                            "school": "",
+                            "university": "",
+                            "phoneNo": "",
+                            "email": "",
+                            "state": "",
+                            "username": ""
+                        },
+                        "recordList": []
+                    }
+                }
             }
         }
     }

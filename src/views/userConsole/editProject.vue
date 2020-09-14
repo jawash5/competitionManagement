@@ -1,10 +1,11 @@
 <template>
         <div id="editProject">
-            <h1 id="competitionName">编辑资料</h1>
+            <el-page-header @back="goBack" content="我的项目" class="pull-left"></el-page-header>
+            <h1 id="competitionName"> 编辑资料</h1>
             <div id="projectForm">
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                     <el-form-item label=" " prop="type">
-                        <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left">
+                        <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left" :disabled="true">
                             <el-option
                                     v-for="item in options"
                                     :key="item.value"
@@ -16,94 +17,76 @@
                     <el-divider></el-divider>
 
                     <el-form-item label="项目名称" prop="name">
-                        <el-input v-model="ruleForm.name"></el-input>
+                        <el-input v-model="groupInfo.name" :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="队伍名称" prop="teamName">
-                        <el-input v-model="ruleForm.teamName"></el-input>
+                        <el-input v-model="groupInfo.name" :disabled="true"></el-input>
                     </el-form-item>
                     <el-row>
-                        <el-col :span="8">
+                        <el-col :span="12">
                             <el-form-item label="队长姓名"  prop="leader">
-                                <el-input v-model="ruleForm.leader"></el-input>
+                                <el-input v-model="groupInfo.captain.name" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="8">
+                        <el-col :span="12">
                             <el-form-item label="队长学号" prop="leaderId">
-                                <el-input v-model="ruleForm.leaderId"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="指导老师" prop="teacher">
-                                <el-input v-model="ruleForm.teacher"></el-input>
+                                <el-input v-model="groupInfo.captain.studentNo" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="联系手机" prop="telephoneNumber">
-                                <el-input v-model="ruleForm.telephoneNumber"></el-input>
+                                <el-input v-model="groupInfo.captain.phoneNo" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="邮箱地址" prop="mail">
-                                <el-input v-model="ruleForm.mail"></el-input>
+                                <el-input v-model="groupInfo.captain.email" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
 
                     <el-form-item label="项目成员" prop="members">
-                        <div class="teammates">
-                            <el-row v-for="(item, index) in ruleForm.members" :key="item.id">
-                                <el-col :span="8">
-                                    <label for="">姓名</label>
-                                    <el-input class="labelFor" v-model="ruleForm.members[index].name" placeholder="请输入姓名" size="small"></el-input>
-                                </el-col>
-                                <el-col :span="8">
-                                    <label for="">学号</label>
-                                    <el-input class="labelFor" v-model="ruleForm.members[index].no" placeholder="请输入学号" size="small"></el-input>
-                                </el-col>
-                                <el-col :span="6" :offset="2">
-                                    <el-button size="small" type="danger" v-if="index !== 0" @click="deleteTeammate(index)">删除</el-button>
-                                    <el-button size="small" type="success" @click="addTeammate">新增</el-button>
-                                </el-col>
-                            </el-row>
-                        </div>
+                        <template v-if="groupInfo.teammates.length !== 0">
+                            <div class="teammates">
+                                <el-row v-for="item in groupInfo.teammates"  :key="item.id">
+                                    <el-col :span="12">
+                                        <label for="">姓名</label>
+                                        <el-input class="labelFor" v-model="item.name" placeholder="请输入姓名" size="small" :disabled="true"></el-input>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <label for="">学号</label>
+                                        <el-input class="labelFor" v-model="item.studentNo" placeholder="请输入学号" size="small" :disabled="true"></el-input>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                        </template>
+                        <template v-if="groupInfo.teammates.length === 0">
+                            <div class="noTeammate">无项目成员信息</div>
+                        </template>
                     </el-form-item>
                 </el-form>
             </div>
-            <div id="buttons" v-if="isLeader">
+            <div id="buttons">
                 <el-button type="primary" @click="editForm" v-if="isEdit">立即修改</el-button>
-                <el-button type="success" @click="submitForm('ruleForm')" v-if="!isEdit">确认修改</el-button>
             </div>
         </div>
 </template>
 
 <script>
+    import {getGroupInfo} from "@/api/userConsole";
+    import {competitionList} from "@/api/login";
+
     export default {
         name: "editProject" ,
         data() {
-            const validateFiles = (rule, value, callback) => {
-                if (this.fileList === '') {
-                    callback(new Error('请上传文件'));
-                } else {
-                    callback();
-                }
-            };
             return{
-                inputVisible: false,
-                isLeader: Boolean,
-                uploadFiles:'',
                 isEdit:true,
                 inputValue: '',
                 fileList: [],
-                options: [{
-                    value: '选项1',
-                    label: '电子商务竞赛'
-                }, {
-                    value: '选项2',
-                    label: '互联网+'
-                }],
-                competitionValue: '',
+                options: [],//比赛选择框
+                competitionValue: '',//比赛值
                 ruleForm: {
                     name: '',
                     teamName:'',
@@ -116,73 +99,120 @@
                     ],
                     teacher:''
                 },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入项目名称', trigger: 'blur' },
+                // rules: {
+                //     name: [
+                //         { required: true, message: '请输入项目名称', trigger: 'blur' },
+                //     ],
+                //     teamName: [
+                //         { required: true, message: '请填写队伍名称', trigger: 'blur' }
+                //     ],
+                //     leader: [
+                //         { required: true, message: '请填写队长名称', trigger: 'blur' }
+                //     ],
+                //     leaderId: [
+                //         { required: true, message: '请填写队长学号', trigger: 'blur' }
+                //     ],
+                //     telephoneNumber: [
+                //         { required: true, message: '请填写联系手机', trigger: 'blur' }
+                //     ],
+                //     mail: [
+                //         { required: true, message: '请填写队长手机', trigger: 'blur' }
+                //     ],
+                // },
+                //创建的队伍信息
+                groupInfo: {
+                    "id": null,
+                    "name": '',
+                    "competition": {
+                        "id": null,
+                        "information": "",
+                        "year": "2019",
+                        "startDate": "2019-01-01 00:00:00",
+                        "endDate": "2019-01-01 00:00:00",
+                        "signForm": {
+                            "id": -1,
+                            "maxPeople": 0,
+                            "minPeople": 0,
+                            "requireGroupName": false
+                        },
+                        "notice": [],
+                        "nowStage": []
+                    },
+                    "teammates": [
+                        {
+                            "studentNo": null,
+                            "name": "",
+                            "school": "",
+                            "university": "",
+                            "phoneNo": "",
+                            "email": "",
+                            "state": "",
+                            "id": -1,
+                            "password": "",
+                            "username": "",
+                            "roles": []
+                        }
                     ],
-                    teamName: [
-                        { required: true, message: '请填写队伍名称', trigger: 'blur' }
-                    ],
-                    leader: [
-                        { required: true, message: '请填写队长名称', trigger: 'blur' }
-                    ],
-                    leaderId: [
-                        { required: true, message: '请填写队长学号', trigger: 'blur' }
-                    ],
-                    telephoneNumber: [
-                        { required: true, message: '请填写联系手机', trigger: 'blur' }
-                    ],
-                    mail: [
-                        { required: true, message: '请填写队长手机', trigger: 'blur' }
-                    ],
-                    upload:[
-                        { required: true, validator: validateFiles, trigger: 'blur'}
-                    ]
+                    "captain": {
+                        "studentNo": null,
+                        "name": "",
+                        "school": "",
+                        "university": "",
+                        "phoneNo": "",
+                        "email": "",
+                        "state": "",
+                        "username": ""
+                    },
+                    "recordList": []
                 }
             }
         },
-        created(){
-            this.getParams()
-        },
         methods: {
-            //前端验证还没有加
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.$message({
-                            showClose: true,
-                            message: '创建成功！',
-                            type: 'success'
-                        });
-                        this.$router.push("/myProject")
-                    } else {
-                        console.log('创建失败!!');
-                        return false;
-                    }
-                });
-                // submitTeam().then(response => {
-                //
-                //     }
-                // ).catch(error =>{
-                //
-                //     }
-                // )
-            },
             editForm() {
                 this.isEdit = false;
             },
-
-            getParams() {
-                if(this.$route.query.isLeader === 'isLeader') {
-                    this.isLeader = true;
-                    this.uploadFiles = '文件上传';
+            //页头返回
+            goBack() {
+                this.$router.push('/myProject')
+            },
+            //添加队员
+            addTeammate() {
+                this.ruleForm.members.push({name:'', no: ''})
+            },
+            //删除队员
+            deleteTeammate(index) {
+                if(index === 0) {
+                    return false
                 } else {
-                    this.isLeader = false
-                    this.uploadFiles = '上传的文件';
+                    this.ruleForm.members.splice(index, 1)
                 }
+            },
+            //获取比赛列表
+            getCompetitionList() {
+                competitionList().then(response => {
+                    const data = response.data.data;
+                    for(let i=0; i<data.length; i++) {
+                        this.options.push({
+                            value: data[i].id,
+                            label: data[i].name
+                        })
+                    }
+                })
+            },
+            //获取队伍信息
+            getGroupInfo() {
+                const groupId = this.$store.getters['group/groupId'];
+                getGroupInfo(groupId).then(response => {
+                    this.groupInfo = response.data.data
+                    this.groupInfo.teammates.splice(0,1)
+                    this.competitionValue = this.groupInfo.competition.id
+                });
             }
-
         },
+        mounted() {
+            this.getCompetitionList();
+            this.getGroupInfo();
+        }
     }
 </script>
 
@@ -191,7 +221,6 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width: 800px;
         margin: 0 auto;
         background-color: #FFFFFF;
 
@@ -220,6 +249,17 @@
         .labelFor {
             width: 70%;
             margin-left: 10px;
+        }
+
+        .noTeammate {
+            color: #909399;
+            text-align: center;
+        }
+
+        /deep/.el-input.is-disabled .el-input__inner {
+            cursor: auto;
+            background-color:#ffffff;
+            color: #606266;
         }
     }
 
