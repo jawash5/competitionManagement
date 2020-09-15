@@ -3,7 +3,7 @@
         <el-page-header @back="goBack" content="我的项目" class="pull-left"></el-page-header>
         <div id="wrapTitle">新建项目</div>
         <div id="projectForm">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item>
                     <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left">
                         <el-option
@@ -22,12 +22,12 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="队长姓名"  prop="leader">
-                            <el-input v-model="ruleForm.leader"></el-input>
+                            <el-input v-model="ruleForm.leader" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="队长学号" prop="leaderId">
-                            <el-input v-model="ruleForm.leaderId"></el-input>
+                            <el-input v-model="ruleForm.leaderId" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -103,7 +103,7 @@
 
 <script>
     import {competitionList} from "@/api/login";
-    import {applyCompetition} from "@/api/userConsole";
+    import {applyCompetition,personalInfo} from "@/api/userConsole";
     export default {
         name: "projectDetail" ,
         data() {
@@ -126,17 +126,6 @@
                     groupName: "",
                     teammateSet:[]
                 },
-                rules: {
-                    teamName: [
-                        { required: true, message: '请填写队伍名称', trigger: 'blur' }
-                    ],
-                    leader: [
-                        { required: true, message: '请填写队长名称', trigger: 'blur' }
-                    ],
-                    leaderId: [
-                        { required: true, message: '请填写队长学号', trigger: 'blur' }
-                    ],
-                }
             }
         },
         methods: {
@@ -190,8 +179,7 @@
                     }
                 }
                 console.log(this.finalForm.teammateSet)
-
-
+                //提交报名比赛信息
                 applyCompetition(this.finalForm).then(response => {
                     const code = response.data.code;
                     if(code === 0) {
@@ -222,9 +210,17 @@
                     this.ruleForm.members.splice(index, 1)
                 }
             },
+            //获取队长星系
+            getLeader() {
+                personalInfo().then(response => {
+                    this.ruleForm.leader = response.data.data.name;
+                    this.ruleForm.leaderId = response.data.data.studentNo;
+                })
+            }
         },
         mounted() {
             this.getCompetitionList();
+            this.getLeader();
         }
     }
 </script>
@@ -277,6 +273,11 @@
         .labelFor {
             width: 70%;
             margin-left: 10px;
+        }
+
+        /deep/.el-input.is-disabled .el-input__inner {
+            cursor: auto;
+            color: #606266;
         }
     }
 

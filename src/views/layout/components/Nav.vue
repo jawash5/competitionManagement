@@ -77,6 +77,7 @@
         width: $navMenu;
         height: 100vh;
         background-color: #344a5f;
+        z-index:9;
 
         img {
             width: 40%;

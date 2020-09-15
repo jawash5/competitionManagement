@@ -41,13 +41,3 @@ export function competitionDetail(data){
         url: '/competition/detail/' + data,
     })
 }
-
-/**
- * 获取用户角色
- */
-export function getRoles(){
-    return service.request({
-        method: "get",
-        url: '/manager/role',
-    })
-}

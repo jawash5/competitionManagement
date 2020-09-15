@@ -18,7 +18,7 @@
                     <el-form-item label="关键字">
                         <el-select v-model="searchKeyValue" placeholder="搜索关键字" size="small" style="width: 120px">
                             <el-option
-                                    v-for="item in options"
+                                    v-for="item in searchOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -162,10 +162,10 @@
                                      v-model="item.state">{{item.name}}</el-checkbox>
                     </el-form-item>
 
-                    <el-form-item label="权限管理">
-                        <el-checkbox v-for="item in editForm.authority"
-                                     :key="item.id"
-                                     v-model="item.state">{{item.name}}</el-checkbox>
+                    <el-form-item label="角色管理">
+                        <el-radio v-for="item in editForm.authority"
+                                  :key="item.id"
+                                  v-model="editForm.role" :label="item.id">{{item.role}}</el-radio>
                     </el-form-item>
 
                     <el-form-item label="作品审核">
@@ -206,12 +206,10 @@
 </template>
 
 <script>
-
+    import {getRoles} from "@/api/adminConsole";
 
     export default {
         name: "teamManagement",
-        components: {
-        },
         data() {
             return {
                 currentPage:1,//当前页码
@@ -231,6 +229,7 @@
                 }],
                 //关键词
                 searchKeyValue: '',
+                //表单定义参数
                 titleData:[
                     { prop:"no", label:"队伍序号", width:"60"},
                     { prop:"projectName", label:"项目名称", width:""},
@@ -238,6 +237,7 @@
                     { prop:"teamName", label:"队伍名称", width:"120"},
                     { prop:"mail", label:"队伍邮箱", width:"200"},
                 ],
+                //表单参数
                 tableData: [
                     {
                         no: '1',
@@ -256,86 +256,16 @@
                             third:{state:false, name:'决赛'}
                         },
                         isCheck:true,
-                    },
-                    {
-                        no: '1',
-                        name: '小明',
-                        projectName: '竞赛管理平台',
-                        teamName:'12456',
-                        mail:'857723555@qq.com',
-                        isSubmit:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isPromote:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isCheck:true,
-                    },
-                    {
-                        no: '1',
-                        name: '小明',
-                        projectName: '竞赛管理平台',
-                        teamName:'12456',
-                        mail:'857723555@qq.com',
-                        isSubmit:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isPromote:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isCheck:true,
-                    },
-                    {
-                        no: '1',
-                        name: '小明',
-                        projectName: '竞赛管理平台',
-                        teamName:'12456',
-                        mail:'857723555@qq.com',
-                        isSubmit:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isPromote:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isCheck:true,
-                    },
-                    {
-                        no: '1',
-                        name: '小明',
-                        projectName: '竞赛管理平台',
-                        teamName:'12456',
-                        mail:'857723555@qq.com',
-                        isSubmit:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isPromote:{
-                            first: {state:false, name:'初赛'},
-                            second:{state:false, name:'复赛'},
-                            third:{state:false, name:'决赛'}
-                        },
-                        isCheck:true,
-                    },
+                    }
                 ],
+                //修改信息表单参数
                 editForm:{
                     teamID:'',
                     name:'',
                     teamName:'',
                     projectName:'',
                     mail:'',
+                    role:'',
                     isSubmit:{
                         first: {state:true, name:'初赛'},
                         second:{state:false, name:'复赛'},
@@ -346,23 +276,20 @@
                         second:{state:false, name:'复赛'},
                         third:{state:false, name:'决赛'}
                     },
-                    authority:{
-                        first:{state: true, name:'权限1'},
-                        second:{state: false, name:'权限2'}
-                    },
+                    authority:[],//用户权限角色
                     projectCheck:false,
                 }
 
             };
         },
         methods: {
-            current_change:function (currentPage) {
+            current_change(currentPage) {
                 this.currentPage = currentPage;
             },
-            handleEdit:function () {
+            handleEdit() {
                 this.dialogVisible = true;
             },
-            handleDelete:function (index) {
+            handleDelete(index) {
                 this.tableData.splice(index,1);
                 this.$confirm('此操作将永久删除该队伍, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -380,9 +307,9 @@
                     });
                 });
             },
-            submitEditForm:function () {
+            submitEditForm() {
 
-            }
+            },
             // handleConform:function (index) {
             //     this.tableData[index].isSet = false;
             // },
@@ -390,6 +317,20 @@
             //     this.tableData[index].isSet = false;
             // }
 
+            //获取权限角色
+            getRoles() {
+                getRoles().then(response => {
+                    this.editForm.authority = response.data.data;
+                }).catch( error => {
+                        this.$message.error(error.response.message);
+                    }
+                )
+                console.log()
+            }
+
+        },
+        mounted() {
+            this.getRoles();
         }
     }
 </script>

@@ -36,6 +36,17 @@
                     </el-date-picker>
                 </el-form-item>
 
+                <el-form-item label="比赛时间">
+                    <el-date-picker
+                            v-model="form.allTime"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            value-format="yyyy-MM-dd HH:mm:ss">
+                    </el-date-picker>
+                </el-form-item>
+
                 <el-form-item label="人数限制">
                     <el-row>
                         <el-col :span="3">
@@ -64,18 +75,30 @@
             </el-form>
 
             <el-card class="formCard" v-for="i in num" :key="i">
-                <el-tag>{{i}}</el-tag>
-                <el-input
-                        placeholder="请输入赛事阶段名称"
-                        v-model="inputBT[i-1]"
-                        clearable
-                        style="width: 50%; margin-left: 30px">
-                </el-input>
+                <div class="pull-center">
+                    <el-tag>{{i}}</el-tag>
+                    <el-input
+                            placeholder="请输入赛事阶段名称"
+                            v-model="inputBT[i-1]"
+                            clearable
+                            style="width: 50%; margin-left: 30px">
+                    </el-input>
+                </div>
                 <el-divider></el-divider>
-                <div>
-                    <label for="" style="margin-right: 20px">作品提交时间</label>
+                <div class="pull-center">
+                    <label for="" style="margin-right: 20px">阶段持续时间</label>
                     <el-date-picker
                             v-model="form.competitionTime[i-1].stageTime"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            value-format="yyyy-MM-dd HH:mm:ss">
+                    </el-date-picker>
+                    <div class="div-15"></div>
+                    <label for="" style="margin-right: 20px">作品提交时间</label>
+                    <el-date-picker
+                            v-model="form.competitionTime[i-1].uploadTime"
                             type="datetimerange"
                             range-separator="至"
                             start-placeholder="开始日期"
@@ -129,10 +152,11 @@
                 form:{
                     year:'',
                     session:'',
+                    allTime:'',
                     competitionName:'',
                     signUptime:'',
                     competitionTime: [
-                        {name:'', stageTime:''}
+                        {name:'', stageTime:'', uploadTime:''}
                     ],
                     information:'',
                     signForm:{
@@ -151,7 +175,7 @@
             addDiv() {
                 this.num += 1;
                 this.inputBT.push('')
-                this.form.competitionTime.push({name:'', stageTime:''});
+                this.form.competitionTime.push({name:'', stageTime:'',uploadTime:''});
             },
             //删除组件
             deleteDiv() {
@@ -167,19 +191,26 @@
                 const form = this.form;
                 this.submitForm.year = parseInt(form.year);
                 this.submitForm.information = form.information;
-                this.submitForm.start = form.signUptime[0];
-                this.submitForm.end = form.signUptime[1];
                 this.submitForm.stages = [];
+                this.submitForm.start = form.allTime[0];
+                this.submitForm.end = form.allTime[1];
                 const stages = this.submitForm.stages;
                 for(let i=0; i<form.competitionTime.length; i++) {
                     stages.push({
                         name: this.inputBT[i],
-                        startDate:form.signUptime[0],
-                        endDate:form.signUptime[1],
-                        uploadStartDate: form.competitionTime[i].stageTime[0],
-                        uploadEndDate: form.competitionTime[i].stageTime[1],
+                        startDate:form.competitionTime[i].stageTime[0],
+                        endDate:form.competitionTime[i].stageTime[1],
+                        uploadStartDate: form.competitionTime[i].uploadTime[0],
+                        uploadEndDate: form.competitionTime[i].uploadTime[1]
                     })
                 }
+                stages.push({
+                    name:'报名时间',
+                    startDate: form.signUptime[0],
+                    endDate:form.signUptime[1],
+                    uploadStartDate: '',
+                    uploadEndDate: '',
+                })
                 this.submitForm.state = stages[this.stage];
                 form.signForm.minPeople = parseInt(form.signForm.minPeople);
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);

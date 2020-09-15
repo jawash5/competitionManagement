@@ -3,8 +3,8 @@
         <div class="competitionName">
             <div class="title"><span style="font-size: 20px">{{ competition.id }}. </span>{{ competition.name }}</div>
             <div class="div-30"></div>
-            <div class="time">报名开始：{{ competition.start }}</div>
-            <div class="time">报名结束：{{ competition.end }}</div>
+            <div class="time">开始时间：{{ competition.start }}</div>
+            <div class="time">结束时间：{{ competition.end }}</div>
             <div class="div-60"></div>
             <el-button type="danger" size="small" @click="getCompetitionDetail">查看详情</el-button>
         </div>

@@ -10,3 +10,13 @@ export function creatCompetition(data) {
         data: data
     })
 }
+
+/**
+ * 获取角色信息
+ */
+export function getRoles() {
+    return service.request({
+        method: "get",
+        url: '/manager/role',
+    })
+}

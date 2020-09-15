@@ -23,7 +23,7 @@
         width: 100%;
         height: 100%;
         min-height: 100vh;
-        min-width: 1400px;
+        min-width: 1500px;
         padding-top: $layoutHeader + 30;
         padding-left: $navMenu + 30;
         padding-right: 30px;
