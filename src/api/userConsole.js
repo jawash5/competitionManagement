@@ -48,6 +48,16 @@ export function modifyPersonalInfo(data) {
 export function getGroupInfo(data) {
     return service.request({
         method:"get",
-        url: 'groups/info?groupId=' + data,
+        url: '/groups/info?groupId=' + data,
+    })
+}
+
+/**
+ * 公告栏
+ */
+export function getBoard(data) {
+    return service.request({
+        method:"get",
+        url: '/competition/board/' + data.competitionName + '?year=' + data.year,
     })
 }

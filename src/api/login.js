@@ -23,6 +23,16 @@ export function register(data){
 }
 
 /**
+ * 注销
+ */
+export function logout(){
+    return service.request({
+        method: "post",
+        url: 'auth/logout',
+    })
+}
+
+/**
  * 获取比赛列表
  */
 export function competitionList(){

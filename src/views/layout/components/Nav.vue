@@ -50,19 +50,26 @@
 </template>
 
 <script>
+    import {getRole} from "@/utils/app";
+
     export default {
         name: "Nav",
         data() {
             return {
-                active: sessionStorage.getItem("active") || '/viewCompetition' ,
                 routers: this.$router.options.routes
             }
         },
 
+        computed:{
+            active() {
+                const role = (getRole() === '参赛者' ? '/viewCompetition' : '/teamManagement');
+                return (sessionStorage.getItem("active") || role);
+            }
+        },
+
         methods:{
-            defaultActive: function (index) {
-                this.active = index;
-                sessionStorage.setItem("active", this.active)
+            defaultActive(index) {
+                sessionStorage.setItem("active", index)
             },
         },
     }

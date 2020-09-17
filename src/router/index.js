@@ -70,7 +70,7 @@ export const asnycRouterMap = [
         path: '/userConsole',
         name: '/userConsole',
         meta:{
-            systemID: 2,
+            systemID: '参赛者',
             name:'用户中心'
         },
         component: ()  => import("../views/layout/index.vue"),
@@ -154,7 +154,7 @@ export const asnycRouterMap = [
         path: '/adminConsole',
         name: '/adminConsole',
         meta: {
-            systemID: 2,
+            systemID: '管理员',
             name: '管理中心'
         },
         component: () => import("../views/layout/index.vue"),
@@ -194,7 +194,17 @@ export const asnycRouterMap = [
                     icon:'el-icon-tickets'
                 },
                 component: ()  => import("../views/adminConsole/editAnnouncement")
-            },]
+            },
+            {
+                path: '/roleManagement',
+                name: '/roleManagement',
+                meta:{
+                    name:'权限管理',
+                    icon:'el-icon-user-solid'
+                },
+                component: ()  => import("../views/adminConsole/roleManagement")
+            },
+        ]
 
     },
 ]

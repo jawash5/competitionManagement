@@ -1,5 +1,5 @@
 import router from "@/router/index";
-import {getCode, removeCode, removeUsername} from "@/utils/app";
+import {getCode, removeCode, removeUsername, removeRole} from "@/utils/app";
 import store from "../store/index";
 
 const whiteRouter = ['/login', '/register', '/checkCompetition', '/loginAdmin'];
@@ -9,27 +9,25 @@ router.beforeEach((to, from, next) =>{
         if(to.path === '/login') {
             removeCode();
             removeUsername();
+            removeRole();
             sessionStorage.clear();
             store.commit('app/SET_CODE', '');
             store.commit('app/SET_USERNAME', '')
             next();
         } else {
-            if(store.getters["app/roles"] === 0) {
+            if(store.getters["app/roles"] === '') {
+                let role = store.getters['app/trueRole'];
+                store.commit('app/SET_ROLES', role);
                 // eslint-disable-next-line no-unused-vars
-                store.dispatch('permission/getRoles').then(response => {
-                    let role = response;
-                    store.commit('app/SET_ROLES', role);
-                    // eslint-disable-next-line no-unused-vars
-                    store.dispatch('permission/creatRouter', role).then(response => {
-                        let addRouters = store.getters['permission/addRoutes'];
-                        //更新路由
-                        router.options.routes = store.getters['permission/allRouter'];
-                        // console.log(router.options.routes);
-                        router.addRoutes(addRouters);
-                        //添加动态路由
-                        next({...to, replace: true});
-                    });
-                })
+                store.dispatch('permission/creatRouter', role).then(response => {
+                    let addRouters = store.getters['permission/addRoutes'];
+                    //更新路由
+                    router.options.routes = store.getters['permission/allRouter'];
+                    router.addRoutes(addRouters);
+                    //添加动态路由
+                    next({...to, replace: true});
+                });
+
             } else {
                 next();
             }

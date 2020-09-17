@@ -1,4 +1,4 @@
-// import { getRoles } from "@/api/login";
+
 import { asnycRouterMap, defaultRouterMap } from "@/router";
 
 const state = {
@@ -20,26 +20,10 @@ const mutations = {
 
 const actions = {
     /**
-     * 获取用户角色
-     */
-    getRoles() {
-        return new Promise((resolve) => {
-            //角色修改
-            resolve(2)
-            // getRoles().then(response => {
-            //     // console.log(response.data.data[0].id);
-            //     let role = response.data.data[0].id;
-            //     resolve(role)
-            // })
-        })
-    },
-
-    /**
      * 创建动态路由
      */
     creatRouter({ commit }, data){
-        // eslint-disable-next-line no-unused-vars
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let role = data;
             const addRouters = asnycRouterMap.filter( item => {
                 if(role === item.meta.systemID) {

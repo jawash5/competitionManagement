@@ -323,9 +323,7 @@
                     this.editForm.authority = response.data.data;
                 }).catch( error => {
                         this.$message.error(error.response.message);
-                    }
-                )
-                console.log()
+                })
             }
 
         },

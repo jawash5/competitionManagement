@@ -24,6 +24,18 @@ export function removeUsername() {
     return cookie.remove('username')
 }
 
+export function setRole(value) {
+    return cookie.set('role', value);
+}
+
+export function getRole() {
+    return cookie.get('role');
+}
+
+export function removeRole() {
+    return cookie.remove('role')
+}
+
 export function setGroupId(value) {
     return cookie.set('groupId', value);
 }

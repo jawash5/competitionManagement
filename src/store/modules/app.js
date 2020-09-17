@@ -1,8 +1,9 @@
-import { login } from "@/api/login";
-import {getUsername, removeCode, removeUsername, setCode, setUsername} from "@/utils/app";
+import { login,logout } from "@/api/login";
+import {getUsername, removeCode, removeUsername, setCode, setUsername, setRole, getRole, removeRole} from "@/utils/app";
 
 const state = {
-    roles: 0,
+    roles: '',
+    trueRole: getRole() || '',
     code:'',
     userName: getUsername() || ''
 }
@@ -10,6 +11,7 @@ const state = {
 const getters = {
     roles: state => state.roles,
     code: state => state.code,
+    trueRole: state => state.trueRole,
 }
 
 const mutations = {
@@ -22,6 +24,9 @@ const mutations = {
     SET_ROLES(state, value) {
         state.roles = value;
     },
+    SET_TRUE_ROLES(state, value) {
+        state.trueRole = value;
+    },
 }
 
 const actions = {
@@ -33,7 +38,9 @@ const actions = {
                 let code = response.data.code;
                 commit('SET_CODE', code);
                 setCode(code);
-                resolve(response)
+                commit('SET_TRUE_ROLES', response.data.data);
+                setRole(response.data.data);
+                resolve(state.trueRole)
             }).catch(error => {
                 reject(error)
             })
@@ -41,13 +48,17 @@ const actions = {
     },
     exit({ commit }) {
         return new Promise((resolve => {
-            removeCode();
-            removeUsername();
-            sessionStorage.clear();
-            commit('SET_USERNAME', '');
-            commit('SET_CODE', '');
-            commit('SET_ROLES', 0);
-            resolve();
+            logout().then( response => {
+                removeCode();
+                removeUsername();
+                removeRole();
+                sessionStorage.clear();
+                commit('SET_USERNAME', '');
+                commit('SET_CODE', '');
+                commit('SET_ROLES', '');
+                resolve(response);
+            })
+
         }))
     }
 

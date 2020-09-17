@@ -92,12 +92,19 @@
                 const data = new FormData();
                 data.append('username',this.ruleForm.username);
                 data.append('password',this.ruleForm.password);
-
+                console.log(data)
                 // eslint-disable-next-line no-unused-vars
                 this.$store.dispatch("app/login", data).then(response => {
-                    this.$router.push({
-                        path:'/viewCompetition'
-                    });
+                    if(response === '参赛者') {
+                        this.$router.push({
+                            path:'/viewCompetition'
+                        });
+                    } else {
+                        this.$router.push({
+                            path:'/teamManagement'
+                        });
+                    }
+
 
                 }).catch(error => {
                     this.$message.error('账号或密码错误');
