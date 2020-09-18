@@ -1,0 +1,29 @@
+kind: pipeline
+name: pipeline-vue
+
+steps:
+  - name: publish
+    image: plugins/docker
+    settings:
+      mirror: https://registry.cn-shanghai.aliyuncs.com
+      registry: registry.cn-shanghai.aliyuncs.com # 仓库
+      repo: registry.cn-shanghai.aliyuncs.com/qcy_docker/cm-web # docker仓库地址
+      username: qiancaoyu316
+      password:
+        from_secret: DOCKER_PWD
+      tags:
+        - ${DRONE_BUILD_NUMBER}
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: 122.51.66.105
+      username: root
+      password:
+        from_secret: DOCKER_PWD
+      port: 22
+      script:
+        - docker login --username=qiancaoyu316 --password=$DOCKER_PWD registry.cn-shanghai.aliyuncs.com
+        - docker pull registry.cn-shanghai.aliyuncs.com/qcy_docker/cm-web:${DRONE_BUILD_NUMBER}
+        - docker stop cm-web
+        - docker rm cm-web
+        - docker run -itd --name cm-web --network cm registry.cn-shanghai.aliyuncs.com/qcy_docker/cm-web:${DRONE_BUILD_NUMBER}
