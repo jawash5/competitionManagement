@@ -3,7 +3,7 @@ import axios from 'axios'
 // import { Message } from "element-ui";
 
 //创建axios,赋给变量service
-const BASEURL = process.env.NODE_PATH === 'production' ? '' : '/devApi';
+const BASEURL = process.env.NODE_ENV === 'production' ? '/' : '/devApi';
 
 const service = axios.create({
     baseURL:BASEURL,
