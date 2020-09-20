@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "github-markdown-css": "^4.0.0",
+    "mavon-editor": "^2.9.0",
     "sass-resources-loader": "^2.0.3",
     "vue": "^2.6.11",
     "vue-cookies": "^1.7.3",

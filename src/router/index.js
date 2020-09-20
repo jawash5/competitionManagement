@@ -213,6 +213,14 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/adminConsole/competitionRelease")
             },
+            {
+                path: '/editor',
+                name: '/editor',
+                meta:{
+                    name:'编辑器'
+                },
+                component: ()  => import("../components/editor")
+            }
         ]
 
     },

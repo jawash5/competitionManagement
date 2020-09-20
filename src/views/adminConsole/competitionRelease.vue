@@ -45,8 +45,6 @@
                 <el-form-item label="比赛简介">
                     <el-input type="textarea" v-model="form.information" :rows="2"></el-input>
                 </el-form-item>
-
-
             </el-form>
 
             <el-card class="formCard" v-for="i in num" :key="i">
@@ -104,6 +102,11 @@
                     {{ item }}
                 </el-radio>
             </template>
+
+
+
+
+
             <div class="div-30"></div>
             <div style="text-align: center;">
                 <el-button type="primary" @click="createCompetition">发布比赛</el-button>
