@@ -16,11 +16,11 @@ const mutations = {
 
 const actions = {
     setGroupId({commit},data) {
-        return new Promise(((resolve) => {
+        return new Promise((resolve) => {
             commit('SET_GROUP_ID', data)
             setGroupId(data)
-            return resolve
-        }))
+            return resolve();
+        })
     }
 }
 

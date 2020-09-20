@@ -54,6 +54,14 @@ export const defaultRouterMap = [
             name:'查看比赛'
         },
         component: ()  => import("../views/login/checkCompetition.vue")
+    },
+    {
+        path: '/competitionDetail',
+        name: '/competitionDetail',
+        meta:{
+            name:'比赛详情'
+        },
+        component: ()  => import("../views/login/competitionDetail.vue")
     }]
 
 
@@ -97,7 +105,7 @@ export const asnycRouterMap = [
                 path: '/myProject',
                 name: '/myProject',
                 meta:{
-                    name:'我的项目',
+                    name:'我的团队',
                     icon:'el-icon-menu'
                 },
                 component: ()  => import("../views/userConsole/myProject")
@@ -158,16 +166,7 @@ export const asnycRouterMap = [
             name: '管理中心'
         },
         component: () => import("../views/layout/index.vue"),
-        children: [{
-            path: '/competitionRelease',
-            name: '/competitionRelease',
-            meta:{
-                name:'发布比赛',
-                icon:'el-icon-date'
-
-            },
-            component: ()  => import("../views/adminConsole/competitionRelease")
-        },
+        children: [
             {
                 path: '/teamManagement',
                 name: '/teamManagement',
@@ -203,6 +202,16 @@ export const asnycRouterMap = [
                     icon:'el-icon-user-solid'
                 },
                 component: ()  => import("../views/adminConsole/roleManagement")
+            },
+            {
+                path: '/competitionRelease',
+                name: '/competitionRelease',
+                meta:{
+                    name:'发布比赛',
+                    icon:'el-icon-date'
+
+                },
+                component: ()  => import("../views/adminConsole/competitionRelease")
             },
         ]
 

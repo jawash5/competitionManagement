@@ -84,3 +84,33 @@ export function topAnnouncement(data) {
         url: '/manager/board/top?boardId='+ data,
     })
 }
+
+/**
+ * 显示该管理员维护的比赛列表
+ */
+export function getAdminCompetition() {
+    return service.request({
+        method: "get",
+        url: '/manager/list'
+    })
+}
+
+/**
+ * 获取比赛组
+ */
+export function getCompetitionGroups(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/groups?year=' + data
+    })
+}
+
+/**
+ * 发送通知
+ */
+export function sendNotice(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/groups?year=' + data
+    })
+}

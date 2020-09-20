@@ -1,24 +1,5 @@
 <template>
     <div id="competitionRelease">
-        <div id="mainInfo">
-            <el-row :gutter="10">
-                <el-col :span="2">
-                    <p class="fontTitle pull-right">第</p>
-                </el-col>
-                <el-col :span="4">
-                    <el-input v-model="form.session" maxlength="3" placeholder="届数"></el-input>
-                </el-col>
-                <el-col :span="2">
-                    <p class="fontTitle">届</p>
-                </el-col>
-                <el-col :span="16">
-                    <el-input v-model="form.competitionName" placeholder="请输入比赛名称"></el-input>
-                </el-col>
-            </el-row>
-        </div>
-        <el-divider></el-divider>
-        <div class="div-30"></div>
-
         <div id="formDesign">
             <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="比赛年">
@@ -59,12 +40,6 @@
                             <el-input v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
                         </el-col>
                     </el-row>
-                </el-form-item>
-
-                <el-form-item label="是否需要队名">
-                    <el-switch
-                        v-model="form.signForm.requireGroupName">
-                    </el-switch>
                 </el-form-item>
 
                 <el-form-item label="比赛简介">
@@ -151,9 +126,7 @@
                 stage: '',//阶段
                 form:{
                     year:'',
-                    session:'',
                     allTime:'',
-                    competitionName:'',
                     signUptime:'',
                     competitionTime: [
                         {name:'', stageTime:'', uploadTime:''}
@@ -162,7 +135,6 @@
                     signForm:{
                         maxPeople: '',
                         minPeople: '',
-                        requireGroupName:false
                     }
                 },
                 //提交的表单

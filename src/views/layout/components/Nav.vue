@@ -1,6 +1,13 @@
 <template>
     <div id="navWrap">
-        <img alt="退出" src="../../../assets/main/logo.png" >
+<!--        <img alt="退出" src="../../../assets/main/logo.png" >-->
+        <div class="pull-center">
+            <el-avatar :size="80"
+                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                       class="avatar">
+
+            </el-avatar>
+        </div>
         <el-menu :default-active="active"
                  class="el-menu-vertical-demo"
                  background-color="transparent"
@@ -86,7 +93,7 @@
         background-color: #344a5f;
         z-index:9;
 
-        img {
+        .avatar {
             width: 40%;
             margin: 20px auto;
         }

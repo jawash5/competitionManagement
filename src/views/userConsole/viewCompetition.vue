@@ -10,17 +10,19 @@
                 </el-option>
             </el-select>
         </div>
+        <div class="div-15"></div>
         <div class="competitionList">
-            <competition-card-user v-for="item in competitionList"
+            <competition-card v-for="item in competitionList"
                                    :key="item.id"
                                    :competition="item">
-            </competition-card-user>
+            </competition-card>
         </div>
     </div>
 </template>
 
 <script>
-    import competitionCardUser from "@/views/userConsole/components/competitionCardUser";
+    // import competitionCardUser from "@/views/userConsole/components/competitionCardUser";
+    import competitionCard from "@/views/login/components/competitionCard";
     import {competitionList} from "@/api/login";
 
     export default {
@@ -45,7 +47,7 @@
 
             }
         },
-        components:{ competitionCardUser },
+        components:{ competitionCard },
         methods: {
             getCompetitionList:function () {
                 competitionList().then(response => {
@@ -73,6 +75,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         align-content: flex-start;
+        justify-content: space-around;
     }
 
     .competitionSelect {

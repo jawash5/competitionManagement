@@ -73,7 +73,8 @@
 
 <style lang="scss" scoped>
     #checkCompetition {
-        background-color: #f2f2f2;
+        background-color: #f7f7f7;
+        height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -86,11 +87,11 @@
         flex-direction: row;
         flex-wrap: wrap;
         align-content: flex-start;
+        justify-content: space-around;
     }
 
     .competitionSelect {
-        width: 95%;
-        margin-left: 15px;
+        margin-left: 50px;
     }
 
     /deep/.el-tabs__item {

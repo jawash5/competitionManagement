@@ -22,6 +22,14 @@
                     prop="roleName"
                     label="角色名称"
                     align="center"
+                    width="100"
+                    show-overflow-tooltip>
+            </el-table-column>
+
+            <el-table-column
+                    prop="roleDesc"
+                    label="角色描述"
+                    align="center"
                     width="200"
                     show-overflow-tooltip>
             </el-table-column>
@@ -40,14 +48,20 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            type="danger"
                             @click="dialogVisible2 = true">修改</el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="deleteRolePermission(scope.$index)">删除</el-button>
 
                     <el-dialog
                             title="修改权限"
                             :visible.sync="dialogVisible2"
                             center
-                            width="500px">
+                            width="500px"
+                            :show-close="false"
+                            :close-on-click-modal="false"
+                            :close-on-press-escape="false">
                         <el-form :model="editRoleInfo" label-width="80px">
                             <el-form-item label="具体权限">
                                 <el-checkbox-group v-model="checkedList">
@@ -57,14 +71,11 @@
                         </el-form>
 
                         <span slot="footer" class="dialog-footer">
-                            <el-button @click="dialogVisible2 = false">取 消</el-button>
+                            <el-button @click="cancel2">取 消</el-button>
                             <el-button type="primary" @click="editPermission(scope.$index)">确 定</el-button>
                         </span>
                     </el-dialog>
 
-                    <el-button
-                            size="mini"
-                            @click="deleteRolePermission(scope.$index)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -73,7 +84,10 @@
                 title="新增角色"
                 :visible.sync="dialogVisible"
                 center
-                width="500px">
+                width="500px"
+                :show-close="false"
+                :close-on-click-modal="false"
+                :close-on-press-escape="false">
             <el-form :model="newRoleInfo" label-width="80px">
                 <el-form-item label="角色名称">
                     <el-input placeholder="请输入角色名称" v-model="newRoleInfo.roleName"></el-input>
@@ -88,7 +102,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="addRolePermission">确 定</el-button>
             </span>
         </el-dialog>
@@ -138,12 +152,15 @@
                     for (let i=0; i<permissionDetail.length; i++) {
                         const roleId = permissionDetail[i].id;
                         const role = permissionDetail[i].role;
+                        const roleDesc = permissionDetail[i].role;
                         const permission = [];
                         for(let j=0; j<permissionDetail[i].permissions.length; j++) {
                             permission.push(permissionDetail[i].permissions[j].description)
                         }
                         const permissionString = permission.join(" , ");
-                        this.tableData.push({roleId: roleId, roleName: role, permission: permissionString})
+                        this.tableData.push(
+                            {roleId: roleId, roleName: role, permission: permissionString,roleDesc:roleDesc}
+                        )
                         // console.log(this.tableData)
                     }
                 }).catch( error => {
@@ -159,6 +176,10 @@
                 }
                 // eslint-disable-next-line no-unused-vars
                 addRoles(this.newRoleInfo).then( response => {
+                    this.$message({
+                        type: 'success',
+                        message: '新增成功!'
+                    });
                     this.dialogVisible = false;
                     this.tableData = [];
                     this.getPermission();
@@ -171,9 +192,12 @@
                 const roleId = this.tableData[index].roleId;
                 const permission = this.checkedList;
                 const data = { permissions: permission, roleId: roleId };
-                console.log(data)
                 // eslint-disable-next-line no-unused-vars
                 editRoles(data).then(response => {
+                    this.$message({
+                        type: 'success',
+                        message: '修改成功!'
+                    });
                     this.tableData = [];
                     this.getPermission();
                     this.dialogVisible2 = false;
@@ -182,15 +206,44 @@
 
             //删除角色
             deleteRolePermission(index) {
-                const roleId = this.tableData[index].roleId;
-                const data = new FormData();
-                data.append('roleId',roleId);
-                // eslint-disable-next-line no-unused-vars
-                deleteRoles(data).then( response => {
-                    this.tableData = [];
-                    this.getPermission();
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    const roleId = this.tableData[index].roleId;
+                    const data = new FormData();
+                    data.append('roleId',roleId);
+                    // eslint-disable-next-line no-unused-vars
+                    deleteRoles(data).then( response => {
+                        this.tableData = [];
+                        this.getPermission();
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
+            },
 
+            //取消新增对话框
+            cancel() {
+                this.dialogVisible = false;
+                this.newRoleInfo = {
+                    roleName:'',
+                    roleDescription:'',
+                    permissions:[]
+                }
+            },
+            //取消修改对话框
+            cancel2() {
+                this.dialogVisible2 = false;
+                this.checkedList = [];
             }
         },
         mounted() {

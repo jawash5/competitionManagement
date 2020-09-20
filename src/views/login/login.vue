@@ -92,23 +92,20 @@
                 const data = new FormData();
                 data.append('username',this.ruleForm.username);
                 data.append('password',this.ruleForm.password);
-                console.log(data)
                 // eslint-disable-next-line no-unused-vars
                 this.$store.dispatch("app/login", data).then(response => {
+
                     if(response === '参赛者') {
                         this.$router.push({
-                            path:'/viewCompetition'
+                            path:this.$route.query.redirect || '/viewCompetition'
                         });
                     } else {
                         this.$router.push({
                             path:'/teamManagement'
                         });
                     }
-
-
                 }).catch(error => {
-                    this.$message.error('账号或密码错误');
-                    console.log(error);
+                    this.$message.error(error.response.data);
                 });
             },
         },
@@ -117,17 +114,17 @@
 
 <style lang="scss" scoped>
     #login {
-        background-color: #f2f2f2;
+        background-color: #f7f7f7;
         height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-width: 1200px;
+        min-width: 1000px;
         min-height: 700px;
     }
 
     #wrap {
-        background-color: #f2f2f2;
+        background-color: #f7f7f7;
         height: 80vh;
         display: flex;
         align-items: center;

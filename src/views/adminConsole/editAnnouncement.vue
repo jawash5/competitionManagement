@@ -43,6 +43,9 @@
         <el-dialog
                 title="新增公告"
                 :visible.sync="newAnnouncement"
+                :show-close="false"
+                :close-on-click-modal="false"
+                :close-on-press-escape="false"
                 center>
             <el-form ref="form" :model="creatAnnouncement" label-width="100px">
                 <el-form-item label="标题">
@@ -54,7 +57,14 @@
                 </el-form-item>
 
                 <el-form-item label="比赛年份">
-                    <el-input v-model="creatAnnouncement.year" maxlength="4" style="width: 100px"></el-input>
+                    <el-select v-model="creatAnnouncement.year"
+                               size="medium"
+                               placeholder="请选择"
+                               style="width: 100px;">
+                        <el-option label="2018年" value="2018"></el-option>
+                        <el-option label="2019年" value="2019"></el-option>
+                        <el-option label="2020年" value="2020"></el-option>
+                    </el-select>
                 </el-form-item>
 
 <!--                <el-form-item label="发送通知">-->
@@ -94,7 +104,6 @@
                 year:'2018',
                 activeName:'',//标签选择项
                 newAnnouncement:false,//显示dialog
-
                 creatAnnouncement: {
                     name: '',
                     year: '',
@@ -107,10 +116,11 @@
             //删除公告
             deleteAnnouncement(index) {
                 const announcementId = this.announcementList[index].id;
+                // eslint-disable-next-line no-unused-vars
                 deleteAnnouncement(announcementId).then( response => {
                     this.$message({
                         type:'success',
-                        message:response.data.data,
+                        message:'删除公告成功！',
                     });
                     this.getAnnouncement();
                 }).catch(error => {
@@ -121,16 +131,16 @@
             //置顶公告
             topping(index) {
                 const announcementId = this.announcementList[index].id;
-                // eslint-disable-next-line no-unused-vars
-                topAnnouncement(announcementId).then( response => {
-                    this.$message({
-                        type:'success',
-                        message:'置顶公告成功！',
-                    });
-                    this.getAnnouncement();
-                }).catch(error => {
-                    this.$message.error(error.response.data)
-                })
+                    // eslint-disable-next-line no-unused-vars
+                    topAnnouncement(announcementId).then( response => {
+                        this.$message({
+                            type:'success',
+                            message:'置顶公告成功！',
+                        });
+                        this.getAnnouncement();
+                    }).catch(error => {
+                        this.$message.error(error.response.data)
+                    })
             },
 
             //获取公告
