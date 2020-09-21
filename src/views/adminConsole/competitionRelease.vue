@@ -91,13 +91,13 @@
                     </div>
                 </el-card>
                 <div class="addCard">
-                    <el-tooltip class="item" effect="light" content="添加新组件" placement="top">
+                    <el-tooltip class="item" effect="light" content="添加阶段" placement="top">
                         <el-button type="text" @click="addDiv" style="font-size: 30px;">
                             <i class="el-icon-circle-plus"></i>
                         </el-button>
                     </el-tooltip>
 
-                    <el-tooltip class="item" effect="light" content="删除组件" placement="top">
+                    <el-tooltip class="item" effect="light" content="删除阶段" placement="top">
                         <el-button type="text" @click="deleteDiv" style="font-size: 30px;">
                             <i class="el-icon-remove"></i>
                         </el-button>
@@ -235,6 +235,11 @@
             font-size: 26px;
             text-align: center;
             color: #606266;
+        }
+
+        .elForm {
+            width: 60%;
+            margin: 0 auto;
         }
 
         .formCard {

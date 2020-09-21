@@ -4,15 +4,22 @@
             <el-select v-model="year"
                        size="medium"
                        placeholder="请选择"
-                       style="width: 100px;
-                       margin-left: 200px"
+                       style="margin-left: 100px"
                        @change="getAnnouncement">
                 <el-option label="2018年" value="2018"></el-option>
                 <el-option label="2019年" value="2019"></el-option>
                 <el-option label="2020年" value="2020"></el-option>
             </el-select>
+
+            <el-button type="primary"
+                       round
+                       class="addAnnouncement pull-right"
+                       @click="newAnnouncement = true">
+                新增公告
+            </el-button>
+
         </div>
-        <div class="div-15"></div>
+        <div class="div-30"></div>
 
         <el-tabs v-model="activeName" tab-position="left" type="border-card" id="tabWrap">
             <el-tab-pane v-for="(item,index) in announcementList"
@@ -30,14 +37,7 @@
         </el-tabs>
 
 
-        <el-tooltip content="新增公告" placement="left" effect="light">
-            <el-button type="primary"
-                       icon="el-icon-plus"
-                       circle
-                       class="addAnnouncement"
-                       @click="newAnnouncement = true">
-            </el-button>
-        </el-tooltip>
+
 
 
         <el-dialog
@@ -91,12 +91,12 @@
             return{
                 announcementList:[
                     {
-                        "id": null,
-                        "content": null,
-                        "title": null,
-                        "year": null,
-                        "competitionName": null,
-                        "isTop": null
+                        "id": '',
+                        "content": '',
+                        "title": '',
+                        "year": '',
+                        "competitionName": '',
+                        "isTop": '',
                     }
                 ],//公告列表
                 competitionValue:'name', //比赛名称
@@ -149,6 +149,13 @@
                 const data = {year:this.year, competitionName:this.competitionValue};
                 getBoard(data).then( response => {
                     this.announcementList = response.data.data;
+                    // for (let i=0; i<this.announcementList.length; i++) {
+                    //     if(this.announcementList[i].title.length > 7) {
+                    //         this.announcementList[i].title.split("").splice(7, 0,"\n");
+                    //         // this.announcementList[i].title.join();
+                    //         console.log(this.announcementList[i].title)
+                    //     }
+                    // }
                 }).catch(error => {
                     this.$message.error('服务器开小差啦~');
                     console.log(error);
@@ -233,18 +240,13 @@
         }
 
         .addAnnouncement {
-            font-size: 20px;
-            width: 50px;
-            height: 50px;
-            position: fixed;
-            right: 50px;
-            bottom: 100px;
+            margin-right: 50px;
             z-index: .5;
         }
 
         /deep/.el-tabs__item {
             font-family: "幼圆" , serif;
-            width: 200px;
+            /*width: 200px;*/
             height: 80px;
             font-size: 16px;
         }

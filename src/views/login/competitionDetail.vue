@@ -56,6 +56,9 @@
                 } else {
                     this.$router.push({
                         path:'/projectDetail',
+                        query:{
+                            name: this.competitionInfo.name
+                        }
                     })
                 }
 

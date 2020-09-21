@@ -45,7 +45,7 @@
         left: $navMenu;
         height: 60px;
         background-color: #fff;
-        z-index:9;
+        z-index:10001;
         -webkit-box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
         min-width: 1000px;
     }

@@ -2,7 +2,7 @@
     <div id="editor">
         <mavon-editor :toolbars="markdownOption"
                       v-model="handbook"
-                      style="height: 100%"
+                      style="height: 80%"
                       @save="saveContent()">
         </mavon-editor>
     </div>
@@ -34,7 +34,7 @@
                     fullscreen: true, // 全屏编辑
                     readmodel: true, // 沉浸式阅读
                     htmlcode: true, // 展示html源码
-                    help: true, // 帮助
+                    help: false, // 帮助
                     /* 1.3.5 */
                     undo: true, // 上一步
                     redo: true, // 下一步
@@ -55,7 +55,7 @@
         methods:{
             saveContent() {
                 this.$emit('content',this.handbook)
-            }
+            },
         }
     }
 </script>
@@ -64,5 +64,6 @@
     #editor {
         margin: auto;
         height: 580px;
+        z-index: 0
     }
 </style>

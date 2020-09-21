@@ -110,7 +110,8 @@ export function getCompetitionGroups(data) {
  */
 export function sendNotice(data) {
     return service.request({
-        method: "get",
-        url: '/manager/groups?year=' + data
+        method: "post",
+        url: '/manager/notice',
+        data:data
     })
 }

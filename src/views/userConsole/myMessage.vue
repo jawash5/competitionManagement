@@ -2,7 +2,8 @@
     <div id="myProject">
         <div>
             <el-select v-model="competitionValue"
-                       size="medium" placeholder="请选择"
+                       size="medium"
+                       placeholder="请选择"
                        style="margin-left: 200px"
                        @change="getAnnouncement">
                 <el-option

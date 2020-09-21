@@ -55,10 +55,11 @@
 
         <el-table
                 ref="multipleTable"
-                :data="tableData.slice(7*(this.currentPage-1), 7*(this.currentPage))"
+                :data="tableData.slice(currentSize*(currentPage-1), currentSize*(currentPage))"
                 tooltip-effect="dark"
                 border
-                style="width: 100%">
+                style="width: 100%"
+                @selection-change="handleChange">
             <el-table-column
                     type="selection"
                     width="50"
@@ -241,25 +242,32 @@
                 <el-pagination
                         class="pull-right"
                         background
-                        layout="total, prev, pager, next"
+                        layout="sizes, total, prev, pager, next"
                         :total="total"
-                        :page-size="7"
-                        @current-change="current_change">
+                        :page-sizes="[7, 15, 30, 50]"
+                        @current-change="current_change"
+                        @size-change="handleSizeChange">
                 </el-pagination>
             </el-col>
         </el-row>
+
+        <send-message :visible="sendMessageVisible" @dialogClose="dialogClose"></send-message>
+
     </div>
 
 </template>
 
 <script>
     import {getRoles, getAdminCompetition, getCompetitionGroups} from "@/api/adminConsole";
+    import sendMessage from "@/views/adminConsole/components/sendMessage";
 
     export default {
         name: "teamManagement",
+        components:{sendMessage},
         data() {
             return {
                 currentPage:1,//当前页码
+                currentSize:7,//当前条数
                 dialogVisible:false, //编辑对话框
                 //比赛阶段选项
                 competitionOptions: [],
@@ -272,7 +280,7 @@
                     {value: '2020', label: '2020年'},
                 ],
                 //比赛年份
-                yearValue:'2018',
+                yearValue:'2019',
                 //关键词选项
                 searchOptions: [{
                     value: '选项1',
@@ -284,26 +292,7 @@
                 AdminCompetition:[],
 
                 //表单参数
-                tableData: [
-                    // {
-                    //     id: '1',
-                    //     name: '小明',
-                    //     projectName: '竞赛管理平台',
-                    //     teamName:'12456',
-                    //     mail:'857723555@qq.com',
-                    //     isSubmit:{
-                    //         first: {state:false, name:'初赛'},
-                    //         second:{state:false, name:'复赛'},
-                    //         third:{state:false, name:'决赛'}
-                    //     },
-                    //     isPromote:{
-                    //         first: {state:false, name:'初赛'},
-                    //         second:{state:false, name:'复赛'},
-                    //         third:{state:false, name:'决赛'}
-                    //     },
-                    //     isCheck:true,
-                    // }
-                ],
+                tableData: [],
                 //修改信息表单参数
                 editForm:{
                     teamID:'',
@@ -324,8 +313,9 @@
                     },
                     authority:[],//用户权限角色
                     projectCheck:false,
-                }
-
+                },
+                sendMessageVisible:false,//发送通知对话框
+                chosenGroups:[],//左侧多选数组
             };
         },
         computed: {
@@ -334,8 +324,13 @@
             }
         },
         methods: {
+            //页码发生变化
             current_change(currentPage) {
                 this.currentPage = currentPage;
+            },
+            //每页条数发生变化
+            handleSizeChange(currentSize){
+                this.currentSize = currentSize;
             },
             handleEdit() {
                 this.dialogVisible = true;
@@ -405,9 +400,18 @@
 
             //发送通知
             sendNotice() {
+                this.sendMessageVisible = true;
+                this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
 
+            },
+            //关闭通知
+            dialogClose() {
+                this.sendMessageVisible = false;
+            },
+            //左侧多选选中事件
+            handleChange(selection) {
+                this.chosenGroups = selection;
             }
-
         },
         mounted() {
             this.getRoles();

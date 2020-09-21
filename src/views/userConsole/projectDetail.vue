@@ -6,10 +6,11 @@
             <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item>
                     <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left">
+<!--                        :label="item.label"-->
                         <el-option
                                 v-for="item in options"
                                 :key="item.value"
-                                :label="item.label"
+                                :label="item.id"
                                 :value="item.value">
                         </el-option>
                     </el-select>
@@ -111,14 +112,14 @@
                 fileList: [],//文件
                 DialogVisible:false,//文件上传框
                 options: [],//比赛选择框
-                competitionValue: '',//选择的比赛
+                competitionValue: this.$route.query.name || '',//选择的比赛
                 ruleForm: {
                     teamName:'',
                     leader:'',
                     leaderId:'',
                     members: [
                         { name:'', studentNo:''}
-                        ],
+                    ],
                 },
                 //提交的表单
                 finalForm:{
@@ -169,7 +170,7 @@
                     isLeader:true
                 })
                 const members = this.ruleForm.members;
-                if(members.length > 1) {
+                if(members[0].name !== '' && members[0].studentNo !== '') {
                     for(let i=0; i<members.length; i++) {
                         this.finalForm.teammateSet.push({
                             name: members[i].name,
@@ -178,11 +179,12 @@
                         })
                     }
                 }
-                console.log(this.finalForm.teammateSet)
+
                 //提交报名比赛信息
                 applyCompetition(this.finalForm).then(response => {
                     const code = response.data.code;
                     if(code === 0) {
+                        this.$router.push('/myProject')
                         this.$message({
                             showClose: true,
                             message: '创建成功！',
@@ -210,7 +212,7 @@
                     this.ruleForm.members.splice(index, 1)
                 }
             },
-            //获取队长星系
+            //获取队长信息
             getLeader() {
                 personalInfo().then(response => {
                     this.ruleForm.leader = response.data.data.name;
