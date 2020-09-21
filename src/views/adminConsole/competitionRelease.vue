@@ -127,7 +127,7 @@
 </template>
 
 <script>
-    import {creatCompetition} from '@/api/adminConsole';
+    import {createCompetition} from '@/api/adminConsole';
     import editor from '../../components/editor';
 
     export default {
@@ -198,15 +198,15 @@
                     name:'报名时间',
                     startDate: form.signUptime[0],
                     endDate:form.signUptime[1],
-                    uploadStartDate: '',
-                    uploadEndDate: '',
+                    uploadStartDate: '2019-01-01 00:00:00',
+                    uploadEndDate: '2019-01-01 00:00:00',
                 })
                 this.submitForm.stage = stages[this.stage];
                 form.signForm.minPeople = parseInt(form.signForm.minPeople);
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
                 this.submitForm.signForm = form.signForm;
-                console.log(this.submitForm)
-                creatCompetition(this.submitForm).then(response => {
+                // console.log(this.submitForm)
+                createCompetition(this.submitForm).then(response => {
                     this.$message({
                         type:"success",
                         message:response.data.data

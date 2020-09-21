@@ -60,7 +60,7 @@ module.exports = {
     hotOnly: false,
     proxy: {
       '/devApi': {
-        target: "https://cm.qiancaoyu.fun/",
+        target: "https://cm.qiancaoyu.fun/api/",
         changeOrigin: true,
         pathRewrite: {'^/devApi': ''},
       }

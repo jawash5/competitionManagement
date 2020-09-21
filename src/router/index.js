@@ -40,14 +40,6 @@ export const defaultRouterMap = [
         component: ()  => import("../views/login/register.vue")
     },
     {
-        path: '/loginAdmin',
-        name: '/loginAdmin',
-        meta:{
-            name:'管理员登录'
-        },
-        component: ()  => import("../views/login/loginAdmin.vue")
-    },
-    {
         path: '/checkCompetition',
         name: '/checkCompetition',
         meta:{

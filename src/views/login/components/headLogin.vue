@@ -4,8 +4,6 @@
         <div class="rooter" v-if="state">
             <router-link to="login" class="router_url">登录</router-link>
             <span class="register_hr"></span>
-            <router-link to="loginAdmin" class="router_url">管理员入口</router-link>
-            <span class="register_hr"></span>
             <router-link to="checkCompetition" class="router_url">查看比赛</router-link>
         </div>
         <div id="rooter" v-if="!state">

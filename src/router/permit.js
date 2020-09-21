@@ -2,7 +2,7 @@ import router from "@/router/index";
 import {getCode, removeCode, removeUsername, removeRole} from "@/utils/app";
 import store from "../store/index";
 
-const whiteRouter = ['/login', '/register', '/checkCompetition', '/loginAdmin', '/competitionDetail'];
+const whiteRouter = ['/login', '/register', '/checkCompetition', '/competitionDetail'];
 
 router.beforeEach((to, from, next) =>{
     if(getCode() === '0') {

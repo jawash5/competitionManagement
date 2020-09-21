@@ -3,7 +3,7 @@ import service from "@/utils/request";
 /**
  * 创建比赛
  */
-export function creatCompetition(data) {
+export function createCompetition(data) {
     return service.request({
         method: "put",
         url: '/manager/create',
