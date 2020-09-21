@@ -57,7 +57,7 @@
                     this.$router.push({
                         path:'/projectDetail',
                         query:{
-                            name: this.competitionInfo.name
+                            id: this.competitionInfo.id
                         }
                     })
                 }

@@ -95,7 +95,6 @@
                         "content": '',
                         "title": '',
                         "year": '',
-                        "competitionName": '',
                         "isTop": '',
                     }
                 ],//公告列表

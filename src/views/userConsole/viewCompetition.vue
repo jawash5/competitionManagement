@@ -29,7 +29,7 @@
         name: "viewCompetition",
         data() {
             return{
-                competitionList:[],//比赛列表
+                competitionList: JSON.parse(sessionStorage.getItem('competitionList')) || [],//比赛列表
                 selectValue:'全部比赛',//过滤器值
                 //过滤器
                 options:[
@@ -49,13 +49,16 @@
         },
         components:{ competitionCard },
         methods: {
-            getCompetitionList:function () {
-                competitionList().then(response => {
-                    this.competitionList = response.data.data
-                }).catch(error => {
-                    this.$message.error('服务器开小差啦~');
-                    console.log(error);
-                });
+            getCompetitionList() {
+                if(this.competitionList.length === 0) {
+                    competitionList().then(response => {
+                        this.competitionList = response.data.data
+                        sessionStorage.setItem('competitionList', JSON.stringify(this.competitionList))
+                    }).catch(error => {
+                        this.$message.error('服务器开小差啦~');
+                        console.log(error);
+                    });
+                }
             }
         },
         mounted() {

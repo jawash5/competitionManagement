@@ -86,7 +86,7 @@
 <style lang="scss" scoped>
 
     #project {
-        margin: 10px 10px;
+        margin: 20px;
         width: 280px;
         height: 250px;
         display: flex;

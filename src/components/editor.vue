@@ -64,6 +64,5 @@
     #editor {
         margin: auto;
         height: 580px;
-        z-index: 0
     }
 </style>

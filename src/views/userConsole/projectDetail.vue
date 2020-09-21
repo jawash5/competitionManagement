@@ -10,7 +10,7 @@
                         <el-option
                                 v-for="item in options"
                                 :key="item.value"
-                                :label="item.id"
+                                :label="item.label"
                                 :value="item.value">
                         </el-option>
                     </el-select>
@@ -112,7 +112,7 @@
                 fileList: [],//文件
                 DialogVisible:false,//文件上传框
                 options: [],//比赛选择框
-                competitionValue: this.$route.query.name || '',//选择的比赛
+                competitionValue: this.$route.query.id || '',//选择的比赛
                 ruleForm: {
                     teamName:'',
                     leader:'',
@@ -162,7 +162,7 @@
                     return false;
                 }
 
-                this.finalForm.competitionId = this.competitionValue;
+                this.finalForm.competitionId = parseInt(this.competitionValue);
                 this.finalForm.groupName = this.ruleForm.teamName;
                 this.finalForm.teammateSet.push({
                     name:this.ruleForm.leader,
@@ -179,7 +179,7 @@
                         })
                     }
                 }
-
+                console.log(this.finalForm)
                 //提交报名比赛信息
                 applyCompetition(this.finalForm).then(response => {
                     const code = response.data.code;
@@ -192,7 +192,6 @@
                         });
                     }
                 }).catch(error => {
-                    console.log(error.response.data.message);
                     this.$message({
                         showClose: true,
                         message: error.response.data.message + '!',
