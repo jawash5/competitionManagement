@@ -1,7 +1,7 @@
 <template>
         <div id="editProject">
             <el-page-header @back="goBack" content="我的项目" class="pull-left"></el-page-header>
-            <h1 id="competitionName"> 编辑资料</h1>
+            <h1 id="competitionName">编辑资料</h1>
             <div id="projectForm">
                 <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                     <el-form-item label=" " prop="type">
@@ -25,30 +25,30 @@
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="队长姓名"  prop="leader">
-                                <el-input v-model="groupInfo.captain.name" :disabled="true"></el-input>
+                                <el-input v-model="groupInfo.teammates[0].name" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="队长学号" prop="leaderId">
-                                <el-input v-model="groupInfo.captain.studentNo" :disabled="true"></el-input>
+                                <el-input v-model="groupInfo.teammates[0].studentNo" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="联系手机" prop="telephoneNumber">
-                                <el-input v-model="groupInfo.captain.phoneNo" :disabled="true"></el-input>
+                                <el-input v-model="groupInfo.teammates[0].phoneNo" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="邮箱地址" prop="mail">
-                                <el-input v-model="groupInfo.captain.email" :disabled="true"></el-input>
+                                <el-input v-model="groupInfo.teammates[0].email" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
 
                     <el-form-item label="项目成员" prop="members">
-                        <template v-if="groupInfo.teammates.length !== 0">
+                        <template v-if="groupInfo.teammates.length !== 1">
                             <div class="teammates">
                                 <el-row v-for="item in groupInfo.teammates"  :key="item.id">
                                     <el-col :span="12">
@@ -62,7 +62,7 @@
                                 </el-row>
                             </div>
                         </template>
-                        <template v-if="groupInfo.teammates.length === 0">
+                        <template v-if="groupInfo.teammates.length === 1">
                             <div class="noTeammate">无项目成员信息</div>
                         </template>
                     </el-form-item>
@@ -99,72 +99,24 @@
                     ],
                     teacher:''
                 },
-                // rules: {
-                //     name: [
-                //         { required: true, message: '请输入项目名称', trigger: 'blur' },
-                //     ],
-                //     teamName: [
-                //         { required: true, message: '请填写队伍名称', trigger: 'blur' }
-                //     ],
-                //     leader: [
-                //         { required: true, message: '请填写队长名称', trigger: 'blur' }
-                //     ],
-                //     leaderId: [
-                //         { required: true, message: '请填写队长学号', trigger: 'blur' }
-                //     ],
-                //     telephoneNumber: [
-                //         { required: true, message: '请填写联系手机', trigger: 'blur' }
-                //     ],
-                //     mail: [
-                //         { required: true, message: '请填写队长手机', trigger: 'blur' }
-                //     ],
-                // },
                 //创建的队伍信息
                 groupInfo: {
-                    "id": null,
-                    "name": '',
-                    "competition": {
-                        "id": null,
-                        "information": "",
-                        "year": "2019",
-                        "startDate": "2019-01-01 00:00:00",
-                        "endDate": "2019-01-01 00:00:00",
-                        "signForm": {
-                            "id": -1,
-                            "maxPeople": 0,
-                            "minPeople": 0,
-                            "requireGroupName": false
-                        },
-                        "notice": [],
-                        "nowStage": []
-                    },
+                    "id": '',
+                    "name": "",
+                    "competitionId": '',
+                    "captainId": '',
                     "teammates": [
                         {
-                            "studentNo": null,
+                            "id": '',
                             "name": "",
-                            "school": "",
+                            "studentNo": '',
                             "university": "",
+                            "school": "",
                             "phoneNo": "",
-                            "email": "",
-                            "state": "",
-                            "id": -1,
-                            "password": "",
-                            "username": "",
-                            "roles": []
+                            "email": ""
                         }
-                    ],
-                    "captain": {
-                        "studentNo": null,
-                        "name": "",
-                        "school": "",
-                        "university": "",
-                        "phoneNo": "",
-                        "email": "",
-                        "state": "",
-                        "username": ""
-                    },
-                    "recordList": []
-                }
+                    ]
+                },
             }
         },
         methods: {
@@ -203,9 +155,8 @@
             getGroupInfo() {
                 const groupId = this.$store.getters['group/groupId'];
                 getGroupInfo(groupId).then(response => {
-                    this.groupInfo = response.data.data
-                    this.groupInfo.teammates.splice(0,1)
-                    this.competitionValue = this.groupInfo.competition.id
+                    this.groupInfo = response.data.data;
+                    this.competitionValue = this.groupInfo.competitionId;
                 });
             }
         },

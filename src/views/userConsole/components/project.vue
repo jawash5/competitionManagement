@@ -5,7 +5,7 @@
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
-            <h5 id="founder">项目创始人：{{ projectDetail.captain.name }}</h5>
+            <h5 id="founder">项目创始人：{{ projectDetail.captainId }}</h5>
             <el-button type="primary" class="founderButton" @click="editMaterials">编辑资料</el-button>
             <el-button class="founderButton">删除项目</el-button>
         </div>
@@ -20,7 +20,7 @@
             }
         },
         methods:{
-            editMaterials:function () {
+            editMaterials() {
                 this.$store.dispatch('group/setGroupId', this.projectDetail.id)
                 this.$router.push({
                     path: "/editProject",
@@ -33,49 +33,10 @@
                 require:true,
                 default: () => {
                     return {
-                        "id": -1,
-                        "name": '',
-                        "competition": {
-                            "id": -1,
-                            "information": "",
-                            "year": "2019",
-                            "startDate": "2019-01-01 00:00:00",
-                            "endDate": "2019-01-01 00:00:00",
-                            "signForm": {
-                                "id": -1,
-                                "maxPeople": 0,
-                                "minPeople": 0,
-                                "requireGroupName": false
-                            },
-                            "notice": [],
-                            "nowStage": []
-                        },
-                        "teammates": [
-                            {
-                                "studentNo": -1,
-                                "name": "",
-                                "school": "",
-                                "university": "",
-                                "phoneNo": "",
-                                "email": "",
-                                "state": "",
-                                "id": -1,
-                                "password": "",
-                                "username": "",
-                                "roles": []
-                            }
-                        ],
-                        "captain": {
-                            "studentNo": -1,
-                            "name": "",
-                            "school": "",
-                            "university": "",
-                            "phoneNo": "",
-                            "email": "",
-                            "state": "",
-                            "username": ""
-                        },
-                        "recordList": []
+                        "id": 0,
+                        "name": "",
+                        "competitionId": 0,
+                        "captainId": 0
                     }
                 }
             }

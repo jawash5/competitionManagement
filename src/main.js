@@ -8,10 +8,8 @@ import './router/permit';
 import './assets/icon/iconfont.css';
 import './styles/main.scss'
 import 'github-markdown-css/github-markdown.css'
-import mavonEditor from 'mavon-editor';
-import 'mavon-editor/dist/css/index.css';
 
-Vue.use(mavonEditor);
+
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 

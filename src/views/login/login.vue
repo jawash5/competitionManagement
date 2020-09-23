@@ -78,7 +78,7 @@
                 this.$router.push("/register");
             },
 
-            submitInfo: function () {
+            submitInfo() {
                 if(this.ruleForm.username === '' || this.ruleForm.password === '') {
                     this.$message.error('用户名或密码不能为空!');
                     return false;

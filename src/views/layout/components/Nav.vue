@@ -91,7 +91,7 @@
         width: $navMenu;
         height: 100vh;
         background-color: #344a5f;
-        z-index:10000;
+        z-index:100;
 
         .avatar {
             width: 40%;

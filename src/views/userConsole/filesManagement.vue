@@ -18,7 +18,7 @@
                     <el-form-item label="关键字">
                         <el-select v-model="keyWord" placeholder="搜索关键字" size="small" style="width: 120px">
                             <el-option
-                                    v-for="item in options"
+                                    v-for="item in typeOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -37,14 +37,20 @@
                 </el-col>
 
                 <el-col :span="4">
-                    <el-button type="danger" size="small" class="pull-right classButton">新增</el-button>
+                    <el-button type="danger"
+                               size="small"
+                               class="pull-right classButton"
+                               @click="uploadFile">上传文件</el-button>
                 </el-col>
             </el-row>
         </el-form>
 
+        <upload :visible="uploadDialog" @dialogClose="uploadDialog = false" @uploadSuccess="getFiles"></upload>
+
         <el-table
                 ref="multipleTable"
                 :data="tableData"
+                stripe
                 style="width: 100%">
             <el-table-column
                     type="selection"
@@ -60,9 +66,30 @@
             </el-table-column>
 
             <el-table-column
-                    prop="editTime"
-                    label="修改时间"
+                    prop="competitionName"
+                    label="比赛名称"
                     width="200"
+                    align="center"
+                    show-overflow-tooltip>
+            </el-table-column>
+
+            <el-table-column
+                    prop="year"
+                    label="比赛年"
+                    width="100"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="stage"
+                    label="阶段"
+                    width="100"
+                    align="center">
+            </el-table-column>
+
+            <el-table-column
+                    prop="type"
+                    label="文件类型"
+                    width="100"
                     align="center">
             </el-table-column>
 
@@ -98,8 +125,11 @@
 </template>
 
 <script>
+    import upload from "@/views/userConsole/components/upload";
+    import {checkFiles,deleteFiles} from "@/api/userConsole";
     export default {
         name: "filesManagement",
+        components:{upload},
         data() {
             return {
                 fileType:'',//文件类型
@@ -113,31 +143,57 @@
                 //搜索关键字
                 keyWord:'',
                 //文件数据
-                tableData:[
-                    {
-                        fileName: '我的资源',
-                        editTime:'2016-06-08 08:08',
-                    }
-                ],
+                tableData:JSON.parse(sessionStorage.getItem('tableData')) || [],
                 currentPage:1,//当前页数
                 total:1, //文件数量
+                uploadDialog:false,//上传文件对话框
             }
         },
         computed:{
-            totalPage: function () {
+            totalPage() {
                 return this.total
             }
         },
         methods:{
-            deleteFile:function (index) {
-                console.log(index)
+            deleteFile (index) {
+                // eslint-disable-next-line no-unused-vars
+                deleteFiles(this.tableData[index]).then(response => {
+                    this.$message.success('删除成功！');
+                    this.getFiles();
+                }).catch( error => {
+                    this.$message.error(error.response.data);
+                })
             },
             downloadFile:function (index) {
                 console.log(index)
             },
             current_change:function (currentPage) {
                 this.currentPage = currentPage;
+            },
+            //上传文件对话框
+            uploadFile(){
+                this.uploadDialog = true;
+            },
+            //更新文件列表
+            getFiles() {
+                checkFiles().then( response => {
+                    this.tableData = response.data.data;
+                }).catch( error => {
+                    this.$message.error(error.response.data)
+                })
+            },
+            //初始化文件列表
+            initFiles() {
+                checkFiles().then( response => {
+                    this.tableData = response.data.data;
+                    sessionStorage.setItem('tableData', JSON.stringify(this.tableData));
+                }).catch( error => {
+                    this.$message.error(error.response.data)
+                })
             }
+        },
+        mounted() {
+            this.initFiles();
         }
     }
 </script>

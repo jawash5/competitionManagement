@@ -2,11 +2,11 @@
     <div :class="cardStyle">
         <div class="competitionName">
             <div class="title"><span style="font-size: 20px">{{ competition.id }}. </span>{{ competition.name }}</div>
-            <div class="div-30"></div>
+            <el-divider></el-divider>
             <div class="time">开始时间：{{ competition.start }}</div>
             <div class="time">结束时间：{{ competition.end }}</div>
             <div class="div-60"></div>
-            <el-button type="danger" size="small" round @click="getCompetitionDetail()">查看详情</el-button>
+            <el-button type="primary" size="small" round @click="getCompetitionDetail()">查看详情</el-button>
         </div>
     </div>
 </template>
@@ -70,13 +70,14 @@
             .title {
                 font-size: 24px;
                 font-family: "幼圆" , serif;
-                font-weight: 600;
             }
 
             .time {
                 text-align: center;
                 font-size: 16px;
                 margin-bottom: 10px;
+                color: #303133;
+                font-weight: 500;
             }
         }
 
@@ -105,8 +106,6 @@
             .title {
                 font-size: 24px;
                 font-family: "幼圆" , serif;
-                font-weight: 600;
-                color: #303133;
             }
 
             .time {
@@ -114,6 +113,7 @@
                 font-size: 16px;
                 margin-bottom: 10px;
                 color: #303133;
+                font-weight: 500;
             }
         }
     }

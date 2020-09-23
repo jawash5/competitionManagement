@@ -146,7 +146,7 @@ export const asnycRouterMap = [
                     name:'文件管理',
                     icon:'el-icon-tickets'
                 },
-                component: ()  => import("../views/adminConsole/filesManagement")
+                component: ()  => import("../views/userConsole/filesManagement")
             },
         ]
     },

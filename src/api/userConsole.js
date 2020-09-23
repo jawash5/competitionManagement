@@ -61,3 +61,46 @@ export function getBoard(data) {
         url: '/competition/board/' + data.competitionName + '?year=' + data.year,
     })
 }
+
+/**
+ * 上传文件
+ */
+export function upload(data) {
+    return service.request({
+        method:"post",
+        url: '/user/upload',
+        data:data
+    })
+}
+
+/**
+ * 文件状态
+ */
+export function checkStatus(data) {
+    return service.request({
+        method:"post",
+        url: '/user/filestatus',
+        data:data
+    })
+}
+
+/**
+ * 查看个人所有文件
+ */
+export function checkFiles() {
+    return service.request({
+        method:"get",
+        url: '/user/files',
+    })
+}
+
+/**
+ * 个人删除文件
+ */
+export function deleteFiles(data) {
+    return service.request({
+        method:"delete",
+        url: '/user/deletefile',
+        data:data
+    })
+}

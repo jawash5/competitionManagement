@@ -6,7 +6,6 @@
             <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item>
                     <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left">
-<!--                        :label="item.label"-->
                         <el-option
                                 v-for="item in options"
                                 :key="item.value"
@@ -55,44 +54,42 @@
                         </el-row>
                     </div>
                 </el-form-item>
-                <el-form-item label="作品上传" prop="upload">
-                    <el-button type="primary" size="small" @click="DialogVisible = true">上传</el-button>
 
-                    <el-dialog
-                            title="作品上传"
-                            :visible.sync="DialogVisible"
-                            width="50%"
-                            center>
+<!--                    <el-dialog-->
+<!--                            title="作品上传"-->
+<!--                            :visible.sync="DialogVisible"-->
+<!--                            width="50%"-->
+<!--                            center>-->
 
-                        <div class="step">
-                            <el-steps :active="1" finish-status="success" align-center>
-                                <el-step title="初赛"></el-step>
-                                <el-step title="复赛"></el-step>
-                                <el-step title="决赛"></el-step>
-                            </el-steps>
-                        </div>
+<!--                        <div class="step">-->
+<!--                            <el-steps :active="1" finish-status="success" align-center>-->
+<!--                                <el-step title="初赛"></el-step>-->
+<!--                                <el-step title="复赛"></el-step>-->
+<!--                                <el-step title="决赛"></el-step>-->
+<!--                            </el-steps>-->
+<!--                        </div>-->
 
-                        <div class="div-30"></div>
+<!--                        <div class="div-30"></div>-->
 
-                        <div class="upload">
-                            <el-upload
-                                    class="upload-demo"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
-                                    multiple
-                                    :limit="3"
-                                    :file-list="fileList">
-                                <el-button size="small" type="primary">点击上传</el-button>
-                                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                            </el-upload>
-                        </div>
+<!--                        <div class="upload">-->
+<!--                            <el-upload-->
+<!--                                    class="upload-demo"-->
+<!--                                    action="https://jsonplaceholder.typicode.com/posts/"-->
+<!--                                    multiple-->
+<!--                                    :limit="3"-->
+<!--                                    :file-list="fileList">-->
+<!--                                <el-button size="small" type="primary">点击上传</el-button>-->
+<!--                                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+<!--                            </el-upload>-->
+<!--                        </div>-->
 
-                        <span slot="footer" class="dialog-footer">
-                            <el-button @click="DialogVisible = false">取 消</el-button>
-                            <el-button type="primary" @click="DialogVisible = false">确 定</el-button>
-                        </span>
-                    </el-dialog>
+<!--                        <span slot="footer" class="dialog-footer">-->
+<!--                            <el-button @click="DialogVisible = false">取 消</el-button>-->
+<!--                            <el-button type="primary" @click="DialogVisible = false">确 定</el-button>-->
+<!--                        </span>-->
+<!--                    </el-dialog>-->
 
-                </el-form-item>
+
             </el-form>
         </div>
 
@@ -109,8 +106,6 @@
         name: "projectDetail" ,
         data() {
             return{
-                fileList: [],//文件
-                DialogVisible:false,//文件上传框
                 options: [],//比赛选择框
                 competitionValue: this.$route.query.id || '',//选择的比赛
                 ruleForm: {
@@ -250,11 +245,6 @@
         .step {
             line-height: normal;
 
-        }
-
-        .upload {
-            height: 100px;
-            text-align: center;
         }
 
         #buttons {

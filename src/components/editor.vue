@@ -2,16 +2,21 @@
     <div id="editor">
         <mavon-editor :toolbars="markdownOption"
                       v-model="handbook"
-                      style="height: 80%"
-                      @save="saveContent()">
+                      style="height: 100%"
+                      @save="saveContent()"
+                      @imgadd="handleEditorImgAdd"
+                      @imgDel="handleEditorImgDel">
         </mavon-editor>
     </div>
 </template>
 
 <script>
+    import { mavonEditor } from 'mavon-editor';
+    import 'mavon-editor/dist/css/index.css';
 
     export default {
         name: "editor",
+        components:{mavonEditor},
         data() {
             return {
                 handbook:'',
@@ -53,9 +58,18 @@
             }
         },
         methods:{
+            //保存
             saveContent() {
                 this.$emit('content',this.handbook)
             },
+            //添加图片
+            handleEditorImgAdd() {
+
+            },
+            //删除图片
+            handleEditorImgDel() {
+
+            }
         }
     }
 </script>
@@ -64,5 +78,9 @@
     #editor {
         margin: auto;
         height: 580px;
+    }
+
+    .v-note-wrapper {
+        z-index: 100;
     }
 </style>
