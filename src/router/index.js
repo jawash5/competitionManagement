@@ -76,15 +76,6 @@ export const asnycRouterMap = [
         component: ()  => import("../views/layout/index.vue"),
         children:[
             {
-                path: '/viewCompetition',
-                name: '/viewCompetition',
-                meta:{
-                    name:'查看比赛',
-                    icon:'el-icon-search'
-                },
-                component: ()  => import("../views/userConsole/viewCompetition")
-            },
-            {
                 path: '/competitionUser',
                 name: 'competitionUser',
                 hidden:true,

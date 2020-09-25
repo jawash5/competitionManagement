@@ -25,11 +25,6 @@ function checkTimeout() {
             // 清除storage的数据(登陆信息和token)
             storage.clear();
 
-            // this.$store.dispatch('app/exit').then(() => {
-            //     router.push({
-            //         path:'/login'
-            //     })
-            // })
             removeRole();
             removeUsername();
             removeCode();

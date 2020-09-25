@@ -69,7 +69,7 @@
 
         computed:{
             active() {
-                const role = (getRole() === '参赛者' ? '/viewCompetition' : '/teamManagement');
+                const role = (getRole() === '参赛者' ? '/myProject' : '/teamManagement');
                 return (sessionStorage.getItem("active") || role);
             }
         },

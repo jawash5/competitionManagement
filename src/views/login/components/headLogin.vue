@@ -8,9 +8,9 @@
 
         <div class="rooter" v-if="state">
             <router-link to="" class="router_url">消息</router-link>
-            <router-link to="myProject" class="router_url">个人中心</router-link>
+            <router-link :to="url" class="router_url">个人中心</router-link>
             <el-popover
-                    width="80"
+                    width="50"
                     trigger="hover">
                 <el-button class="logoutButton" @click="exit">退出登录</el-button>
                 <el-avatar :size="40"
@@ -26,8 +26,15 @@
 </template>
 
 <script>
+    import {getRole} from "@/utils/app";
+
     export default {
         name: "headLogin",
+        data() {
+            return{
+                url:''
+            }
+        },
         props: {
             state: {
                 type:Boolean,
@@ -41,7 +48,17 @@
                         path:'/login'
                     })
                 })
+            },
+            setUrl() {
+                if (getRole() === '参赛者') {
+                    this.url = 'myProject'
+                } else if (getRole() === '管理员') {
+                    this.url = 'teamManagement'
+                }
             }
+        },
+        mounted() {
+            this.setUrl();
         }
     }
 </script>
