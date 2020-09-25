@@ -44,14 +44,10 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
-
-                    <!--                <el-form-item label="比赛简介">-->
-                    <!--                    <el-input type="textarea" v-model="form.information" :rows="2"></el-input>-->
-                    <!--                </el-form-item>-->
                 </el-form>
             </el-card>
 
-            <el-divider></el-divider>
+            <div class="div-60"></div>
             <div class="title">阶段信息</div>
             <div class="div-30"></div>
 
@@ -112,11 +108,11 @@
                 </template>
             </div>
 
-            <el-divider></el-divider>
-            <div class="title">介绍信息</div>
+            <div class="div-60"></div>
+            <div class="title">介绍信息（提交前请保存）</div>
             <div class="div-30"></div>
 
-            <editor @content="getContent"></editor>
+            <editor @content="getContent" year="2019"></editor>
 
             <div class="div-30"></div>
             <div style="text-align: center;">

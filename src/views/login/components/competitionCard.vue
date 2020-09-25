@@ -1,5 +1,5 @@
 <template>
-    <div :class="cardStyle">
+    <div class="card">
         <div class="competitionName">
             <div class="title"><span style="font-size: 20px">{{ competition.id }}. </span>{{ competition.name }}</div>
             <el-divider></el-divider>
@@ -13,22 +13,21 @@
 
 <script>
     import {competitionDetail} from "@/api/login";
-    import {getCode} from "@/utils/app";
 
     export default {
         name: "competitionCard",
         data() {
             return{}
         },
-        computed:{
-            cardStyle() {
-                if(getCode() === "0") {
-                    return 'cardUser';
-                } else {
-                    return 'card'
-                }
-            }
-        },
+        // computed:{
+        //     cardStyle() {
+        //         if(getCode() === "0") {
+        //             return 'cardUser';
+        //         } else {
+        //             return 'card'
+        //         }
+        //     }
+        // },
         methods:{
             getCompetitionDetail () {
                 competitionDetail(this.competition.id).then(response => {

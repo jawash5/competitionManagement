@@ -2,9 +2,10 @@
     <div id="editor">
         <mavon-editor :toolbars="markdownOption"
                       v-model="handbook"
+                      ref="md"
                       style="height: 100%"
                       @save="saveContent()"
-                      @imgadd="handleEditorImgAdd"
+                      @imgAdd="handleEditorImgAdd"
                       @imgDel="handleEditorImgDel">
         </mavon-editor>
     </div>
@@ -13,6 +14,7 @@
 <script>
     import { mavonEditor } from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
+    import {uploadPicture} from "@/api/adminConsole";
 
     export default {
         name: "editor",
@@ -20,7 +22,7 @@
         data() {
             return {
                 handbook:'',
-                markdownOption:{
+                markdownOption: {
                     bold: true, // 粗体
                     italic: true, // 斜体
                     header: true, // 标题
@@ -57,18 +59,39 @@
                 }
             }
         },
+        props:{
+            year:{type:String, required:true}
+        },
         methods:{
             //保存
             saveContent() {
+                this.$message.success('保存成功！')
                 this.$emit('content',this.handbook)
             },
             //添加图片
-            handleEditorImgAdd() {
+            handleEditorImgAdd(pos, $file) {
+                const data = new FormData()
+                data.append('file', $file)
+                data.append('year', this.year)
 
+                uploadPicture(data).then(response => {
+                    const url = response.data.data
+                    this.$refs.md.$img2Url (pos, url)
+                }).catch(error => {
+                    this.$message.error(error.response.data)
+                })
             },
             //删除图片
             handleEditorImgDel() {
-
+                // const formdata = new FormData()
+                // formdata.append('url', pos[0])
+                // delfile(formdata)
+                //     .then(() => {
+                //         Message.success('删除成功')
+                //     })
+                //     .catch(res => {
+                //         console.log(res)
+                //     })
             }
         }
     }

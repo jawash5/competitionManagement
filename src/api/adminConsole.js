@@ -115,3 +115,14 @@ export function sendNotice(data) {
         data:data
     })
 }
+
+/**
+ * 上传图片
+ */
+export function uploadPicture(data) {
+    return service.request({
+        method: "post",
+        url: '/competition/picture',
+        data:data
+    })
+}

@@ -1,22 +1,24 @@
 <template>
     <div id="checkCompetition">
-        <head-login :state="true"></head-login>
-        <div class="div-30"></div>
-        <div class="competitionSelect">
-            <el-select v-model="selectValue" placeholder="请选择">
-                <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
-        </div>
-        <div class="competitionList">
-            <competition-card v-for="item in competitionList"
-                              :key="item.id"
-                              :competition="item">
-            </competition-card>
+        <head-login :state="state"></head-login>
+        <div class="wrap">
+            <div class="div-30"></div>
+            <div class="competitionSelect">
+                <el-select v-model="selectValue" placeholder="请选择">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="competitionList">
+                <competition-card v-for="item in competitionList"
+                                  :key="item.id"
+                                  :competition="item">
+                </competition-card>
+            </div>
         </div>
         <my-footer></my-footer>
     </div>
@@ -28,6 +30,7 @@
     import myFooter from "@/views/login/components/myFooter";
     // import competition from "@/components/competition";
     import competitionCard from "@/views/login/components/competitionCard";
+    import {getCode} from "@/utils/app";
 
     export default {
         name: "checkCompetition",
@@ -55,6 +58,11 @@
                 ]
             }
         },
+        computed:{
+            state() {
+                return getCode() === '0';
+            }
+        },
         methods: {
             getCompetitionList:function () {
                 competitionList().then(response => {
@@ -80,18 +88,25 @@
         justify-content: space-between;
         min-width: 1200px;
         min-height: 800px;
-    }
 
-    .competitionList {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-content: flex-start;
-        justify-content: space-around;
-    }
+        .wrap {
+            height: 100vh;
+        }
 
-    .competitionSelect {
-        margin-left: 50px;
+        .competitionSelect {
+            margin-left: 50px;
+        }
+
+        .competitionList {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            /*justify-content: space-around;*/
+            justify-content: flex-start;
+            margin-top: 30px;
+            margin-left: 30px;
+        }
     }
 
     /deep/.el-tabs__item {

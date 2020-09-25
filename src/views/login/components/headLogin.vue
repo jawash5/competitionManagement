@@ -1,14 +1,27 @@
 <template>
     <div id="login_head">
         <h1 id="login_head_title">竞赛管理系统</h1>
-        <div class="rooter" v-if="state">
+        <div class="rooter" v-if="!state">
             <router-link to="login" class="router_url">登录</router-link>
-            <span class="register_hr"></span>
-            <router-link to="checkCompetition" class="router_url">查看比赛</router-link>
+            <router-link to="checkCompetition" class="router_url avatar">查看比赛</router-link>
         </div>
-        <div id="rooter" v-if="!state">
-            <span class="router_url">{{ username }}</span>
+
+        <div class="rooter" v-if="state">
+            <router-link to="" class="router_url">消息</router-link>
+            <router-link to="myProject" class="router_url">个人中心</router-link>
+            <el-popover
+                    width="80"
+                    trigger="hover">
+                <el-button class="logoutButton" @click="exit">退出登录</el-button>
+                <el-avatar :size="40"
+                           src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                           class="avatar pull-right"
+                           slot="reference">
+                </el-avatar>
+            </el-popover>
+
         </div>
+
     </div>
 </template>
 
@@ -20,11 +33,16 @@
                 type:Boolean,
                 default:false
             },
-            username: {
-                type: String,
-                default: ''
-            }
         },
+        methods:{
+            exit() {
+                this.$store.dispatch('app/exit').then(() => {
+                    this.$router.push({
+                        path:'/login'
+                    })
+                })
+            }
+        }
     }
 </script>
 
@@ -48,8 +66,24 @@
         font-weight: bolder;
     }
 
-    .rooter {
-        padding: 0 100px;
+    .avatar {
+        margin-left: 10px;
+        margin-right: 50px;
+    }
+
+    .logoutButton {
+        display: block;
+        width: 100%;
+        border: none;
+
+    }
+
+    .pic {
+        display: inline-block;
+        width: 30px;
+        color: #fff;
+        margin: 0 20px 0 10px;
+        cursor: pointer;
     }
 
     a:hover {
@@ -62,10 +96,6 @@
         color: white;
         padding: 0 10px;
         font-size: 14px;
-    }
-
-    .register_hr {
-        border:0.5px solid #FFFFFF;
-        height:10px;
+        line-height: 40px;
     }
 </style>

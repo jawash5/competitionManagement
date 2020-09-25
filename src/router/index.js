@@ -169,15 +169,6 @@ export const asnycRouterMap = [
                 component: ()  => import("../views/adminConsole/teamManagement")
             },
             {
-                path: '/gradesManagement',
-                name: '/gradesManagement',
-                meta:{
-                    name:'成绩管理',
-                    icon:'el-icon-trophy'
-                },
-                component: ()  => import("../views/adminConsole/gradesManagement")
-            },
-            {
                 path: '/editAnnouncement',
                 name: '/editAnnouncement',
                 meta:{

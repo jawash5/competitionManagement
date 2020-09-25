@@ -64,15 +64,9 @@
 
             },
             goBack() {
-                if(getCode() === '0') {
-                    this.$router.push({
-                        path:'/viewCompetition',
-                    })
-                } else {
-                    this.$router.push({
-                        path:'/checkCompetition',
-                    })
-                }
+                this.$router.push({
+                    path:'/checkCompetition',
+                })
             }
         },
         mounted() {

@@ -2,7 +2,7 @@
     <div id="teamManagement">
         <el-form>
             <el-row>
-                <el-col :span="8">
+                <el-col :span="12">
                     <el-form-item>
                         <el-select v-model="competitionValue" placeholder="请选择比赛阶段" size="small">
                             <el-option
@@ -27,9 +27,12 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
-                    <el-form-item label="关键字">
-                        <el-select v-model="searchKeyValue" placeholder="搜索关键字" size="small" style="width: 120px">
+                <el-col :span="8" :offset="4">
+                    <el-form-item class="pull-right">
+                        <el-select v-model="searchKeyValue"
+                                   placeholder="搜索关键字"
+                                   size="small"
+                                   style="width: 120px;line-height: 40px">
                             <el-option
                                     v-for="item in searchOptions"
                                     :key="item.value"
@@ -37,28 +40,21 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
+                        <el-input placeholder="请输入搜索内容" size="small" style="width: 130px; margin-left: 10px"></el-input>
+                        <el-button type="danger" size="mini" style="margin-left: 10px">搜索</el-button>
                     </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item>
-                        <el-input placeholder="请输入搜索内容" size="small"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-button type="danger" size="small" class="classButton">搜索</el-button>
-                </el-col>
-                <el-col :span="4">
-                    <el-button type="danger" size="small" class="pull-right classButton">新增</el-button>
+
                 </el-col>
             </el-row>
         </el-form>
 
         <el-table
                 ref="multipleTable"
-                :data="tableData.slice(currentSize*(currentPage-1), currentSize*(currentPage))"
+                :data="tableData"
                 tooltip-effect="dark"
-                border
+                stripe
                 style="width: 100%"
+                :default-sort = "{prop: 'projectName', order: 'descending'}"
                 @selection-change="handleChange">
             <el-table-column
                     type="selection"
@@ -71,47 +67,34 @@
                     align="center"
                     label="序号">
             </el-table-column>
+
             <el-table-column
-                    prop="id"
-                    label="队伍序号"
-                    width="60"
-                    align="center">
-                <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].id }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    prop="projectName"
-                    label="项目名称"
+                    prop="teamName"
+                    label="队伍名称"
                     align="center"
                     show-overflow-tooltip>
                 <template slot-scope="scope">
                     <span>{{ tableData[scope.$index].name }}</span>
                 </template>
             </el-table-column>
+
             <el-table-column
                     prop="name"
                     label="队长姓名"
                     width="100"
-                    align="center">
+                    align="center"
+                    show-overflow-tooltip>
                 <template slot-scope="scope">
                     <span>{{ tableData[scope.$index].captain.name }}</span>
                 </template>
             </el-table-column>
-            <el-table-column
-                    prop="teamName"
-                    label="队伍名称"
-                    width="120"
-                    align="center">
-                <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].name }}</span>
-                </template>
-            </el-table-column>
+
             <el-table-column
                     prop="mail"
                     label="队伍邮箱"
-                    width="200"
-                    align="center">
+                    width="250"
+                    align="center"
+                    show-overflow-tooltip>
                 <template slot-scope="scope">
                     <span>{{ tableData[scope.$index].captain.email }}</span>
                 </template>
@@ -119,44 +102,53 @@
 
             <el-table-column
                     prop="submit"
-                    label="上交情况"
-                    width="60"
-                    align="center">
+                    label="上交"
+                    width="80"
+                    align="center"
+                    sortable>
                 <template slot-scope="scope">
                     <span v-for="item in tableData[scope.$index].isSubmit"
                           :key="item.id">{{item.state === true? '〇':'✖' }}</span>
                 </template>
             </el-table-column>
+
             <el-table-column
                     prop="promotion"
-                    label="晋级情况"
-                    width="60"
-                    align="center">
+                    label="晋级"
+                    width="80"
+                    align="center"
+                    sortable>
                 <template slot-scope="scope">
                     <span v-for="item in tableData[scope.$index].isPromote"
                           :key="item.id">{{item.state === true? '〇':'✖' }}</span>
                 </template>
             </el-table-column>
             <el-table-column
-                    width="80"
+                    width="120"
                     align="center"
-                    label="作品审核">
+                    label="作品审核"
+                    sortable>
                 <template slot-scope="scope">
                     <span>{{tableData[scope.$index].isCheck === true? '已审核':'未审核' }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column align="center" label="操作" width="160">
-                <template slot-scope="scope" >
+            <el-table-column
+                    prop="grades"
+                    label="得分"
+                    width="80"
+                    sortable
+                    align="center">
+                <template slot-scope="scope">
+                    <span>{{ tableData[scope.$index].grades }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作" width="80">
+                <template>
                     <el-button
                             size="mini"
                             @click="handleEdit()"
                             >编辑</el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index)"
-                            >删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -237,17 +229,10 @@
                 <el-button size="medium">下载信息</el-button>
                 <el-button size="medium" @click="sendNotice()">发送通知</el-button>
                 <el-button size="medium">文件下载</el-button>
+                <el-button size="medium">成绩添加</el-button>
             </el-col>
             <el-col :span="12">
-                <el-pagination
-                        class="pull-right"
-                        background
-                        layout="sizes, total, prev, pager, next"
-                        :total="total"
-                        :page-sizes="[7, 15, 30, 50]"
-                        @current-change="current_change"
-                        @size-change="handleSizeChange">
-                </el-pagination>
+
             </el-col>
         </el-row>
 
@@ -282,10 +267,12 @@
                 //比赛年份
                 yearValue:'2019',
                 //关键词选项
-                searchOptions: [{
-                    value: '选项1',
-                    label: '电子商务竞赛'
-                }],
+                searchOptions: [
+                    { value: 'name', label: '项目名称' },
+                    { value: 'captainName', label: '队长姓名' },
+                    { value: '队伍名称', label: '队伍名称' },
+                    { value: '队伍邮箱', label: '队伍邮箱' },
+                ],
                 //关键词
                 searchKeyValue: '',
                 //管理员维护的比赛列表
@@ -324,34 +311,9 @@
             }
         },
         methods: {
-            //页码发生变化
-            current_change(currentPage) {
-                this.currentPage = currentPage;
-            },
-            //每页条数发生变化
-            handleSizeChange(currentSize){
-                this.currentSize = currentSize;
-            },
+            //编辑
             handleEdit() {
                 this.dialogVisible = true;
-            },
-            handleDelete(index) {
-                this.tableData.splice(index,1);
-                this.$confirm('此操作将永久删除该队伍, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
             },
 
             //获取该管理员维护的比赛列表
@@ -411,7 +373,12 @@
             //左侧多选选中事件
             handleChange(selection) {
                 this.chosenGroups = selection;
-            }
+            },
+            // //搜索
+            // search() {
+            //     const keyValue = this.searchKeyValue;
+            //     this.formData.filter(data  => data.)
+            // }
         },
         mounted() {
             this.getRoles();
@@ -430,11 +397,6 @@
         /deep/.el-table thead {
             font-weight: bold;
             color: #344a5f;
-        }
-
-        .classButton {
-            margin-top: 5px;
-            margin-left: 10px;
         }
     }
 

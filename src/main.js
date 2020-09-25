@@ -8,8 +8,9 @@ import './router/permit';
 import './assets/icon/iconfont.css';
 import './styles/main.scss'
 import 'github-markdown-css/github-markdown.css'
+import astrict from '@/utils/astrict'
 
-
+Vue.use(astrict)
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 

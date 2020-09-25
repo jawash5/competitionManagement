@@ -1,6 +1,6 @@
 <template>
     <div id="login">
-        <head-login :state="true"></head-login>
+        <head-login :state="state"></head-login>
         <div id="wrap">
             <div id="login_with_img">
                 <img id="login_img" alt="讨论" src="../../assets/main/login.png">
@@ -38,6 +38,7 @@
 <script>
     import headLogin from "@/views/login/components/headLogin";
     import myFooter from "@/views/login/components/myFooter";
+    import {getCode} from "@/utils/app";
 
     export default {
         name: "login",
@@ -70,8 +71,13 @@
                     password: [
                         { validator: validatePass, trigger: 'blur' },
                     ],
-                }
+                },
             };
+        },
+        computed:{
+            state() {
+                return getCode() === '0';
+            }
         },
         methods: {
             gotoRegister: function () {
@@ -94,16 +100,10 @@
                 data.append('password',this.ruleForm.password);
                 // eslint-disable-next-line no-unused-vars
                 this.$store.dispatch("app/login", data).then(response => {
+                    this.$router.push({
+                        path:this.$route.query.redirect || '/checkCompetition'
+                    });
 
-                    if(response === '参赛者') {
-                        this.$router.push({
-                            path:this.$route.query.redirect || '/viewCompetition'
-                        });
-                    } else {
-                        this.$router.push({
-                            path:'/teamManagement'
-                        });
-                    }
                 }).catch(error => {
                     this.$message.error(error.response.data);
                 });
