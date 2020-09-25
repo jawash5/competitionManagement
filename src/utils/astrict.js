@@ -7,7 +7,7 @@ import { logout } from '@/api/login';
 
 let lastTime = new Date().getTime()
 let currentTime = new Date().getTime()
-let timeOut = 1000  //设置超时时间: 60分钟
+let timeOut = 60 * 60 * 1000  //设置超时时间: 60分钟
 
 window.onload = function () {
     window.document.onmousedown = function () {
@@ -53,5 +53,5 @@ function checkTimeout() {
 
 export default function () {
         /* 定时器 间隔30秒检测是否长时间未操作页面 */
-        window.setInterval(checkTimeout, 1000);
+        window.setInterval(checkTimeout, 10000);
 }
