@@ -11,7 +11,6 @@ const mutations = {
     SET_COMPETITION_INFO(state, value) {
         state.competitionInfo = value;
     }
-
 }
 
 const actions = {

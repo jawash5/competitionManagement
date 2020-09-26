@@ -1,9 +1,7 @@
 <template>
     <div id="competitionDetail">
-<!--        <img alt="讨论" src="../../assets/main/discuss.jpg" style="width: 100%">-->
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
         <div style="background-color: lightgreen; height: 300px"></div>
-
         <div class="wrap">
             <el-steps :space="250" :active="1" finish-status="success">
                 <el-step v-for="item in competitionInfo.stages"
@@ -15,19 +13,23 @@
             <div class="markdown-body">
                 <vue-markdown :source="context"></vue-markdown>
             </div>
+            <new-team :visible="visible" @dialogClose="visible = false" :competition-name="competitionInfo.name"></new-team>
         </div>
     </div>
 </template>
 
 <script>
     import VueMarkdown from 'vue-markdown'
-    import {getCode} from "@/utils/app";
+    import {getCode, getRole} from "@/utils/app";
+    import newTeam from "@/views/userConsole/components/newTeam";
+    import {competitionDetail} from "@/api/login";
 
     export default {
         name: "competitionDetail",
         data() {
             return{
                 competitionInfo: '',
+                visible:false
             }
         },
         computed:{
@@ -36,12 +38,16 @@
             }
         },
         components: {
-            VueMarkdown // 注入组件
+            VueMarkdown,
+            newTeam
         },
         methods: {
             getCompetitionInfo() {
-                const competitionInfo = this.$store.getters['competition/competitionInfo'];
-                this.competitionInfo = JSON.parse(competitionInfo);
+                const id = this.$route.query.id
+                competitionDetail(id).then(response => {
+                    this.competitionInfo = response.data.data
+                })
+
 
             },
             signUpCompetition() {
@@ -50,18 +56,16 @@
                     this.$router.push({
                         path:'/login',
                         query:{
-                            redirect:'/projectDetail'
+                            redirect:'/competitionDetail?id=' + this.$route.query.id,
                         }
                     })
                 } else {
-                    this.$router.push({
-                        path:'/projectDetail',
-                        query:{
-                            id: this.competitionInfo.id
-                        }
-                    })
+                    if(getRole() === '管理员') {
+                        this.$message('管理员大大不能报名哦!')
+                    } else {
+                        this.visible = true;
+                    }
                 }
-
             },
             goBack() {
                 this.$router.push({

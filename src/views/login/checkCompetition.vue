@@ -28,7 +28,6 @@
     import {competitionList} from "@/api/login";
     import headLogin from "@/views/login/components/headLogin";
     import myFooter from "@/views/login/components/myFooter";
-    // import competition from "@/components/competition";
     import competitionCard from "@/views/login/components/competitionCard";
     import {getCode} from "@/utils/app";
 
@@ -37,7 +36,6 @@
         components:{
             "headLogin": headLogin,
             "myFooter": myFooter,
-            // "competition":competition
             "competitionCard":competitionCard
         },
         data(){

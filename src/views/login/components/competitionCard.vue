@@ -12,31 +12,20 @@
 </template>
 
 <script>
-    import {competitionDetail} from "@/api/login";
 
     export default {
         name: "competitionCard",
         data() {
             return{}
         },
-        // computed:{
-        //     cardStyle() {
-        //         if(getCode() === "0") {
-        //             return 'cardUser';
-        //         } else {
-        //             return 'card'
-        //         }
-        //     }
-        // },
         methods:{
             getCompetitionDetail () {
-                competitionDetail(this.competition.id).then(response => {
-                    const competitionInfo = response.data.data;
-                    console.log(competitionInfo)
-                    this.$store.dispatch('competition/setCompetitionInfo', JSON.stringify(competitionInfo));
-                    sessionStorage.setItem('competitionInfo', JSON.stringify(competitionInfo));
-                    this.$router.push('/competitionDetail');
-                })
+                this.$router.push({
+                    path: '/competitionDetail',
+                    query: {
+                        id: this.competition.id
+                    }
+                });
             }
         },
         props:{
@@ -85,41 +74,6 @@
     .card:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, .18), 0 0 12px rgba(0, 0, 0, .04);
         transition: box-shadow 0.5s;
-    }
-
-    .cardUser {
-        margin: 15px;
-        width: 280px;
-        height: 250px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        border-radius: 5px;
-        background-color: #f7f7f7;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
-        .competitionName {
-            text-align: center;
-            margin: 20px;
-
-            .title {
-                font-size: 24px;
-                font-family: "幼圆" , serif;
-            }
-
-            .time {
-                text-align: center;
-                font-size: 16px;
-                margin-bottom: 10px;
-                color: #303133;
-                font-weight: 500;
-            }
-        }
-    }
-
-    .cardUser:hover {
-        box-shadow: 0 0 10px rgba(0, 0, 0, .12), 0 0 12px rgba(0, 0, 0, .04);
-        transition: box-shadow 0.3s;
     }
 
 </style>

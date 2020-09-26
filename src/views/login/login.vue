@@ -103,7 +103,6 @@
                     this.$router.push({
                         path:this.$route.query.redirect || '/checkCompetition'
                     });
-
                 }).catch(error => {
                     this.$message.error(error.response.data);
                 });

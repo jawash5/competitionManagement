@@ -59,8 +59,6 @@
                 },
             }
         },
-        computed:{
-        },
         props:{
             visible:{
                 type:Boolean,
