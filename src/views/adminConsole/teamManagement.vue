@@ -224,12 +224,12 @@
         <div class="div-30"></div>
         <el-row>
             <el-col :span="12">
-                <el-button size="medium">批量删除</el-button>
-                <el-button size="medium">修改权限</el-button>
-                <el-button size="medium">下载信息</el-button>
-                <el-button size="medium" @click="sendNotice()">发送通知</el-button>
-                <el-button size="medium">文件下载</el-button>
-                <el-button size="medium">成绩添加</el-button>
+                <el-button size="small">批量删除</el-button>
+                <el-button size="small">修改权限</el-button>
+                <el-button size="small">下载信息</el-button>
+                <el-button size="small" @click="sendNotice()">发送通知</el-button>
+                <el-button size="small">文件下载</el-button>
+                <el-button size="small">成绩添加</el-button>
             </el-col>
             <el-col :span="12">
 
@@ -383,7 +383,7 @@
         mounted() {
             this.getRoles();
             this.getAdminCompetition();
-            this.getCompetitionGroups(this.yearValue)
+            this.getCompetitionGroups(this.yearValue);
         }
     }
 </script>

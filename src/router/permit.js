@@ -30,6 +30,7 @@ router.beforeEach((to, from, next) =>{
 
             } else {
                 next();
+                window.sessionStorage.setItem('active', to.path)
             }
         }
 

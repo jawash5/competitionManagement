@@ -9,17 +9,6 @@
                         <el-input placeholder="请输入比赛年" style="width: 150px" v-model="form.year" maxlength="4"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="报名时间">
-                        <el-date-picker
-                                v-model="form.signUptime"
-                                type="datetimerange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                value-format="yyyy-MM-dd HH:mm:ss">
-                        </el-date-picker>
-                    </el-form-item>
-
                     <el-form-item label="比赛时间">
                         <el-date-picker
                                 v-model="form.allTime"
@@ -32,17 +21,9 @@
                     </el-form-item>
 
                     <el-form-item label="人数限制">
-                        <el-row>
-                            <el-col :span="3">
-                                <el-input v-model="form.signForm.minPeople" maxlength="2" placeholder="最少人数"></el-input>
-                            </el-col>
-                            <el-col :span="1">
-                                <span style="margin:0 0 0 .6rem">至</span>
-                            </el-col>
-                            <el-col :span="3">
-                                <el-input v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
-                            </el-col>
-                        </el-row>
+                        <el-input class="peopleLimited" v-model="form.signForm.minPeople" maxlength="2" placeholder="最少人数"></el-input>
+                        <span style="margin:0 5px">至</span>
+                        <el-input class="peopleLimited" v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -52,12 +33,35 @@
             <div class="div-30"></div>
 
             <div>
+                <el-card class="formCard">
+                    <div class="pull-center">
+                        <el-tag>{{1}}</el-tag>
+                        <el-input
+                                v-model="inputBT[0]"
+                                disabled
+                                style="width: 50%; margin-left: 30px">
+                        </el-input>
+                    </div>
+                    <el-divider></el-divider>
+                    <div class="pull-center">
+                        <label for="" style="margin-right: 20px">阶段持续时间</label>
+                        <el-date-picker
+                                v-model="form.signUptime"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                value-format="yyyy-MM-dd HH:mm:ss">
+                        </el-date-picker>
+                    </div>
+                </el-card>
+
                 <el-card class="formCard" v-for="i in num" :key="i">
                     <div class="pull-center">
-                        <el-tag>{{i}}</el-tag>
+                        <el-tag>{{i+1}}</el-tag>
                         <el-input
                                 placeholder="请输入赛事阶段名称"
-                                v-model="inputBT[i-1]"
+                                v-model="inputBT[i]"
                                 clearable
                                 style="width: 50%; margin-left: 30px">
                         </el-input>
@@ -83,9 +87,9 @@
                                 end-placeholder="结束日期"
                                 value-format="yyyy-MM-dd HH:mm:ss">
                         </el-date-picker>
-
                     </div>
                 </el-card>
+
                 <div class="addCard">
                     <el-tooltip class="item" effect="light" content="添加阶段" placement="top">
                         <el-button type="text" @click="addDiv" style="font-size: 30px;">
@@ -135,7 +139,7 @@
             return {
                 dialogVisible: false,
                 num: 1, // 卡片的数量
-                inputBT:[], //输入框
+                inputBT:['报名阶段'], //输入框
                 stage: '',//阶段
                 form:{
                     year:'',
@@ -165,7 +169,7 @@
             },
             //删除组件
             deleteDiv() {
-                if(this.num > 1){
+                if(this.num > 0){
                     this.num -= 1;
                     this.inputBT.pop()
                     this.form.competitionTime.pop();
@@ -177,42 +181,47 @@
                 const form = this.form;
                 this.submitForm.year = parseInt(form.year);
                 this.submitForm.information = form.information;
-                this.submitForm.stages = [];
                 this.submitForm.start = form.allTime[0];
                 this.submitForm.end = form.allTime[1];
+                this.submitForm.stages = [];//阶段信息清空
                 const stages = this.submitForm.stages;
+                stages.push({
+                    name:'报名阶段',
+                    startDate: form.signUptime[0],
+                    endDate:form.signUptime[1],
+                    uploadStartDate: '2019-01-01 00:00:00',
+                    uploadEndDate: '2019-01-01 00:00:00',
+                })
                 for(let i=0; i<form.competitionTime.length; i++) {
                     stages.push({
-                        name: this.inputBT[i],
+                        name: this.inputBT[i+1],
                         startDate:form.competitionTime[i].stageTime[0],
                         endDate:form.competitionTime[i].stageTime[1],
                         uploadStartDate: form.competitionTime[i].uploadTime[0],
                         uploadEndDate: form.competitionTime[i].uploadTime[1]
                     })
                 }
-                stages.push({
-                    name:'报名时间',
-                    startDate: form.signUptime[0],
-                    endDate:form.signUptime[1],
-                    uploadStartDate: '2019-01-01 00:00:00',
-                    uploadEndDate: '2019-01-01 00:00:00',
-                })
+
                 this.submitForm.stage = stages[this.stage];
                 form.signForm.minPeople = parseInt(form.signForm.minPeople);
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
                 this.submitForm.signForm = form.signForm;
-                // console.log(this.submitForm)
+
                 createCompetition(this.submitForm).then(response => {
                     this.$message({
                         type:"success",
                         message:response.data.data
                     })
+                    this.$router.push('/checkCompetition')
                 })
             },
             //获取editor内容
             getContent(data) {
                 this.form.information = data;
             }
+        },
+        mounted() {
+            window.scrollTo(0,0);
         }
     }
 </script>
@@ -225,6 +234,10 @@
 
         #formDesign {
             margin: 0 auto;
+
+            .peopleLimited {
+                width: 100px;
+            }
         }
 
         .title {
@@ -234,7 +247,7 @@
         }
 
         .elForm {
-            width: 60%;
+            width: 600px;
             margin: 0 auto;
         }
 
@@ -272,6 +285,11 @@
         .addCard {
             text-align: right;
             margin-top: 10px;
+        }
+
+        /deep/.el-input.is-disabled .el-input__inner {
+            cursor: auto;
+            color: #606266;
         }
 
     }

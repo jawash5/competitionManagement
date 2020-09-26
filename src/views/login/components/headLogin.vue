@@ -10,7 +10,7 @@
             <router-link to="" class="router_url">消息</router-link>
             <router-link :to="url" class="router_url">个人中心</router-link>
             <el-popover
-                    width="50"
+                    width="100"
                     trigger="hover">
                 <el-button class="logoutButton" @click="exit">退出登录</el-button>
                 <el-avatar :size="40"

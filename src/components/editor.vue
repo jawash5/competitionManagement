@@ -4,7 +4,8 @@
                       v-model="handbook"
                       ref="md"
                       style="height: 100%"
-                      @save="saveContent()"
+                      @change="changeContent"
+                      @save="saveContent"
                       @imgAdd="handleEditorImgAdd"
                       @imgDel="handleEditorImgDel">
         </mavon-editor>
@@ -63,6 +64,10 @@
             year:{type:String, required:true}
         },
         methods:{
+            //内容变化
+            changeContent() {
+                this.$emit('content',this.handbook)
+            },
             //保存
             saveContent() {
                 this.$message.success('保存成功！')

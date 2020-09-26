@@ -63,15 +63,25 @@
         name: "Nav",
         data() {
             return {
-                routers: this.$router.options.routes
+                routers: this.$router.options.routes,
             }
         },
 
+        // watch:{
+        //     session(newVal,oldVal) {
+        //         this.active = newVal;
+        //         console.log(oldVal)
+        //     }
+        // },
+        //
         computed:{
             active() {
                 const role = (getRole() === '参赛者' ? '/myProject' : '/teamManagement');
                 return (sessionStorage.getItem("active") || role);
-            }
+            },
+            // session() {
+            //     return sessionStorage.getItem("active")
+            // }
         },
 
         methods:{

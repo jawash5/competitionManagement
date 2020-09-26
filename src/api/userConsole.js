@@ -104,3 +104,13 @@ export function deleteFiles(data) {
         data:data
     })
 }
+
+/**
+ * 获取组文件列表
+ */
+export function getGroupFiles(data) {
+    return service.request({
+        method:"get",
+        url: '/groups/files?groupId=' + data,
+    })
+}

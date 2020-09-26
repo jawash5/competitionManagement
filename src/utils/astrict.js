@@ -7,6 +7,7 @@ import { logout } from '@/api/login';
 
 let lastTime = new Date().getTime()
 let currentTime = new Date().getTime()
+// let timeOut = 60 * 60 * 1000  //设置超时时间: 60分钟
 let timeOut = 60 * 60 * 1000  //设置超时时间: 60分钟
 
 window.onload = function () {

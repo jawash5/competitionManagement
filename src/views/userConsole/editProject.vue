@@ -4,21 +4,15 @@
             <h1 id="competitionName">编辑资料</h1>
             <div id="projectForm">
                 <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label=" " prop="type">
-                        <el-select v-model="competitionValue" placeholder="请选择比赛" class="pull-left" :disabled="true">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="比赛名称" prop="type">
+                        <el-input v-model="competitionValue"
+                                  class="pull-left"
+                                  :disabled="true">
+                        </el-input>
                     </el-form-item>
+
                     <el-divider></el-divider>
 
-                    <el-form-item label="项目名称" prop="name">
-                        <el-input v-model="groupInfo.name" :disabled="true"></el-input>
-                    </el-form-item>
                     <el-form-item label="队伍名称" prop="teamName">
                         <el-input v-model="groupInfo.name" :disabled="true"></el-input>
                     </el-form-item>
@@ -66,6 +60,14 @@
                             <div class="noTeammate">无项目成员信息</div>
                         </template>
                     </el-form-item>
+                    <el-form-item label="上传文件">
+                        <el-upload
+                                class="upload-demo"
+                                action="#"
+                                disabled
+                                :file-list="fileList">
+                        </el-upload>
+                    </el-form-item>
                 </el-form>
             </div>
             <div id="buttons">
@@ -75,8 +77,7 @@
 </template>
 
 <script>
-    import {getGroupInfo} from "@/api/userConsole";
-    import {competitionList} from "@/api/login";
+    import {getGroupInfo,getGroupFiles} from "@/api/userConsole";
 
     export default {
         name: "editProject" ,
@@ -139,18 +140,6 @@
                     this.ruleForm.members.splice(index, 1)
                 }
             },
-            //获取比赛列表
-            getCompetitionList() {
-                competitionList().then(response => {
-                    const data = response.data.data;
-                    for(let i=0; i<data.length; i++) {
-                        this.options.push({
-                            value: data[i].id,
-                            label: data[i].name
-                        })
-                    }
-                })
-            },
             //获取队伍信息
             getGroupInfo() {
                 const groupId = this.$store.getters['group/groupId'];
@@ -158,11 +147,21 @@
                     this.groupInfo = response.data.data;
                     this.competitionValue = this.groupInfo.competitionId;
                 });
+            },
+            //获取组文件
+            getFiles() {
+                const groupId = this.$store.getters['group/groupId'];
+                getGroupFiles(groupId).then( response => {
+                    const data = response.data.data;
+                    for(let i=0; i<data.length; i++) {
+                        this.fileList.push({name:data[i].fileName, url:''})
+                    }
+                })
             }
         },
         mounted() {
-            this.getCompetitionList();
             this.getGroupInfo();
+            this.getFiles();
         }
     }
 </script>

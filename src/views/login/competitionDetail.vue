@@ -10,19 +10,18 @@
             </el-steps>
             <el-button class="pull-right" type="success" round @click="signUpCompetition">立即报名</el-button>
             <div class="div-60"></div>
-            <div class="markdown-body">
-                <vue-markdown :source="context"></vue-markdown>
-            </div>
+            <div class="markdown-body" v-html="content"></div>
             <new-team :visible="visible" @dialogClose="visible = false" :competition-name="competitionInfo.name"></new-team>
         </div>
     </div>
 </template>
 
 <script>
-    import VueMarkdown from 'vue-markdown'
     import {getCode, getRole} from "@/utils/app";
     import newTeam from "@/views/userConsole/components/newTeam";
     import {competitionDetail} from "@/api/login";
+    import { mavonEditor } from 'mavon-editor';
+    import 'mavon-editor/dist/css/index.css';
 
     export default {
         name: "competitionDetail",
@@ -33,12 +32,13 @@
             }
         },
         computed:{
-            context() {
-                return this.competitionInfo.information
+            content() {
+                let markdownIt = mavonEditor.getMarkdownIt()
+                return markdownIt.render(this.competitionInfo.information)
             }
         },
         components: {
-            VueMarkdown,
+            // VueMarkdown,
             newTeam
         },
         methods: {

@@ -49,7 +49,6 @@
 
             </div>
 
-
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogClose()">取 消</el-button>
                 <el-button type="primary" @click="uploadFile">确 定</el-button>
@@ -135,7 +134,7 @@
                 data.append('stage', this.competitionStages);
                 data.append('groupId', this.groupId);
                 data.append('type', this.fileType);
-                console.log(data)
+
                 upload(data).then(response => {
                     const id = response.data.data;
                     this.checkStatus(id)
@@ -147,20 +146,19 @@
             },
             //判断状态
             checkStatus(id) {
-                console.log(id)
-                checkStatus(id).then(response => {
-                    console.log(response.data)
+                const data = new FormData();
+                data.append('id', id);
+
+                checkStatus(data).then(response => {
                     const res = response.data.data;
-                    console.log(res)
                     if(res === '成功') {
                         this.$message.success('上传成功！');
                         this.$emit('uploadSuccess');
                     } else if (res === '失败') {
                         this.$message.success('上传失败！');
+                    } else {
+                        this.checkStatus(id);
                     }
-                    // else {
-                    //     this.checkStatus(id);
-                    // }
                 })
             },
             //文件状态改变时
@@ -170,6 +168,7 @@
             },
             //删除文件
             handleRemove() {
+                console.log(this.file)
                 this.file = '';
             }
 

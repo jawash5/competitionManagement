@@ -91,6 +91,9 @@
                     label="文件类型"
                     width="100"
                     align="center">
+<!--                <template slot-scope="scope">-->
+<!--                    <span {{table '〇':'✖' }}</span>-->
+<!--                </template>-->
             </el-table-column>
 
             <el-table-column
