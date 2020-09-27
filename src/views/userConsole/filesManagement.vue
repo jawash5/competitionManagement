@@ -159,13 +159,23 @@
         },
         methods:{
             deleteFile (index) {
-                // eslint-disable-next-line no-unused-vars
-                deleteFiles(this.tableData[index]).then(response => {
-                    this.$message.success('删除成功！');
-                    this.getFiles();
-                }).catch( error => {
-                    this.$message.error(error.response.data);
-                })
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    deleteFiles(this.tableData[index]).then( () => {
+                        this.$message.success('删除成功！');
+                        this.getFiles();
+                    }).catch( error => {
+                        this.$message.error(error.response.data);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             downloadFile:function (index) {
                 console.log(index)

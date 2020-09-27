@@ -77,7 +77,7 @@
             },
             getChosenGroup() {
                 this.chosenGroups = this.$store.getters['sendNotice/chosenGroups'];
-                console.log(this.chosenGroups);
+                // console.log(this.chosenGroups);
             },
             chosenTap(data) {
                 const index = data.index;
@@ -102,10 +102,7 @@
                 });
                 this.dialogClose();
             }
-
         },
-
-
     }
 </script>
 

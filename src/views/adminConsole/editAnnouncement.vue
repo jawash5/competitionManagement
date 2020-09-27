@@ -98,7 +98,7 @@
                         "isTop": '',
                     }
                 ],//公告列表
-                competitionValue:'name', //比赛名称
+                competitionValue:'电子商务比赛', //比赛名称
                 competitionList:[], //比赛列表
                 year:'2018',
                 activeName:'',//标签选择项

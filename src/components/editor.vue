@@ -15,7 +15,8 @@
 <script>
     import { mavonEditor } from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
-    import {uploadPicture} from "@/api/adminConsole";
+    import {uploadPicture,deletePicture} from "@/api/adminConsole";
+    import {checkStatus} from "@/api/userConsole";
 
     export default {
         name: "editor",
@@ -57,16 +58,20 @@
                     /* 2.2.1 */
                     subfield: true, // 单双栏模式
                     preview: true, // 预览
-                }
+                },
+                url:''
             }
         },
         props:{
-            year:{type:String, required:true}
+            year:{type:String}
         },
         methods:{
             //内容变化
             changeContent() {
                 this.$emit('content',this.handbook)
+                // const str = "https://cm-web-files.oss-cn-shanghai.aliyuncs.com/public/电子商务比赛/2019/13e351bc-d993-4c94-8549-05ae5e4e4f5a2.jpg"
+                // console.log(str.slice(57,-47))
+
             },
             //保存
             saveContent() {
@@ -80,7 +85,8 @@
                 data.append('year', this.year)
 
                 uploadPicture(data).then(response => {
-                    const url = response.data.data
+                    const url = response.data.data;
+                    this.url = url;
                     this.$refs.md.$img2Url (pos, url)
                 }).catch(error => {
                     this.$message.error(error.response.data)
@@ -88,16 +94,39 @@
             },
             //删除图片
             handleEditorImgDel() {
-                // const formdata = new FormData()
-                // formdata.append('url', pos[0])
-                // delfile(formdata)
-                //     .then(() => {
-                //         Message.success('删除成功')
-                //     })
-                //     .catch(res => {
-                //         console.log(res)
-                //     })
-            }
+                console.log(this.url)
+                const fileName = this.url.slice(-41);
+                const year = this.url.slice(-46,-42);
+                const competitionName = this.url.slice(57,-47);
+                const data = {
+                    year: year,
+                    competitionName: competitionName,
+                    filename: fileName
+                }
+                console.log(data);
+                deletePicture(data).then( response => {
+                    const id = response.data.data;
+                    this.checkStatus(id);
+                }).catch(error => {
+                    this.$message.error(error.response.data)
+                })
+            },
+            //判断状态
+            checkStatus(id) {
+                const data = new FormData();
+                data.append('id', id);
+                checkStatus(data).then(response => {
+                    const res = response.data.data;
+                    if(res === '成功') {
+                        this.$message.success('删除成功！');
+                        this.$emit('uploadSuccess');
+                    } else if (res === '失败') {
+                        this.$message.success('删除失败！');
+                    } else {
+                        this.checkStatus(id);
+                    }
+                })
+            },
         }
     }
 </script>

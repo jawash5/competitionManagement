@@ -126,3 +126,34 @@ export function uploadPicture(data) {
         data:data
     })
 }
+
+/**
+ * 删除
+ */
+export function deletePicture(data) {
+    return service.request({
+        method: "delete",
+        url: '/competition/deletepicture',
+        data:data
+    })
+}
+
+/**
+ * 获取比赛某阶段文件
+ */
+export function getStageFile(data) {
+    return service.request({
+        method: "get",
+        url: '/competition/files?stage=' + data.stage + '&year=' + data.year,
+    })
+}
+
+/**
+ * 下载文件
+ */
+export function downloadFile(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/download?year=' + data.year + '&type=' + data.type + '&stage=' + data.stage + '&fileName=' + data.filename,
+    })
+}

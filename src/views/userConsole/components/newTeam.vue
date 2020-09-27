@@ -75,6 +75,10 @@
             competitionName:{
                 type:String,
                 require:true,
+            },
+            id:{
+                type:Number,
+                require:true,
             }
         },
         data() {
@@ -103,10 +107,6 @@
             //前表单提交，端验证还没有加
             submitForm() {
                 //前端验证
-                if(this.competitionValue === "") {
-                    this.$message.error('请选择比赛!');
-                    return false;
-                }
                 if(this.ruleForm.teamName === '') {
                     this.$message.error('请输入队伍名称!');
                     return false;
@@ -116,7 +116,7 @@
                     return false;
                 }
 
-                this.finalForm.competitionId = parseInt(this.competitionValue);
+                this.finalForm.competitionId = this.id;
                 this.finalForm.groupName = this.ruleForm.teamName;
                 this.finalForm.teammateSet.push({
                     name:this.ruleForm.leader,

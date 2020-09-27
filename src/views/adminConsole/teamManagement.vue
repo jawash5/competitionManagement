@@ -226,9 +226,9 @@
             <el-col :span="12">
                 <el-button size="small">批量删除</el-button>
                 <el-button size="small">修改权限</el-button>
-                <el-button size="small">下载信息</el-button>
-                <el-button size="small" @click="sendNotice()">发送通知</el-button>
-                <el-button size="small">文件下载</el-button>
+                <el-button size="small" >下载信息</el-button>
+                <el-button size="small" @click="sendNotice">发送通知</el-button>
+                <el-button size="small" @click="downloadFile">文件下载</el-button>
                 <el-button size="small">成绩添加</el-button>
             </el-col>
             <el-col :span="12">
@@ -236,14 +236,14 @@
             </el-col>
         </el-row>
 
-        <send-message :visible="sendMessageVisible" @dialogClose="dialogClose"></send-message>
-
+        <send-message :visible="sendMessageVisible"
+                      @dialogClose="dialogClose"></send-message>
     </div>
 
 </template>
 
 <script>
-    import {getRoles, getAdminCompetition, getCompetitionGroups} from "@/api/adminConsole";
+    import {getRoles, getCompetitionGroups, getStageFile} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
 
     export default {
@@ -251,8 +251,6 @@
         components:{sendMessage},
         data() {
             return {
-                currentPage:1,//当前页码
-                currentSize:7,//当前条数
                 dialogVisible:false, //编辑对话框
                 //比赛阶段选项
                 competitionOptions: [],
@@ -279,7 +277,25 @@
                 AdminCompetition:[],
 
                 //表单参数
-                tableData: [],
+                tableData: [
+                    {
+                        "id": '',
+                        "name": "",
+                        "competition": {
+                            "id": '',
+                            "information": "",
+                            "year": "",
+                            "startDate": "",
+                            "endDate": "",
+                            "signForm": {},
+                            "notice": [],
+                            "nowStage": []
+                        },
+                        "teammates": [],
+                        "captain": {},
+                        "recordList": []
+                    }
+                ],
                 //修改信息表单参数
                 editForm:{
                     teamID:'',
@@ -315,48 +331,33 @@
             handleEdit() {
                 this.dialogVisible = true;
             },
-
-            //获取该管理员维护的比赛列表
-            getAdminCompetition() {
-                getAdminCompetition().then( response => {
-                    const adminCompetition = response.data.data;
-                    for(let i=0; i<adminCompetition.length; i++) {
-                        this.competitionOptions.push({
-                            value: adminCompetition[i].id,
-                            label: adminCompetition[i].id
-                        })
-                    }
-                }).catch( error => {
-                    this.$message.error(error.response.data)
-                })
-            },
-
-            //获取比赛组
+            //获取比赛组与比赛阶段
             getCompetitionGroups(year) {
                 getCompetitionGroups(year).then( response => {
-                    this.tableData = response.data.data
-                }).catch( error => {
-                    this.$message.error(error.response.data)
+                    this.tableData = response.data.data;
+                    this.competitionOptions = [];
+                    this.competitionValue = '';
+                    if(this.tableData.length !== 0) {
+                        for(let i=0; i<this.tableData[0].competition.nowStage.length; i++) {
+                            this.competitionOptions.push({
+                                value: this.tableData[0].competition.nowStage[i].name,
+                                label: this.tableData[0].competition.nowStage[i].name
+                            })
+                        }
+                    }
+                    // console.log(this.competitionOptions)
                 })
             },
-
             //提交修改表单
             submitEditForm() {
 
             },
-            // handleConform:function (index) {
-            //     this.tableData[index].isSet = false;
-            // },
-            // handleCancel:function (index) {
-            //     this.tableData[index].isSet = false;
-            // }
-
             //获取权限角色
             getRoles() {
                 getRoles().then(response => {
                     this.editForm.authority = response.data.data;
                 }).catch( error => {
-                        this.$message.error(error.response.message);
+                    this.$message.error(error.response.data);
                 })
             },
 
@@ -364,12 +365,26 @@
             sendNotice() {
                 this.sendMessageVisible = true;
                 this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
-
             },
             //关闭通知
             dialogClose() {
                 this.sendMessageVisible = false;
             },
+            //获取文件列表
+            getFiles() {
+                const data = {
+                    stage: this.competitionValue,
+                    year: this.yearValue
+                };
+                getStageFile(data).then( response => {
+                    this.fileList = response.data.data;
+                } )
+            },
+            //下载文件
+            downloadFile() {
+
+            },
+
             //左侧多选选中事件
             handleChange(selection) {
                 this.chosenGroups = selection;
@@ -382,7 +397,6 @@
         },
         mounted() {
             this.getRoles();
-            this.getAdminCompetition();
             this.getCompetitionGroups(this.yearValue);
         }
     }

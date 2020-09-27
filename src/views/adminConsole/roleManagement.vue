@@ -12,13 +12,6 @@
             </el-table-column>
 
             <el-table-column
-                    prop="roleId"
-                    label="ID"
-                    align="center"
-                    width="80">
-            </el-table-column>
-
-            <el-table-column
                     prop="roleName"
                     label="角色名称"
                     align="center"
