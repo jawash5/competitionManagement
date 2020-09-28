@@ -1,19 +1,6 @@
 <template>
     <div id="myProject">
         <div>
-            <el-select v-model="competitionValue"
-                       size="medium"
-                       placeholder="请选择"
-                       style="margin-left: 200px"
-                       @change="getAnnouncement">
-                <el-option
-                        v-for="item in competitionList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
-
             <el-select v-model="year"
                        size="medium"
                        placeholder="请选择"

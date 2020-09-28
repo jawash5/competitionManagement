@@ -12,7 +12,10 @@
             <div class="div-60"></div>
             <el-row>
                 <el-col :span="16">
-                    <div class="markdown-body" v-html="content"></div>
+                    <el-card class="content">
+                        <div v-if="this.mdContent === ''">管理员很懒，什么也没有留下...</div>
+                        <div class="markdown-body" v-html="content"></div>
+                    </el-card>
                 </el-col>
                 <el-col :span="6" :offset="2">
                     <el-card class="announcement pull-right">
@@ -72,8 +75,8 @@
             getCompetitionInfo() {
                 const id = this.$route.query.id
                 competitionDetail(id).then(response => {
-                    this.competitionInfo = response.data.data
-                    this.mdContent = this.competitionInfo.information
+                    this.competitionInfo = response.data.data;
+                    this.mdContent = this.competitionInfo.information;
                     this.sortStages('id')//按id排序
                     this.getBoard()//获取公告
                 })
@@ -168,8 +171,12 @@
             margin-bottom: 10px;
         }
 
-        /deep/img {
+        /deep/.markdown-body img {
             width: 300px;
+        }
+
+        .content {
+            padding: 50px;
         }
 
         /deep/.el-collapse-item__header {

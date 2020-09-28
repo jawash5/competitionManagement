@@ -43,16 +43,7 @@
                 competitionList:[],
                 selectValue:'全部比赛',
                 options:[
-                    {
-                        value: '选项1',
-                        label: '全部比赛'
-                    }, {
-                        value: '选项2',
-                        label: '标签2'
-                    }, {
-                        value: '选项3',
-                        label: '标签3'
-                    }
+                    {value: '选项1', label: '全部比赛'}
                 ]
             }
         },

@@ -82,7 +82,7 @@
                 isDisabled: true,
                 dialogVisible:false,
                 form: {
-                    studentNo: null,
+                    studentNo: '',
                     name: '',
                     school: '',
                     university: '',
@@ -115,13 +115,16 @@
                     this.$message.error("请输入完整信息");
                     return false;
                 }
-                modifyPersonalInfo(data).then(
+                modifyPersonalInfo(data).then( () => {
                     this.$message({
                         type:"success",
                         message:"修改成功！"
                     })
-                )
+                    this.getPersonalInfo();
+                    this.editInfo = {password:'', email: '', college:''}
+                })
                 this.dialogVisible = false;
+
 
             }
         },

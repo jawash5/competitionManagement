@@ -63,7 +63,7 @@
 
 <script>
     import {applyCompetition, personalInfo} from "@/api/userConsole";
-    import {getCode} from "@/utils/app";
+    import {getCode, getRole} from "@/utils/app";
 
     export default {
         name: "newTeam",
@@ -159,7 +159,7 @@
             },
             //获取队长信息
             getLeader() {
-                if(getCode() === '0') {
+                if(getCode() === '0' && getRole() === '参赛者') {
                     personalInfo().then(response => {
                         this.ruleForm.leader = response.data.data.name;
                         this.ruleForm.leaderId = response.data.data.studentNo + "";

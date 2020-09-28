@@ -32,7 +32,7 @@
                         <el-select v-model="searchKeyValue"
                                    placeholder="搜索关键字"
                                    size="small"
-                                   style="width: 120px;line-height: 40px">
+                                   style="width: 100px;line-height: 40px">
                             <el-option
                                     v-for="item in searchOptions"
                                     :key="item.value"
@@ -40,8 +40,7 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-input placeholder="请输入搜索内容" size="small" style="width: 130px; margin-left: 10px"></el-input>
-                        <el-button type="danger" size="mini" style="margin-left: 10px">搜索</el-button>
+                        <el-input placeholder="请输入搜索内容" v-model="search" size="small" style="width: 130px; margin-left: 10px"></el-input>
                     </el-form-item>
 
                 </el-col>
@@ -50,7 +49,7 @@
 
         <el-table
                 ref="multipleTable"
-                :data="tableData"
+                :data="searchInfo()"
                 tooltip-effect="dark"
                 stripe
                 style="width: 100%"
@@ -224,12 +223,12 @@
         <div class="div-30"></div>
         <el-row>
             <el-col :span="12">
-                <el-button size="small">批量删除</el-button>
-                <el-button size="small">修改权限</el-button>
-                <el-button size="small" >下载信息</el-button>
+<!--                <el-button size="small">批量删除</el-button>-->
+<!--                <el-button size="small">修改权限</el-button>-->
+<!--                <el-button size="small" >下载信息</el-button>-->
                 <el-button size="small" @click="sendNotice">发送通知</el-button>
                 <el-button size="small" @click="downloadFile">文件下载</el-button>
-                <el-button size="small">成绩添加</el-button>
+<!--                <el-button size="small">成绩添加</el-button>-->
             </el-col>
             <el-col :span="12">
 
@@ -271,13 +270,11 @@
                 yearValue:'2019',
                 //关键词选项
                 searchOptions: [
-                    { value: 'name', label: '项目名称' },
+                    { value: 'name', label: '队伍名称' },
                     { value: 'captainName', label: '队长姓名' },
-                    { value: '队伍名称', label: '队伍名称' },
-                    { value: '队伍邮箱', label: '队伍邮箱' },
                 ],
                 //关键词
-                searchKeyValue: '',
+                searchKeyValue: 'name',
                 //管理员维护的比赛列表
                 AdminCompetition:[],
 
@@ -325,6 +322,7 @@
                 sendMessageVisible:false,//发送通知对话框
                 downloadFilesVisible:false,//下载文件对话框
                 chosenGroups:[],//左侧多选数组
+                search:'',//搜索参数
             };
         },
         computed: {
@@ -342,7 +340,6 @@
                 getCompetitionGroups(year).then( response => {
                     this.tableData = response.data.data;
                     this.competitionOptions = [];
-                    this.competitionValue = '';
                     if(this.tableData.length !== 0) {
                         for(let i=0; i<this.tableData[0].competition.nowStage.length; i++) {
                             this.competitionOptions.push({
@@ -351,7 +348,7 @@
                             })
                         }
                     }
-                    // console.log(this.competitionOptions)
+                    this.competitionValue = this.competitionOptions[0].label;
                 })
             },
             //提交修改表单
@@ -390,16 +387,18 @@
             downloadFile() {
                 this.downloadFilesVisible = true;
             },
-
             //左侧多选选中事件
             handleChange(selection) {
                 this.chosenGroups = selection;
             },
-            // //搜索
-            // search() {
-            //     const keyValue = this.searchKeyValue;
-            //     this.formData.filter(data  => data.)
-            // }
+            //搜索  data => !search || data.name.toLowerCase().includes(search.toLowerCase())
+            searchInfo() {
+                if(this.searchKeyValue === 'name') {
+                    return this.tableData.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()));
+                } else if (this.searchKeyValue === 'captainName') {
+                    return this.tableData.filter(data => !this.search || data.captain.name.toLowerCase().includes(this.search.toLowerCase()))
+                }
+            }
         },
         mounted() {
             this.getRoles();

@@ -9,7 +9,7 @@
                     <el-form-item label="上传小组">
                         <el-select v-model="competitionId" placeholder="请选择" @change="getCompetitionDetail">
                             <el-option
-                                    v-for="item in competitionOptions"
+                                    v-for="item in groupsOptions"
                                     :key="item.id"
                                     :label="item.label"
                                     :value="item.value">
@@ -67,9 +67,9 @@
             return {
                 dialogVisible: false,
                 groups:[],//加入的小组
-                competitionId:'',//选中的比赛
+                competitionId:'',//选中的比赛id
                 competitionName:'',//比赛名称
-                competitionOptions:[],//比赛选项
+                groupsOptions:[],//队伍选项
                 competitionStages:'',//选中的比赛阶段
                 competitionStagesOptions:[],//比赛阶段选择
                 year:'',//比赛年
@@ -94,7 +94,7 @@
                 checkGroup().then(response => {
                     this.groups = response.data.data;
                     for(let i=0; i<this.groups.length; i++) {
-                        this.competitionOptions.push({
+                        this.groupsOptions.push({
                             value: this.groups[i].competitionId,
                             label: this.groups[i].name
                         })
@@ -126,23 +126,39 @@
             },
             //上传文件
             uploadFile() {
-                const data = new FormData();
+                this.$confirm('文件上传后会覆盖团队之前提交的文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const data = new FormData();
 
-                data.append('file', this.file);
-                data.append('competitionName', this.competitionName);
-                data.append('year', this.year);
-                data.append('stage', this.competitionStages);
-                data.append('groupId', this.groupId);
-                data.append('type', this.fileType);
+                    data.append('file', this.file);
+                    data.append('competitionName', this.competitionName);
+                    data.append('year', this.year);
+                    data.append('stage', this.competitionStages);
+                    data.append('groupId', this.groupId);
+                    data.append('type', this.fileType);
 
-                upload(data).then(response => {
-                    const id = response.data.data;
-                    this.checkStatus(id)
+                    upload(data).then(response => {
+                        const id = response.data.data;
+                        this.checkStatus(id)
+                        this.dialogClose();
+                    }).catch(error => {
+                        this.$message.error(error.response.data)
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消上传'
+                    });
+                    this.competitionStages = '';
+                    this.fileType = '';
+                    this.file = '';
+                    this.fileList = [];
+                    this.competitionId = '';
                     this.dialogClose();
-                }).catch(error => {
-                    this.$message.error(error.response.data)
-                })
-
+                });
             },
             //判断状态
             checkStatus(id) {
@@ -154,6 +170,11 @@
                     if(res === '成功') {
                         this.$message.success('上传成功！');
                         this.$emit('uploadSuccess');
+                        this.competitionStages = '';
+                        this.fileType = '';
+                        this.file = '';
+                        this.fileList = [];
+                        this.competitionId = '';
                     } else if (res === '失败') {
                         this.$message.success('上传失败！');
                     } else {

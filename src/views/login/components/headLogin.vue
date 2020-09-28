@@ -7,7 +7,7 @@
         </div>
 
         <div class="rooter" v-if="state">
-            <router-link to="" class="router_url">消息</router-link>
+<!--            <router-link to="" class="router_url">消息</router-link>-->
             <router-link :to="url" class="router_url">个人中心</router-link>
             <el-popover
                     width="100"
@@ -95,16 +95,7 @@
 
     }
 
-    .pic {
-        display: inline-block;
-        width: 30px;
-        color: #fff;
-        margin: 0 20px 0 10px;
-        cursor: pointer;
-    }
-
     a:hover {
-        text-decoration: none;
         color: yellow;
     }
 
@@ -112,7 +103,7 @@
         font-family:"等线" , serif;
         color: white;
         padding: 0 10px;
-        font-size: 14px;
+        font-size: 16px;
         line-height: 40px;
     }
 </style>
