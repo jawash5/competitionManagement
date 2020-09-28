@@ -79,7 +79,7 @@ export function upload(data) {
 export function checkStatus(data) {
     return service.request({
         method:"post",
-        url: '/user/filestatus',
+        url: '/competition/filestatus',
         data:data
     })
 }

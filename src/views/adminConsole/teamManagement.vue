@@ -238,6 +238,10 @@
 
         <send-message :visible="sendMessageVisible"
                       @dialogClose="dialogClose"></send-message>
+        <download-files :visible="downloadFilesVisible"
+                        @dialogClose="downloadFilesVisible = false"
+                        :year="yearValue"
+                        :stage="competitionValue"></download-files>
     </div>
 
 </template>
@@ -245,16 +249,17 @@
 <script>
     import {getRoles, getCompetitionGroups, getStageFile} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
+    import downloadFiles from "@/views/adminConsole/components/downloadFiles";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage},
+        components:{sendMessage,downloadFiles},
         data() {
             return {
                 dialogVisible:false, //编辑对话框
                 //比赛阶段选项
                 competitionOptions: [],
-                //比赛选择值
+                //比赛阶段选择值
                 competitionValue: '',
                 //比赛年份选项
                 competitionYearOptions: [
@@ -318,6 +323,7 @@
                     projectCheck:false,
                 },
                 sendMessageVisible:false,//发送通知对话框
+                downloadFilesVisible:false,//下载文件对话框
                 chosenGroups:[],//左侧多选数组
             };
         },
@@ -382,7 +388,7 @@
             },
             //下载文件
             downloadFile() {
-
+                this.downloadFilesVisible = true;
             },
 
             //左侧多选选中事件

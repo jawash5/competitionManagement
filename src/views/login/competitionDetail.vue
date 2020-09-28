@@ -11,14 +11,23 @@
             <el-button class="pull-right" type="success" round @click="signUpCompetition">立即报名</el-button>
             <div class="div-60"></div>
             <el-row>
-                <el-col :span="18">
+                <el-col :span="16">
                     <div class="markdown-body" v-html="content"></div>
                 </el-col>
-                <el-col :span="6">
-                    <el-card>
+                <el-col :span="6" :offset="2">
+                    <el-card class="announcement pull-right">
                         <div class="title">公告栏</div>
-                        <el-collapse class="collapse" v-model="activeName" accordion>
-                            <el-collapse-item title="一致性 Consistency" name="1">
+                        <div class="div-30"></div>
+                        <div v-if="announcement.length === 0">
+                            <el-divider></el-divider>
+                            <div class="noAnnouncement">暂无公告信息</div>
+                        </div>
+                        <el-collapse v-if="announcement.length !== 0" class="collapse" v-model="activeName">
+                            <el-collapse-item v-for="item in announcement"
+                                              :key="item.id"
+                                              :title="item.title"
+                                              :name="item.id">
+                                {{item.content}}
                             </el-collapse-item>
                         </el-collapse>
                     </el-card>
@@ -48,13 +57,14 @@
                 competitionInfo: '',
                 newTeamVisible:false,
                 activeName: '',//默认公告
-                announcement:''//公告
+                announcement:[],//公告
+                mdContent:''
             }
         },
         computed:{
             content() {
                 let markdownIt = mavonEditor.getMarkdownIt()
-                return markdownIt.render(this.competitionInfo.information)
+                return markdownIt.render(this.mdContent)
             }
         },
         methods: {
@@ -63,7 +73,9 @@
                 const id = this.$route.query.id
                 competitionDetail(id).then(response => {
                     this.competitionInfo = response.data.data
-                    this.sortStages('id')
+                    this.mdContent = this.competitionInfo.information
+                    this.sortStages('id')//按id排序
+                    this.getBoard()//获取公告
                 })
             },
             //阶段排序
@@ -101,20 +113,33 @@
             },
             //获取公告栏
             getBoard() {
-                getBoard().then( response => {
-                    this.announcement = response.data.data;
+                const data = {
+                    competitionName: this.competitionInfo.name,
+                    year: this.competitionInfo.year
+                }
+                getBoard(data).then( response => {
+                    let announcement = response.data.data;
+                    for(let i=0; i<announcement.length; i++) {
+                        if(announcement[i].title.length > 16) {
+                            announcement[i].title = announcement[i].title.slice(0,14) + '...'
+                        }
+                    }
+                    this.announcement = announcement;
                 })
             }
         },
         mounted() {
             this.getCompetitionInfo();
-            this.getBoard();
         },
     }
 </script>
 
 <style lang="scss" scoped>
+    @import '../../styles/config';
+
     #competitionDetail {
+        min-width: 1400px;
+
         .header {
             position: absolute;
             left: 30px;
@@ -125,8 +150,16 @@
             padding: 30px 100px;
         }
 
+        .noAnnouncement {
+            color: $noInfo;
+            text-align: center;
+            font-size: 16px;
+            margin-top: 30px;
+        }
+
         .announcement {
-            background-color: #fff;
+            width: 350px;
+            min-height: 400px;
         }
 
         .title {
@@ -134,13 +167,22 @@
             font-size: 24px;
             margin-bottom: 10px;
         }
-        .collapse {
-            padding: 20px;
+
+        /deep/img {
+            width: 300px;
         }
 
-        /*/deep/.el-collapse-item__header {*/
-        /*    background-color:#f7f7f7;*/
-        /*}*/
+        /deep/.el-collapse-item__header {
+           font-size: 14px;
+           text-indent: 2em;
+        }
+
+        /deep/.el-collapse-item__content {
+            padding-top:10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background-color: #f7f7f7;
+        }
 
         /deep/.el-page-header__content {
             font-size: 20px;

@@ -40,7 +40,7 @@
                                     <el-input class="labelFor" v-model="ruleForm.members[index].studentNo" placeholder="请输入学号" size="small"></el-input>
                                 </el-col>
                                 <el-col :span="6" :offset="2">
-                                    <el-button type="text" @click="addTeammate" style="font-size: 30px;">
+                                    <el-button type="text" @click="addTeammate()" style="font-size: 30px;">
                                         <i class="el-icon-circle-plus"></i>
                                     </el-button>
                                     <el-button type="text" @click="deleteTeammate(index)" style="font-size: 30px;">
@@ -63,6 +63,7 @@
 
 <script>
     import {applyCompetition, personalInfo} from "@/api/userConsole";
+    import {getCode} from "@/utils/app";
 
     export default {
         name: "newTeam",
@@ -106,16 +107,6 @@
             },
             //前表单提交，端验证还没有加
             submitForm() {
-                //前端验证
-                if(this.ruleForm.teamName === '') {
-                    this.$message.error('请输入队伍名称!');
-                    return false;
-                }
-                if(this.ruleForm.leader === "" || this.ruleForm.leaderId === "") {
-                    this.$message.error('请输入队长信息!');
-                    return false;
-                }
-
                 this.finalForm.competitionId = this.id;
                 this.finalForm.groupName = this.ruleForm.teamName;
                 this.finalForm.teammateSet.push({
@@ -168,10 +159,12 @@
             },
             //获取队长信息
             getLeader() {
-                personalInfo().then(response => {
-                    this.ruleForm.leader = response.data.data.name;
-                    this.ruleForm.leaderId = response.data.data.studentNo;
-                })
+                if(getCode() === '0') {
+                    personalInfo().then(response => {
+                        this.ruleForm.leader = response.data.data.name;
+                        this.ruleForm.leaderId = response.data.data.studentNo + "";
+                    })
+                }
             }
         },
         mounted() {

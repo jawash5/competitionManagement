@@ -167,6 +167,8 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "../../styles/config";
+
     #editProject {
         display: flex;
         flex-direction: column;
@@ -202,7 +204,7 @@
         }
 
         .noTeammate {
-            color: #909399;
+            color: $noInfo;
             text-align: center;
         }
 

@@ -122,18 +122,18 @@ export function sendNotice(data) {
 export function uploadPicture(data) {
     return service.request({
         method: "post",
-        url: '/competition/picture',
+        url: '/manager/picture',
         data:data
     })
 }
 
 /**
- * 删除
+ * 删除图片
  */
 export function deletePicture(data) {
     return service.request({
         method: "delete",
-        url: '/competition/deletepicture',
+        url: '/manager/deletepicture',
         data:data
     })
 }
@@ -153,7 +153,8 @@ export function getStageFile(data) {
  */
 export function downloadFile(data) {
     return service.request({
-        method: "get",
-        url: '/manager/download?year=' + data.year + '&type=' + data.type + '&stage=' + data.stage + '&fileName=' + data.filename,
+        method: "post",
+        url: '/manager/downloadall',
+        data: data
     })
 }
