@@ -21,7 +21,7 @@
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="学院">
-                                <el-input v-model="form.school" :disabled="isDisabled"></el-input>
+                                <el-input v-model="form.school" :disabled="editDisabled"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -31,43 +31,21 @@
                         </el-col>
                     </el-row>
                     <el-form-item label="邮箱">
-                        <el-input v-model="form.email" :disabled="isDisabled"></el-input>
+                        <el-input v-model="form.email" :disabled="editDisabled"></el-input>
                     </el-form-item>
                     <el-form-item label="电话">
                         <el-input v-model="form.phoneNo" :disabled="isDisabled"></el-input>
                     </el-form-item>
-
+                    <el-form-item label="密码">
+                        <el-input show-password v-model="form.password" :disabled="editDisabled"></el-input>
+                    </el-form-item>
                 </el-form>
             </div>
             <div class="submitButton">
-                <el-button type="primary" @click="dialogVisible = true">修改资料</el-button>
+                <el-button type="primary" v-if="editDisabled" @click="editDisabled = false">修改资料</el-button>
+                <el-button type="danger" v-if="!editDisabled" @click="submitInfo">确定修改</el-button>
             </div>
         </div>
-        <el-dialog
-                title="修改信息"
-                :visible.sync="dialogVisible"
-                width="30%"
-                :close-on-click-modal="false"
-                :close-on-press-escape="false"
-                :show-close="false"
-                center>
-            <el-form :model="form" label-width="60px">
-                <el-form-item label="新密码">
-                    <el-input placeholder="请输入新密码" v-model="editInfo.password"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱">
-                    <el-input placeholder="请输入邮箱" v-model="editInfo.email"></el-input>
-                </el-form-item>
-                <el-form-item label="学院">
-                    <el-input placeholder="请输入学院" v-model="editInfo.college"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="submitInfo">确 定</el-button>
-            </span>
-        </el-dialog>
-
     </div>
 
 </template>
@@ -80,7 +58,7 @@
         data() {
             return{
                 isDisabled: true,
-                dialogVisible:false,
+                editDisabled: true,
                 form: {
                     studentNo: '',
                     name: '',
@@ -88,13 +66,9 @@
                     university: '',
                     phoneNo: '',
                     email: '',
-                    username: ''
+                    username: '',
+                    password:''
                 },
-                editInfo:{
-                    password:'',
-                    email: '',
-                    college:''
-                }
             }
         },
         methods: {
@@ -103,28 +77,26 @@
                     this.form = response.data.data
                 })
             },
-            cancel() {
-                this.dialogVisible = false;
-                this.editInfo.password = '';
-                this.editInfo.email = '';
-                this.editInfo.college = '';
-            },
             submitInfo() {
-                const data = this.editInfo;
-                if(data.password === '' || data.college === '' || data.email === '') {
+                const data = this.form;
+                if(data.password === '' || data.school === '' || data.email === '') {
                     this.$message.error("请输入完整信息");
                     return false;
                 }
-                modifyPersonalInfo(data).then( () => {
+                const value = {
+                    password: data.password,
+                    email: data.email,
+                    college: data.school
+                }
+                modifyPersonalInfo(value).then( () => {
                     this.$message({
                         type:"success",
                         message:"修改成功！"
                     })
+                    this.editDisabled = true;
                     this.getPersonalInfo();
-                    this.editInfo = {password:'', email: '', college:''}
-                })
-                this.dialogVisible = false;
 
+                })
 
             }
         },
@@ -168,7 +140,6 @@
 
     /deep/.el-input.is-disabled .el-input__inner {
         cursor: auto;
-        background-color:#ffffff;
         color: #606266;
     }
 </style>

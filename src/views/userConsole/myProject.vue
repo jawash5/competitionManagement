@@ -4,7 +4,9 @@
 <!--            <i :class="reFleshIcon" @click="reFlesh"></i>-->
 <!--        </el-tooltip>-->
         <div id="createdProject">
-            <project v-for="(item,index) in projectDetail" :key="index" :project-detail="item"></project>
+            <project v-for="(item,index) in projectDetail"
+                     :key="index"
+                     :project-detail="item"></project>
         </div>
     </div>
 </template>
@@ -18,8 +20,9 @@
         data() {
             return{
                 activeName:'create',
-                leader:'',
+                leader:'',//队长名称
                 projectDetail: JSON.parse(sessionStorage.getItem('projectDetail')) || [],
+                competitionName:'',//比赛名称
                 reFleshIcon:'el-icon-refresh-right pull-right'
             }
         },
@@ -34,24 +37,25 @@
                     checkGroup().then(response => {
                         this.projectDetail = response.data.data;
                         sessionStorage.setItem('projectDetail', JSON.stringify(this.projectDetail));
-                        // console.log(this.projectDetail)
                     }).catch(error => {
                         this.$message.error(error.response.data);
                     })
                 }
             },
-            reFlesh() {
-                this.reFleshIcon = 'el-icon-loading pull-right'
-                checkGroup().then(response => {
-                    this.projectDetail = response.data.data;
-                    this.reFleshIcon = 'el-icon-refresh-right pull-right';
-                    sessionStorage.setItem('projectDetail', JSON.stringify(this.projectDetail));
-                    // console.log(this.projectDetail)
-                }).catch(error => {
-                    this.$message.error(error.response.data);
-                    this.reFleshIcon = 'el-icon-refresh-right pull-right';
-                })
-            }
+
+
+            // reFlesh() {
+            //     this.reFleshIcon = 'el-icon-loading pull-right'
+            //     checkGroup().then(response => {
+            //         this.projectDetail = response.data.data;
+            //         this.reFleshIcon = 'el-icon-refresh-right pull-right';
+            //         sessionStorage.setItem('projectDetail', JSON.stringify(this.projectDetail));
+            //         // console.log(this.projectDetail)
+            //     }).catch(error => {
+            //         this.$message.error(error.response.data);
+            //         this.reFleshIcon = 'el-icon-refresh-right pull-right';
+            //     })
+            // }
         },
         mounted() {
             this.checkGroup();

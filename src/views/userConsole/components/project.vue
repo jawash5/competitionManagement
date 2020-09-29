@@ -1,11 +1,11 @@
 <template>
     <div id="project">
         <div id="projectTop">
-            <h3 id="projectName">{{ projectDetail.name }}</h3>
+            <h3 id="competitionName">{{year + '年 '}}{{ competitionName }}</h3>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
-            <h5 id="founder">项目创始人：{{ projectDetail.captainId }}</h5>
+            <h4 id="teamName">队伍名称：{{ projectDetail.name }}</h4>
             <el-button type="primary" class="founderButton" @click="editMaterials">编辑资料</el-button>
             <el-button class="founderButton">删除项目</el-button>
         </div>
@@ -13,20 +13,10 @@
 </template>
 
 <script>
+    import {competitionDetail} from "@/api/login";
+
     export default {
         name: "project",
-        data() {
-            return {
-            }
-        },
-        methods:{
-            editMaterials() {
-                this.$store.dispatch('group/setGroupId', this.projectDetail.id)
-                this.$router.push({
-                    path: "/editProject",
-                });
-            },
-        },
         props:{
             projectDetail: {
                 type:Object,
@@ -40,7 +30,33 @@
                     }
                 }
             }
+        },
+        data() {
+            return {
+                competitionName:'',//比赛
+                year:''//比赛年
+            }
+        },
+        methods:{
+            editMaterials() {
+                this.$store.dispatch('group/setGroupId', this.projectDetail.id)
+                this.$router.push({
+                    path: "/editProject",
+                });
+            },
+            //获取比赛信息
+            checkCompetitionDetail(id) {
+                competitionDetail(id).then( response => {
+                    const competitionDetail = response.data.data;
+                    this.competitionName = competitionDetail.name;
+                    this.year = competitionDetail.year;
+                })
+            }
+        },
+        mounted() {
+            this.checkCompetitionDetail(this.projectDetail.competitionId)
         }
+
     }
 </script>
 
@@ -53,7 +69,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        border-radius: 2px;
+        border-radius: 15px;
         background-color: #f7f7f7;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
     }
@@ -63,7 +79,7 @@
         transition: box-shadow 0.3s;
     }
 
-    #projectName{
+    #competitionName{
         font-size: 20px;
         color: #409EFF;
         font-family: "幼圆" , serif;
@@ -81,7 +97,7 @@
         text-align: center;
     }
 
-    #founder {
+    #teamName {
         font-size: 16px;
         color: #303133;
         font-weight: 500;

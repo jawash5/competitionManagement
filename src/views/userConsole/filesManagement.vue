@@ -14,42 +14,34 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
-                    <el-form-item label="关键字">
-                        <el-select v-model="keyWord" placeholder="搜索关键字" size="small" style="width: 120px">
+                <el-col :span="12">
+                    <el-form-item>
+                        <el-select v-model="searchKeyValue" placeholder="搜索关键字" size="small" style="width: 120px">
                             <el-option
-                                    v-for="item in typeOptions"
+                                    v-for="item in searchOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
                             </el-option>
                         </el-select>
+                        <el-input placeholder="请输入搜索内容" v-model="search" size="small" style="width: 180px; margin-left: 10px"></el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item>
-                        <el-input placeholder="请输入搜索内容" size="small"></el-input>
-                    </el-form-item>
-                </el-col>
-
-                <el-col :span="4">
-                    <el-button type="danger" size="small" class="classButton">搜索</el-button>
                 </el-col>
 
                 <el-col :span="4">
                     <el-button type="danger"
                                size="small"
                                class="pull-right classButton"
-                               @click="uploadFile">上传文件</el-button>
+                               @click="uploadFile()">上传文件</el-button>
                 </el-col>
             </el-row>
         </el-form>
 
-        <upload :visible="uploadDialog" @dialogClose="uploadDialog = false" @uploadSuccess="getFiles"></upload>
+        <upload :visible="uploadDialog" @dialogClose="uploadDialog = false" @uploadSuccess="getFiles()"></upload>
 
         <el-table
                 ref="multipleTable"
-                :data="tableData"
+                :data="searchFiles()"
                 stripe
                 style="width: 100%">
             <el-table-column
@@ -91,9 +83,9 @@
                     label="文件类型"
                     width="100"
                     align="center">
-<!--                <template slot-scope="scope">-->
-<!--                    <span {{table '〇':'✖' }}</span>-->
-<!--                </template>-->
+                <template slot-scope="scope">
+                    <span>{{ tableData[scope.$index].type === '1' ? '报名表' : '作品'}}</span>
+                </template>
             </el-table-column>
 
             <el-table-column
@@ -135,18 +127,33 @@
         components:{upload},
         data() {
             return {
-                fileType:'',//文件类型
+                fileType:'选项1',//文件类型
                 //文件类型列表
                 typeOptions:[
-                    {value:'选项1' , label:"文档"},
-                    {value:'选项2' , label:"图片"},
-                    {value:'选项3' , label:"视频"},
-                    {value:'选项4' , label:"其他"},
+                    {value:'选项1' , label:"全部"},
+                    {value:'选项2' , label:"文档"},
+                    {value:'选项3' , label:"图片"},
+                    {value:'选项4' , label:"视频"},
+                    {value:'选项5' , label:"其他"},
                 ],
                 //搜索关键字
-                keyWord:'',
+                searchKeyValue:'fileName',
+                //搜索选项列表
+                searchOptions:[
+                    {value:'fileName' , label:"文件名称"},
+                    {value:'competitionName' , label:"比赛名称"},
+                    {value:'year' , label:"比赛年"},
+                    {value:'stage' , label:"阶段"},
+                ],
+                search:'',//搜索内容
                 //文件数据
-                tableData:JSON.parse(sessionStorage.getItem('tableData')) || [],
+                tableData:JSON.parse(sessionStorage.getItem('tableData')) ||
+                    [{"competitionName": "",
+                    "year": "",
+                    "stage": "",
+                    "groupId": '',
+                    "fileName": "",
+                    "type": ""}],
                 currentPage:1,//当前页数
                 total:1, //文件数量
                 uploadDialog:false,//上传文件对话框
@@ -203,6 +210,18 @@
                 }).catch( error => {
                     this.$message.error(error.response.data)
                 })
+            },
+            //搜索文件
+            searchFiles() {
+                if(this.searchKeyValue === 'fileName') {
+                    return this.tableData.filter(data => !this.search || data.fileName.toLowerCase().includes(this.search.toLowerCase()));
+                } else if (this.searchKeyValue === 'competitionName') {
+                    return this.tableData.filter(data => !this.search || data.competitionName.toLowerCase().includes(this.search.toLowerCase()))
+                } else if (this.searchKeyValue === 'year') {
+                    return this.tableData.filter(data => !this.search || data.year.toLowerCase().includes(this.search.toLowerCase()))
+                } else if (this.searchKeyValue === 'stage') {
+                    return this.tableData.filter(data => !this.search || data.stage.toLowerCase().includes(this.search.toLowerCase()))
+                }
             }
         },
         mounted() {
