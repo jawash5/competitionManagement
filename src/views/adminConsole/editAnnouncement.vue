@@ -114,24 +114,33 @@
         methods:{
             //删除公告
             deleteAnnouncement(index) {
-                const announcementId = this.announcementList[index].id;
-                // eslint-disable-next-line no-unused-vars
-                deleteAnnouncement(announcementId).then( response => {
+                this.$confirm('此操作将永久删除该公告, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const announcementId = this.announcementList[index].id;
+                    deleteAnnouncement(announcementId).then( () => {
+                        this.$message({
+                            type:'success',
+                            message:'删除公告成功！',
+                        });
+                        this.getAnnouncement();
+                    }).catch(error => {
+                        this.$message.error(error.response.data)
+                    })
+                }).catch(() => {
                     this.$message({
-                        type:'success',
-                        message:'删除公告成功！',
+                        type: 'info',
+                        message: '已取消删除'
                     });
-                    this.getAnnouncement();
-                }).catch(error => {
-                    this.$message.error(error.response.data)
-                })
+                });
             },
 
             //置顶公告
             topping(index) {
                 const announcementId = this.announcementList[index].id;
-                    // eslint-disable-next-line no-unused-vars
-                    topAnnouncement(announcementId).then( response => {
+                    topAnnouncement(announcementId).then( () => {
                         this.$message({
                             type:'success',
                             message:'置顶公告成功！',
@@ -148,13 +157,11 @@
                 const data = {year:this.year, competitionName:this.competitionValue};
                 getBoard(data).then( response => {
                     this.announcementList = response.data.data;
-                    // for (let i=0; i<this.announcementList.length; i++) {
-                    //     if(this.announcementList[i].title.length > 7) {
-                    //         this.announcementList[i].title.split("").splice(7, 0,"\n");
-                    //         // this.announcementList[i].title.join();
-                    //         console.log(this.announcementList[i].title)
-                    //     }
-                    // }
+                    for (let i=0; i<this.announcementList.length; i++) {
+                        if(this.announcementList[i].title.length > 10) {
+                            this.announcementList[i].title = this.announcementList[i].title.slice(0,10) + "..."
+                        }
+                    }
                 }).catch(error => {
                     this.$message.error('服务器开小差啦~');
                     console.log(error);
@@ -248,6 +255,7 @@
             /*width: 200px;*/
             height: 80px;
             font-size: 16px;
+            width: 226px;
         }
 
         /deep/.el-tabs--left .el-tabs__item.is-left {

@@ -1,13 +1,14 @@
 <template>
     <div id="project">
         <div id="projectTop">
-            <h3 id="competitionName">{{year + '年 '}}{{ competitionName }}</h3>
+            <h3 class="competitionName">{{ '第' + projectDetail.session + '届'}}</h3>
+            <h3 class="competitionName">{{ competitionName }}</h3>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
             <h4 id="teamName">队伍名称：{{ projectDetail.name }}</h4>
-            <el-button type="primary" class="founderButton" @click="editMaterials">编辑资料</el-button>
-            <el-button class="founderButton">删除项目</el-button>
+            <div class="div-30"></div>
+            <el-button type="primary" class="founderButton" @click="editMaterials">查看资料</el-button>
         </div>
     </div>
 </template>
@@ -23,10 +24,12 @@
                 require:true,
                 default: () => {
                     return {
-                        "id": 0,
-                        "name": "",
-                        "competitionId": 0,
-                        "captainId": 0
+                        id: '',
+                        name: '',
+                        competitionId: '',
+                        captainId: '',
+                        session: ''
+
                     }
                 }
             }
@@ -66,9 +69,6 @@
         margin: 20px;
         width: 280px;
         height: 250px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
         border-radius: 15px;
         background-color: #f7f7f7;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
@@ -79,7 +79,7 @@
         transition: box-shadow 0.3s;
     }
 
-    #competitionName{
+    .competitionName{
         font-size: 20px;
         color: #409EFF;
         font-family: "幼圆" , serif;

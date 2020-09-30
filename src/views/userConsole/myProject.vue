@@ -1,8 +1,5 @@
 <template>
     <div id="myProject">
-<!--        <el-tooltip effect="light" content="刷新" placement="bottom">-->
-<!--            <i :class="reFleshIcon" @click="reFlesh"></i>-->
-<!--        </el-tooltip>-->
         <div id="createdProject">
             <project v-for="(item,index) in projectDetail"
                      :key="index"

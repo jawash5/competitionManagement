@@ -5,10 +5,19 @@
             <div class="div-30"></div>
             <el-card>
                 <el-form ref="form" :model="form" label-width="100px" class="elForm">
-                    <el-form-item label="比赛年">
-                        <el-input placeholder="请输入比赛年" style="width: 150px" v-model="form.year" maxlength="4"></el-input>
-                    </el-form-item>
 
+                    <el-row>
+                        <el-col :span="10">
+                            <el-form-item label="比赛年">
+                                <el-input placeholder="请输入比赛年" style="width: 150px" v-model="form.year" maxlength="4"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="届数">
+                                <el-input placeholder="请输入届数" style="width: 150px" v-model="form.session" maxlength="3"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                     <el-form-item label="比赛时间">
                         <el-date-picker
                                 v-model="form.allTime"
@@ -24,6 +33,21 @@
                         <el-input class="peopleLimited" v-model="form.signForm.minPeople" maxlength="2" placeholder="最少人数"></el-input>
                         <span style="margin:0 5px">至</span>
                         <el-input class="peopleLimited" v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="背景图片">
+                        <el-upload
+                                action="#"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :before-remove="beforeRemove"
+                                multiple
+                                :limit="1"
+                                :on-exceed="handleExceed"
+                                :file-list="fileList">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
                     </el-form-item>
                 </el-form>
             </el-card>
@@ -143,6 +167,7 @@
                 stage: '',//阶段
                 form:{
                     year:'',
+                    session:'',
                     allTime:'',
                     signUptime:'',
                     competitionTime: [
@@ -218,6 +243,10 @@
             //获取editor内容
             getContent(data) {
                 this.form.information = data;
+            },
+            //图片上传超出限制
+            handleExceed() {
+                
             }
         },
         mounted() {
