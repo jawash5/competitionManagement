@@ -1,7 +1,7 @@
 <template>
     <div id="myProject">
         <div id="createdProject">
-            <project v-for="(item,index) in projectDetail"
+            <project v-for="(item,index) in groupList"
                      :key="index"
                      :project-detail="item"></project>
         </div>
@@ -18,7 +18,7 @@
             return{
                 activeName:'create',
                 leader:'',//队长名称
-                projectDetail: JSON.parse(sessionStorage.getItem('projectDetail')) || [],
+                groupList: JSON.parse(sessionStorage.getItem('groupList')) || [],
                 competitionName:'',//比赛名称
                 reFleshIcon:'el-icon-refresh-right pull-right'
             }
@@ -30,10 +30,11 @@
         },
         methods: {
             checkGroup() {
-                if(this.projectDetail.length === 0) {
+                if(this.groupList.length === 0) {
                     checkGroup().then(response => {
-                        this.projectDetail = response.data.data;
-                        sessionStorage.setItem('projectDetail', JSON.stringify(this.projectDetail));
+                        this.groupList = response.data.data;
+                        sessionStorage.setItem('groupList', JSON.stringify(this.groupList));
+                        console.log(this.groupList)
                     }).catch(error => {
                         this.$message.error(error.response.data);
                     })

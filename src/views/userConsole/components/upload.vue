@@ -189,7 +189,6 @@
             },
             //删除文件
             handleRemove() {
-                console.log(this.file)
                 this.file = '';
             }
 

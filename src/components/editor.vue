@@ -94,7 +94,7 @@
             },
             //删除图片
             handleEditorImgDel() {
-                console.log(this.url)
+                // console.log(this.url)
                 const fileName = this.url.slice(-41);
                 const year = this.url.slice(-46,-42);
                 const competitionName = this.url.slice(57,-47);
@@ -103,7 +103,7 @@
                     competitionName: competitionName,
                     filename: fileName
                 }
-                console.log(data);
+                // console.log(data);
                 deletePicture(data).then( response => {
                     const id = response.data.data;
                     this.checkStatus(id);

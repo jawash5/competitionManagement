@@ -1,14 +1,14 @@
 <template>
     <div id="project">
         <div id="projectTop">
-            <h3 class="competitionName">{{ '第' + projectDetail.session + '届'}}</h3>
+            <h3 class="competitionName">{{ '第 ' + session + ' 届'}}</h3>
             <h3 class="competitionName">{{ competitionName }}</h3>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
             <h4 id="teamName">队伍名称：{{ projectDetail.name }}</h4>
             <div class="div-30"></div>
-            <el-button type="primary" class="founderButton" @click="editMaterials">查看资料</el-button>
+            <el-button type="primary" class="checkInfo" @click="editMaterials">查看资料</el-button>
         </div>
     </div>
 </template>
@@ -29,7 +29,6 @@
                         competitionId: '',
                         captainId: '',
                         session: ''
-
                     }
                 }
             }
@@ -37,10 +36,11 @@
         data() {
             return {
                 competitionName:'',//比赛
-                year:''//比赛年
+                session:''//比赛年
             }
         },
         methods:{
+            //点击编辑后事件
             editMaterials() {
                 this.$store.dispatch('group/setGroupId', this.projectDetail.id)
                 this.$router.push({
@@ -52,7 +52,7 @@
                 competitionDetail(id).then( response => {
                     const competitionDetail = response.data.data;
                     this.competitionName = competitionDetail.name;
-                    this.year = competitionDetail.year;
+                    this.session = competitionDetail.session;
                 })
             }
         },
@@ -83,6 +83,7 @@
         font-size: 20px;
         color: #409EFF;
         font-family: "幼圆" , serif;
+        margin-top: 10px;
     }
 
     #projectTop {
@@ -103,7 +104,7 @@
         font-weight: 500;
     }
 
-    .founderButton {
+    .checkInfo {
         margin: 20px 0 0 0;
         display: block;
         width: 100%;

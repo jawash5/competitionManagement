@@ -1,7 +1,10 @@
 <template>
     <div id="competitionDetail">
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
-        <div style="background-color: lightgreen; height: 300px"></div>
+        <el-image :src="competitionInfo.mainImage"
+                  style="width: 100%; height: 400px;
+                  z-index: -1"
+                  fit="cover"></el-image>
         <div class="wrap">
             <el-steps :space="200" :active="1" finish-status="success">
                 <el-step v-for="item in competitionInfo.stages"
@@ -57,7 +60,7 @@
         components: {newTeam},
         data() {
             return{
-                competitionInfo: '',
+                competitionInfo: {},
                 newTeamVisible:false,
                 activeName: '',//默认公告
                 announcement:[],//公告
@@ -191,12 +194,18 @@
             background-color: #f7f7f7;
         }
 
+        /deep/.el-page-header__left .el-icon-back {
+            color: #fff;
+        }
+
         /deep/.el-page-header__content {
             font-size: 20px;
+            color: #fff;
         }
 
         /deep/.el-page-header__title {
             font-size: 18px;
+            color: #fff;
         }
     }
 </style>

@@ -20,14 +20,12 @@
                 </competition-card>
             </div>
         </div>
-        <my-footer></my-footer>
     </div>
 </template>
 
 <script>
     import {competitionList} from "@/api/login";
     import headLogin from "@/views/login/components/headLogin";
-    import myFooter from "@/views/login/components/myFooter";
     import competitionCard from "@/views/login/components/competitionCard";
     import {getCode} from "@/utils/app";
 
@@ -35,7 +33,6 @@
         name: "checkCompetition",
         components:{
             "headLogin": headLogin,
-            "myFooter": myFooter,
             "competitionCard":competitionCard
         },
         data(){

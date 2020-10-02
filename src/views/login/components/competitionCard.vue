@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="competitionName">
-            <div class="title">{{ competition.year }}年</div>
+            <div class="title">第 {{ competition.session }} 届</div>
             <div class="title">{{ competition.name }}</div>
             <el-divider></el-divider>
             <div class="time">开始：{{ competition.start }}</div>

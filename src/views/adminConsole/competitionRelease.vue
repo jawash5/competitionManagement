@@ -38,15 +38,13 @@
                     <el-form-item label="背景图片">
                         <el-upload
                                 action="#"
-                                :on-preview="handlePreview"
-                                :on-remove="handleRemove"
-                                :before-remove="beforeRemove"
-                                multiple
                                 :limit="1"
-                                :on-exceed="handleExceed"
-                                :file-list="fileList">
+                                :on-change="fileChange"
+                                :on-remove="handleRemove"
+                                :file-list="fileList"
+                                :auto-upload="false">
                             <el-button size="small" type="primary">点击上传</el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            <div slot="tip" class="el-upload__tip">至多上传一张图片</div>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -153,6 +151,7 @@
 <script>
     import {createCompetition} from '@/api/adminConsole';
     import editor from '../../components/editor';
+    import {uploadPicture} from "@/api/adminConsole";
 
     export default {
         name: "competitionRelease",
@@ -182,7 +181,9 @@
                 },
                 //提交的表单
                 submitForm:{},
-
+                fileList:[],
+                file:'',//上传的图片
+                base64Code:''
             };
         },
         methods: {
@@ -231,22 +232,41 @@
                 form.signForm.minPeople = parseInt(form.signForm.minPeople);
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
                 this.submitForm.signForm = form.signForm;
+                this.submitForm.session = this.form.session;
 
-                createCompetition(this.submitForm).then(response => {
-                    this.$message({
-                        type:"success",
-                        message:response.data.data
+                const data = new FormData();
+                data.append('file', this.file);
+                data.append('year', this.submitForm.year);
+                uploadPicture(data).then( response => {
+                    this.submitForm.mainImage = response.data.data
+                    createCompetition(this.submitForm).then(response => {
+                        this.$message({
+                            type:"success",
+                            message:response.data.data
+                        })
+                        this.$router.push('/checkCompetition')
+                    }).catch(error => {
+                        this.$message.error(error.response.data)
                     })
-                    this.$router.push('/checkCompetition')
                 })
             },
             //获取editor内容
             getContent(data) {
                 this.form.information = data;
             },
-            //图片上传超出限制
-            handleExceed() {
-                
+            // //图片上传超出限制
+            // handleExceed() {
+            //     // this.$message.error('至多上传一个文件！')
+            //     console.log(111)
+            // },
+            //文件状态改变时的钩子
+            fileChange(file) {
+                this.file = file.raw;
+            },
+
+            //删除文件
+            handleRemove() {
+                this.file = '';
             }
         },
         mounted() {
