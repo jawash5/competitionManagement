@@ -114,3 +114,25 @@ export function getGroupFiles(data) {
         url: '/groups/files?groupId=' + data,
     })
 }
+
+/**
+ * 邀请队友
+ */
+export function inviteMembers(data) {
+    return service.request({
+        method:"post",
+        url: '/groups/invite',
+        data:data
+    })
+}
+
+/**
+ * 同意组队邀请
+ */
+export function acceptInvitation(data) {
+    return service.request({
+        method:"post",
+        url: '/groups/agree',
+        data:data
+    })
+}

@@ -54,7 +54,16 @@ export const defaultRouterMap = [
             name:'比赛详情'
         },
         component: ()  => import("../views/login/competitionDetail.vue")
-    }]
+    },
+    {
+        path: '/acceptInvitation',
+        name: '/acceptInvitation',
+        meta:{
+            name:'接受邀请'
+        },
+        component: ()  => import("../views/userConsole/acceptInvitation")
+    },
+]
 
 
 export default new Router({

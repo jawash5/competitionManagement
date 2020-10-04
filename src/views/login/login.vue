@@ -98,8 +98,8 @@
                 const data = new FormData();
                 data.append('username',this.ruleForm.username);
                 data.append('password',this.ruleForm.password);
-                // eslint-disable-next-line no-unused-vars
-                this.$store.dispatch("app/login", data).then(response => {
+
+                this.$store.dispatch("app/login", data).then(() => {
                     this.$router.push({
                         path:this.$route.query.redirect || '/checkCompetition'
                     });

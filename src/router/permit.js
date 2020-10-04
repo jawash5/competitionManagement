@@ -2,7 +2,7 @@ import router from "@/router/index";
 import {getCode, removeCode, removeUsername, removeRole} from "@/utils/app";
 import store from "../store/index";
 
-const whiteRouter = ['/login', '/register', '/checkCompetition', '/competitionDetail'];
+const whiteRouter = ['/login', '/register', '/checkCompetition', '/competitionDetail','/acceptInvitation'];
 
 router.beforeEach((to, from, next) =>{
     if(getCode() === '0') {
@@ -18,8 +18,7 @@ router.beforeEach((to, from, next) =>{
             if(store.getters["app/roles"] === '') {
                 let role = store.getters['app/trueRole'];
                 store.commit('app/SET_ROLES', role);
-                // eslint-disable-next-line no-unused-vars
-                store.dispatch('permission/creatRouter', role).then(response => {
+                store.dispatch('permission/creatRouter', role).then(() => {
                     let addRouters = store.getters['permission/addRoutes'];
                     //更新路由
                     router.options.routes = store.getters['permission/allRouter'];

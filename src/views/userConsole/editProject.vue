@@ -1,7 +1,7 @@
 <template>
         <div id="editProject">
             <el-page-header @back="goBack" content="我的项目" class="pull-left"></el-page-header>
-            <h1 id="competitionName">编辑资料</h1>
+            <h1 id="competitionName">查看资料</h1>
             <div id="projectForm">
                 <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                     <el-form-item label="比赛名称" prop="type">
@@ -70,20 +70,29 @@
                     </el-form-item>
                 </el-form>
             </div>
+
             <div id="buttons">
                 <el-button type="primary" @click="editForm" v-if="isEdit">立即修改</el-button>
+                <el-button type="primary" @click="inviteVisible = true">邀请队友</el-button>
             </div>
+
+            <invite :visible="inviteVisible"
+                    @dialogClose="inviteVisible = false"
+                    :group-id="groupInfo.id + ''"></invite>
         </div>
 </template>
 
 <script>
     import {getGroupInfo,getGroupFiles} from "@/api/userConsole";
+    import invite from "@/views/userConsole/invite";
 
     export default {
         name: "editProject" ,
+        components:{invite},
         data() {
             return{
                 isEdit:true,
+                inviteVisible:false,//邀请对话框
                 inputValue: '',
                 fileList: [],
                 options: [],//比赛选择框
@@ -102,19 +111,19 @@
                 },
                 //创建的队伍信息
                 groupInfo: {
-                    "id": '',
-                    "name": "",
-                    "competitionId": '',
-                    "captainId": '',
-                    "teammates": [
+                    id: '',
+                    name: "",
+                    competitionId: '',
+                    captainId: '',
+                    teammates: [
                         {
-                            "id": '',
-                            "name": "",
-                            "studentNo": '',
-                            "university": "",
-                            "school": "",
-                            "phoneNo": "",
-                            "email": ""
+                            id: '',
+                            name: "",
+                            studentNo: '',
+                            university: "",
+                            school: "",
+                            phoneNo: "",
+                            email: ""
                         }
                     ]
                 },
@@ -127,18 +136,6 @@
             //页头返回
             goBack() {
                 this.$router.push('/myProject')
-            },
-            //添加队员
-            addTeammate() {
-                this.ruleForm.members.push({name:'', no: ''})
-            },
-            //删除队员
-            deleteTeammate(index) {
-                if(index === 0) {
-                    return false
-                } else {
-                    this.ruleForm.members.splice(index, 1)
-                }
             },
             //获取队伍信息
             getGroupInfo() {

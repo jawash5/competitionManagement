@@ -4,7 +4,9 @@
                    :visible.sync="visible"
                    width="800px"
                    center
-                   :show-close="false">
+                   :show-close="false"
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false">
             <div id="projectForm">
                 <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                     <el-form-item label="比赛名称" prop="competitionName">
@@ -27,33 +29,10 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-
-                    <el-form-item label="项目成员" prop="members">
-                        <div class="teammates">
-                            <el-row v-for="(item, index) in ruleForm.members" :key="item.id">
-                                <el-col :span="8">
-                                    <label for="">姓名</label>
-                                    <el-input class="labelFor" v-model="ruleForm.members[index].name" placeholder="请输入姓名" size="small"></el-input>
-                                </el-col>
-                                <el-col :span="8">
-                                    <label for="">学号</label>
-                                    <el-input class="labelFor" v-model="ruleForm.members[index].studentNo" placeholder="请输入学号" size="small"></el-input>
-                                </el-col>
-                                <el-col :span="6" :offset="2">
-                                    <el-button type="text" @click="addTeammate()" style="font-size: 30px;">
-                                        <i class="el-icon-circle-plus"></i>
-                                    </el-button>
-                                    <el-button type="text" @click="deleteTeammate(index)" style="font-size: 30px;">
-                                        <i class="el-icon-remove"></i>
-                                    </el-button>
-                                </el-col>
-                            </el-row>
-                        </div>
-                    </el-form-item>
                 </el-form>
             </div>
 
-            <span slot="footer" class="dialog-footer">
+            <span slot="footer">
                 <el-button @click="dialogClose()">取 消</el-button>
                 <el-button type="primary" @click="submitForm()">确 定</el-button>
             </span>
@@ -89,15 +68,11 @@
                     teamName:'',
                     leader:'',
                     leaderId:'',
-                    members: [
-                        { name:'', studentNo:''}
-                    ],
                 },
                 //提交的表单
                 finalForm:{
                     competitionId: 0,
                     groupName: "",
-                    teammateSet:[]
                 },
             }
         },
@@ -109,31 +84,20 @@
             submitForm() {
                 this.finalForm.competitionId = this.id;
                 this.finalForm.groupName = this.ruleForm.teamName;
-                this.finalForm.teammateSet.push({
-                    name:this.ruleForm.leader,
-                    studentNo:parseInt(this.ruleForm.leaderId),
-                    isLeader:true
-                })
-                const members = this.ruleForm.members;
-                if(members[0].name !== '' && members[0].studentNo !== '') {
-                    for(let i=0; i<members.length; i++) {
-                        this.finalForm.teammateSet.push({
-                            name: members[i].name,
-                            studentNo:parseInt(members[i].studentNo),
-                            isLeader:false
-                        })
-                    }
-                }
+                this.finalForm.teammateSet = [
+                    {name:this.ruleForm.leader, studentNo:this.ruleForm.leaderId, isLeader:true,}
+                    ];
+
                 //提交报名比赛信息
                 applyCompetition(this.finalForm).then(response => {
                     const code = response.data.code;
                     if(code === 0) {
-                        this.$router.push('/myProject')
                         this.$message({
                             showClose: true,
                             message: '创建成功！',
                             type: 'success'
                         });
+                        this.$emit('success')
                         this.dialogClose();
                     }
                 }).catch(error => {
@@ -142,20 +106,7 @@
                         message: error.response.data.message + '!',
                         type: 'error'
                     });
-                    this.dialogClose();
                 })
-            },
-            //添加队员
-            addTeammate() {
-                this.ruleForm.members.push({name:'', studentNo: ''})
-            },
-            //删除队员
-            deleteTeammate(index) {
-                if(index === 0) {
-                    return false
-                } else {
-                    this.ruleForm.members.splice(index, 1)
-                }
             },
             //获取队长信息
             getLeader() {

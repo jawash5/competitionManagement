@@ -40,9 +40,15 @@
                 </el-col>
             </el-row>
             <new-team :visible="newTeamVisible"
-                      @dialogClose="newTeamVisible = false"
+                      @dialogClose="newTeamVisibleClose"
+                      @success="inviteMembers"
                       :competition-name="competitionInfo.name"
                       :id="competitionInfo.id"></new-team>
+
+            <invite :visible="inviteVisible"
+                    @dialogClose="inviteVisible = false"
+                    group-id="18"></invite>
+
         </div>
     </div>
 </template>
@@ -54,14 +60,16 @@
     import { mavonEditor } from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
     import {getBoard} from "@/api/userConsole";
+    import invite from "@/views/userConsole/invite";
 
     export default {
         name: "competitionDetail",
-        components: {newTeam},
+        components: {newTeam,invite},
         data() {
             return{
                 competitionInfo: {},
                 newTeamVisible:false,
+                inviteVisible:false,
                 activeName: '',//默认公告
                 announcement:[],//公告
                 mdContent:''
@@ -93,7 +101,6 @@
                   return data1 - data2;
               })
             },
-
             //比赛报名
             signUpCompetition() {
                 if(getCode() !== '0') {
@@ -112,6 +119,7 @@
                     }
                 }
             },
+            //返回
             goBack() {
                 this.$router.push({
                     path:'/checkCompetition',
@@ -132,6 +140,14 @@
                     }
                     this.announcement = announcement;
                 })
+            },
+            //活动报名对话框关闭回调
+            newTeamVisibleClose() {
+                this.newTeamVisible = false;
+            },
+            inviteMembers() {
+                this.inviteVisible = true;
+
             }
         },
         mounted() {

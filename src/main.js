@@ -9,8 +9,10 @@ import './assets/icon/iconfont.css';
 import './styles/main.scss'
 import 'github-markdown-css/github-markdown.css'
 import astrict from '@/utils/astrict'
+import VueClipboard from 'vue-clipboard2'
 
 Vue.use(astrict)
+Vue.use(VueClipboard)
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
