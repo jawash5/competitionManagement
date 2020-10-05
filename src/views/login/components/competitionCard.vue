@@ -1,7 +1,8 @@
 <template>
     <div class="card">
         <div class="competitionName">
-            <div class="title">第 {{ competition.session }} 届</div>
+            <span class="title2" v-if="competition.hasOwnProperty('year')">{{ competition.year }}年 </span>
+            <span class="title2" v-if="competition.hasOwnProperty('session')">第 {{ competition.session }} 届</span>
             <div class="title">{{ competition.name }}</div>
             <el-divider></el-divider>
             <div class="time">开始：{{ competition.start }}</div>
@@ -53,10 +54,17 @@
             text-align: center;
             margin: 20px;
 
+            .title2 {
+                margin-top: 10px;
+                font-size: 20px;
+                font-family: "幼圆" , serif;
+            }
+
             .title {
                 margin-top: 10px;
                 font-size: 22px;
                 font-family: "幼圆" , serif;
+                font-weight: 600;
             }
 
             .time {

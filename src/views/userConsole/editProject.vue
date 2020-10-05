@@ -84,7 +84,7 @@
 
 <script>
     import {getGroupInfo,getGroupFiles} from "@/api/userConsole";
-    import invite from "@/views/userConsole/invite";
+    import invite from "@/views/userConsole/components/invite";
 
     export default {
         name: "editProject" ,

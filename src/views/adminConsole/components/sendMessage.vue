@@ -47,15 +47,15 @@
         data() {
             return {
                 subject:'',
-                tip:'通知内容（可用属性 {{队长姓名}}，{{成绩}} ）',
+                tip:'通知内容（可用属性 {{队长姓名}}）',
                 content:'',//输入的内容
                 chosenGroups:[],//选择的小组
-                groupsContent:'',
+                groupsContent:'',//内容替换后的数据
                 submitInfo:{
-                    "subject": "",
-                    "format": {},
-                    "groups": [],
-                    "content": ""
+                    subject: "",
+                    format: {},
+                    groups: [],
+                    content: ""
                 },
             }
         },
@@ -69,30 +69,35 @@
         methods:{
             getContent(data) {
                 this.content = data;
-                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[0].captain.name)
-                    .replace('{{成绩}}', this.chosenGroups[0].recordList[0])
+                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[0].captainName.name)
             },
             dialogClose() {
                 this.$emit("dialogClose");
             },
+            //打开对话框后的事件
             getChosenGroup() {
+                this.subject = '';
+                this.content = '';
                 this.chosenGroups = this.$store.getters['sendNotice/chosenGroups'];
                 // console.log(this.chosenGroups);
             },
             chosenTap(data) {
                 const index = data.index;
-                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[index].captain.name)
-                .replace('{{成绩}}', this.chosenGroups[index].recordList[0])
+                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[index].captainName.name)
             },
             conform() {
+                if(this.subject === '') {
+                    this.$message.error('通知主题不同为空！');
+                    return false;
+                }
+
                 this.submitInfo.content = this.groupsContent;
                 this.submitInfo.subject = this.subject;
                 for(let i=0; i<this.chosenGroups.length; i++) {
                     this.submitInfo.groups.push(this.chosenGroups[i].id)
                 }
-                console.log(this.submitInfo);
-                // eslint-disable-next-line no-unused-vars
-                sendNotice(this.submitInfo).then(response => {
+                // console.log(this.submitInfo);
+                sendNotice(this.submitInfo).then(() => {
                     this.$message({
                         type:"success",
                         message:"发送成功！"

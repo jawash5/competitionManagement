@@ -4,9 +4,9 @@
             <el-row>
                 <el-col :span="12">
                     <el-form-item>
-                        <el-select v-model="competitionValue" placeholder="请选择比赛阶段" size="small">
+                        <el-select v-model="stageValue" placeholder="请选择比赛阶段" size="small">
                             <el-option
-                                    v-for="item in competitionOptions"
+                                    v-for="item in stageOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -17,7 +17,7 @@
                                    placeholder="比赛年份"
                                    size="small"
                                    style="width: 100px;margin-left: 20px"
-                                   @change="getCompetitionGroups">
+                                   @change="handleYearChange">
                             <el-option
                                     v-for="item in competitionYearOptions"
                                     :key="item.value"
@@ -60,6 +60,7 @@
                     width="50"
                     align="center">
             </el-table-column>
+
             <el-table-column
                     type="index"
                     width="50"
@@ -84,7 +85,7 @@
                     align="center"
                     show-overflow-tooltip>
                 <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].captain.name }}</span>
+                    <span>{{ tableData[scope.$index].captainName }}</span>
                 </template>
             </el-table-column>
 
@@ -240,15 +241,16 @@
         <download-files :visible="downloadFilesVisible"
                         @dialogClose="downloadFilesVisible = false"
                         :year="yearValue"
-                        :stage="competitionValue"></download-files>
+                        :stage="stageValue"></download-files>
     </div>
 
 </template>
 
 <script>
-    import {getRoles, getCompetitionGroups, getStageFile} from "@/api/adminConsole";
+    import {getAdminCompetition, getCompetitionGroups, getRoles, getStageFile} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
+    import {competitionDetail} from "@/api/login";
 
     export default {
         name: "teamManagement",
@@ -257,15 +259,11 @@
             return {
                 dialogVisible:false, //编辑对话框
                 //比赛阶段选项
-                competitionOptions: [],
+                stageOptions: [],
                 //比赛阶段选择值
-                competitionValue: '',
+                stageValue: '',
                 //比赛年份选项
-                competitionYearOptions: [
-                    {value: '2018', label: '2018年'},
-                    {value: '2019', label: '2019年'},
-                    {value: '2020', label: '2020年'},
-                ],
+                competitionYearOptions: [],
                 //比赛年份
                 yearValue:'2019',
                 //关键词选项
@@ -277,26 +275,17 @@
                 searchKeyValue: 'name',
                 //管理员维护的比赛列表
                 AdminCompetition:[],
-
                 //表单参数
-                tableData: [
+                tableData: [],
+                //比赛组参数
+                groups:[
                     {
-                        "id": '',
-                        "name": "",
-                        "competition": {
-                            "id": '',
-                            "information": "",
-                            "year": "",
-                            "startDate": "",
-                            "endDate": "",
-                            "signForm": {},
-                            "notice": [],
-                            "nowStage": []
-                        },
-                        "teammates": [],
-                        "captain": {},
-                        "recordList": []
-                    }
+                        id: '',
+                        name: '',
+                        competitionId: '',
+                        captainId: '',
+                        captainName: ''
+                    },
                 ],
                 //修改信息表单参数
                 editForm:{
@@ -335,25 +324,64 @@
             handleEdit() {
                 this.dialogVisible = true;
             },
-            //获取比赛组与比赛阶段
+            //比赛年发生变化
+            handleYearChange(year) {
+                this.getCompetitionGroups(year);
+                this.getCompetitionStage(year)
+            },
+            //获取比赛组
             getCompetitionGroups(year) {
                 getCompetitionGroups(year).then( response => {
                     this.tableData = response.data.data;
-                    this.competitionOptions = [];
-                    if(this.tableData.length !== 0) {
-                        for(let i=0; i<this.tableData[0].competition.nowStage.length; i++) {
-                            this.competitionOptions.push({
-                                value: this.tableData[0].competition.nowStage[i].name,
-                                label: this.tableData[0].competition.nowStage[i].name
+                    competitionDetail(this.tableData.id).then( () => {
+
+                    })
+                })
+
+            },
+            //获取比赛年
+            getCompetitionYear() {
+                getAdminCompetition().then(response => {
+                    let competitionList =  response.data.data;//管理员维护的比赛列表
+                    sessionStorage.setItem('competitionList',JSON.stringify(competitionList));
+                    this.sortValue(competitionList,'year')
+                    for(let competition of competitionList) {
+                        this.competitionYearOptions.push({
+                            label: competition.year + '年',
+                            value: competition.year
+                        })
+                    }
+                })
+            },
+            //排序
+            sortValue(value, key) {
+                value.sort((a, b) => {
+                    const data1 = a[key];
+                    const data2 = b[key];
+                    return data1 - data2;
+                })
+            },
+            //获取比赛阶段信息
+            getCompetitionStage(year) {
+                const competitionList =  JSON.parse(sessionStorage.getItem('competitionList'));
+                for(const competition of competitionList) {
+                    if(competition.year === year) {
+                        let stages = competition.stages;
+                        this.sortValue(stages, 'id');
+                        this.stageOptions = [];
+                        for(let i=0; i< stages.length; i++) {
+                            this.stageOptions.push({
+                                value: stages[i].name,
+                                label: stages[i].name
                             })
                         }
+                        this.stageValue = this.stageOptions[0].label;
                     }
-                    this.competitionValue = this.competitionOptions[0].label;
-                })
+                }
+
             },
             //提交修改表单
             submitEditForm() {
-
             },
             //获取权限角色
             getRoles() {
@@ -363,11 +391,14 @@
                     this.$message.error(error.response.data);
                 })
             },
-
             //发送通知
             sendNotice() {
-                this.sendMessageVisible = true;
-                this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
+                if(this.chosenGroups.length === 0) {
+                    this.$message('请先选择比赛组！')
+                } else {
+                    this.sendMessageVisible = true;
+                    this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
+                }
             },
             //关闭通知
             dialogClose() {
@@ -391,18 +422,20 @@
             handleChange(selection) {
                 this.chosenGroups = selection;
             },
-            //搜索  data => !search || data.name.toLowerCase().includes(search.toLowerCase())
+            //搜索
             searchInfo() {
                 if(this.searchKeyValue === 'name') {
                     return this.tableData.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()));
                 } else if (this.searchKeyValue === 'captainName') {
-                    return this.tableData.filter(data => !this.search || data.captain.name.toLowerCase().includes(this.search.toLowerCase()))
+                    return this.tableData.filter(data => !this.search || data.captainName.toLowerCase().includes(this.search.toLowerCase()))
                 }
             }
         },
         mounted() {
             this.getRoles();
-            this.getCompetitionGroups(this.yearValue);
+            this.getCompetitionYear();
+            this.handleYearChange(this.yearValue);
+
         }
     }
 </script>

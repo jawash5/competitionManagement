@@ -48,7 +48,6 @@
             <invite :visible="inviteVisible"
                     @dialogClose="inviteVisible = false"
                     group-id="18"></invite>
-
         </div>
     </div>
 </template>
@@ -60,7 +59,7 @@
     import { mavonEditor } from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
     import {getBoard} from "@/api/userConsole";
-    import invite from "@/views/userConsole/invite";
+    import invite from "@/views/userConsole/components/invite";
 
     export default {
         name: "competitionDetail",

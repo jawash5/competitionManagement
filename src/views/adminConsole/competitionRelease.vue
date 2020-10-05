@@ -63,6 +63,9 @@
                                 disabled
                                 style="width: 50%; margin-left: 30px">
                         </el-input>
+
+                        <label for="" style="margin-right: 10px;margin-left: 100px">上传文件</label>
+                        <el-switch v-model="form.requireUploadFile[0]"></el-switch>
                     </div>
                     <el-divider></el-divider>
                     <div class="pull-center">
@@ -87,6 +90,9 @@
                                 clearable
                                 style="width: 50%; margin-left: 30px">
                         </el-input>
+
+                        <label for="" style="margin-right: 10px;margin-left: 100px">上传文件</label>
+                        <el-switch v-model="form.requireUploadFile[i]"></el-switch>
                     </div>
                     <el-divider></el-divider>
                     <div class="pull-center">
@@ -99,6 +105,7 @@
                                 end-placeholder="结束日期"
                                 value-format="yyyy-MM-dd HH:mm:ss">
                         </el-date-picker>
+
                         <div class="div-15"></div>
                         <label for="" style="margin-right: 20px">作品提交时间</label>
                         <el-date-picker
@@ -172,6 +179,7 @@
                     competitionTime: [
                         {name:'', stageTime:'', uploadTime:''}
                     ],
+                    requireUploadFile:[true,false],
                     information:'',
                     signForm:{
                         maxPeople: '',
@@ -182,8 +190,7 @@
                 //提交的表单
                 submitForm:{},
                 fileList:[],
-                file:'',//上传的图片
-                base64Code:''
+                file:'', //上传的图片
             };
         },
         methods: {
@@ -192,6 +199,7 @@
                 this.num += 1;
                 this.inputBT.push('')
                 this.form.competitionTime.push({name:'', stageTime:'',uploadTime:''});
+                this.form.requireUploadFile.push(false);
             },
             //删除组件
             deleteDiv() {
@@ -199,6 +207,7 @@
                     this.num -= 1;
                     this.inputBT.pop()
                     this.form.competitionTime.pop();
+                    this.form.requireUploadFile.pop();
                 }
             },
             //创建比赛
@@ -217,6 +226,7 @@
                     endDate:form.signUptime[1],
                     uploadStartDate: '2019-01-01 00:00:00',
                     uploadEndDate: '2019-01-01 00:00:00',
+                    requireUploadFile: form.requireUploadFile[0]
                 })
                 for(let i=0; i<form.competitionTime.length; i++) {
                     stages.push({
@@ -224,10 +234,10 @@
                         startDate:form.competitionTime[i].stageTime[0],
                         endDate:form.competitionTime[i].stageTime[1],
                         uploadStartDate: form.competitionTime[i].uploadTime[0],
-                        uploadEndDate: form.competitionTime[i].uploadTime[1]
+                        uploadEndDate: form.competitionTime[i].uploadTime[1],
+                        requireUploadFile: form.requireUploadFile[i+1]
                     })
                 }
-
                 this.submitForm.stage = stages[this.stage];
                 form.signForm.minPeople = parseInt(form.signForm.minPeople);
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
