@@ -5,23 +5,24 @@
                    width="1000px"
                    center
                    :show-close="false"
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false"
                    @open="getChosenGroup">
             <div class="title">主题</div>
             <el-input v-model="subject"></el-input>
 
             <div class="div-30"></div>
             <div class="title">{{tip}}</div>
-            <editor @content="getContent"></editor>
+            <editor @content="getContent" :clear="clear"></editor>
 
-
+            <div class="div-30"></div>
+            <div class="title">预览区</div>
             <el-tabs tab-position="top" @tab-click="chosenTap">
-                <el-tab-pane v-for="item in chosenGroups"
-                             :key="item.id"
+                <el-tab-pane v-for="(item,index) in chosenGroups"
+                             :key="index"
                              :label="item.captainName"
                              :lazy="true">
-                    <div class="markdown-body">
-                        <vue-markdown :source="groupsContent"></vue-markdown>
-                    </div>
+                    <div class="markdown-body" v-html="myContent"></div>
                 </el-tab-pane>
             </el-tabs>
 
@@ -38,12 +39,13 @@
 
 <script>
     import editor from "@/components/editor"
-    import VueMarkdown from 'vue-markdown'
+    import { mavonEditor } from 'mavon-editor';
+    import 'mavon-editor/dist/css/index.css';
     import {sendNotice} from '@/api/adminConsole'
 
     export default {
         name: "sendMessage",
-        components:{editor, VueMarkdown},
+        components:{editor},
         data() {
             return {
                 subject:'',
@@ -51,6 +53,7 @@
                 content:'',//输入的内容
                 chosenGroups:[],//选择的小组
                 groupsContent:'',//内容替换后的数据
+                clear:false,//编辑器清空
                 submitInfo:{
                     subject: "",
                     format: {},
@@ -66,24 +69,31 @@
                 default:false,
             },
         },
+        computed:{
+            myContent() {
+                let markdownIt = mavonEditor.getMarkdownIt()
+                return markdownIt.render(this.content)
+            }
+        },
         methods:{
             getContent(data) {
                 this.content = data;
-                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[0].captainName.name)
+                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[0].captainName)
             },
             dialogClose() {
                 this.$emit("dialogClose");
+                this.clear = false;
             },
             //打开对话框后的事件
             getChosenGroup() {
                 this.subject = '';
-                this.content = '';
+                this.clear = true;
                 this.chosenGroups = this.$store.getters['sendNotice/chosenGroups'];
                 // console.log(this.chosenGroups);
             },
             chosenTap(data) {
                 const index = data.index;
-                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[index].captainName.name)
+                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[index].captainName)
             },
             conform() {
                 if(this.subject === '') {
@@ -93,6 +103,7 @@
 
                 this.submitInfo.content = this.groupsContent;
                 this.submitInfo.subject = this.subject;
+                this.submitInfo.groups = [];
                 for(let i=0; i<this.chosenGroups.length; i++) {
                     this.submitInfo.groups.push(this.chosenGroups[i].id)
                 }
@@ -118,6 +129,6 @@
     }
 
     .markdown-body {
-        width: 70%;
+        padding: 0 50px;
     }
 </style>

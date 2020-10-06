@@ -34,6 +34,10 @@
                     this.$router.push({
                         path:'/login'
                     })
+                }).catch(() => {
+                    this.$router.push({
+                        path:'/login'
+                    })
                 })
             },
             checkCompetition() {

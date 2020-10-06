@@ -44,4 +44,3 @@ export function getGroupId() {
     return cookie.get('groupId');
 }
 
-

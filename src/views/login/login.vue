@@ -2,7 +2,7 @@
     <div id="login">
         <head-login :state="state"></head-login>
         <div id="wrap">
-            <div id="login_with_img">
+            <div id="login_with_img" v-loading="loading">
                 <img id="login_img" alt="讨论" src="../../assets/main/login.png">
                 <span class="login_hr"></span>
                 <div id="login_wrap">
@@ -60,6 +60,7 @@
             };
 
             return {
+                loading:false,//加载
                 ruleForm: {
                     username: 'name',
                     password: 'password123'
@@ -80,7 +81,7 @@
             }
         },
         methods: {
-            gotoRegister: function () {
+            gotoRegister() {
                 this.$router.push("/register");
             },
 
@@ -89,12 +90,11 @@
                     this.$message.error('用户名或密码不能为空!');
                     return false;
                 }
-
                 if(this.ruleForm.password.length < 6 || this.ruleForm.password.length > 20) {
                     this.$message.error('密码输入有误!');
                     return false;
                 }
-
+                this.loading = true;
                 const data = new FormData();
                 data.append('username',this.ruleForm.username);
                 data.append('password',this.ruleForm.password);
@@ -103,7 +103,9 @@
                     this.$router.push({
                         path:this.$route.query.redirect || '/checkCompetition'
                     });
+                    this.loading = false;
                 }).catch(error => {
+                    this.loading = false;
                     this.$message.error(error.response.data);
                 });
             },

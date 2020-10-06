@@ -1,5 +1,6 @@
 import { login,logout } from "@/api/login";
-import {getUsername, removeCode, removeUsername, setCode, setUsername, setRole, getRole, removeRole} from "@/utils/app";
+import {getUsername, removeCode, removeUsername, setCode, setUsername,
+    setRole, getRole, removeRole} from "@/utils/app";
 
 const state = {
     roles: '',
@@ -47,7 +48,7 @@ const actions = {
         })
     },
     exit({ commit }) {
-        return new Promise((resolve => {
+        return new Promise((resolve,reject) => {
             logout().then( response => {
                 removeCode();
                 removeUsername();
@@ -57,9 +58,17 @@ const actions = {
                 commit('SET_CODE', '');
                 commit('SET_ROLES', '');
                 resolve(response);
+            }).catch( error => {
+                removeCode();
+                removeUsername();
+                removeRole();
+                sessionStorage.clear();
+                commit('SET_USERNAME', '');
+                commit('SET_CODE', '');
+                commit('SET_ROLES', '');
+                reject(error);
             })
-
-        }))
+        })
     }
 
 }

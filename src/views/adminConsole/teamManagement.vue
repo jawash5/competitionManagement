@@ -144,82 +144,14 @@
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="80">
-                <template>
+                <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handleEdit()"
+                            @click="handleEdit(tableData[scope.$index])"
                             >编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
-
-        <el-dialog
-                title="修改资料"
-                :visible.sync="dialogVisible"
-                center
-                width="50%">
-            <div style="margin: 0 50px">
-                <el-form ref="editForm" :model="editForm" label-width="80px">
-                    <el-row gutter="20">
-                        <el-col span="12">
-                            <el-form-item label="队伍序号">
-                                <el-input v-model="editForm.teamID"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col span="12">
-                            <el-form-item label="队长姓名">
-                                <el-input v-model="editForm.name"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-
-                    <el-form-item label="项目名称">
-                        <el-input v-model="editForm.projectName"></el-input>
-                    </el-form-item>
-
-                    <el-row gutter="20">
-                        <el-col span="12">
-                            <el-form-item label="队伍名称">
-                                <el-input v-model="editForm.teamName"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col span="12">
-                            <el-form-item label="队伍邮箱">
-                                <el-input v-model="editForm.mail"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-
-                    <el-form-item label="上交情况">
-                        <el-checkbox v-for="item in editForm.isSubmit"
-                                     :key="item.id"
-                                     v-model="item.state">{{item.name}}</el-checkbox>
-                    </el-form-item>
-
-                    <el-form-item label="晋级情况">
-                        <el-checkbox v-for="item in editForm.isPromote"
-                                     :key="item.id"
-                                     v-model="item.state">{{item.name}}</el-checkbox>
-                    </el-form-item>
-
-                    <el-form-item label="角色管理">
-                        <el-radio v-for="item in editForm.authority"
-                                  :key="item.id"
-                                  v-model="editForm.role" :label="item.id">{{item.role}}</el-radio>
-                    </el-form-item>
-
-                    <el-form-item label="作品审核">
-                        <el-switch v-model="editForm.projectCheck"></el-switch>
-                    </el-form-item>
-
-                </el-form>
-            </div>
-
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitEditForm">确 定</el-button>
-            </span>
-        </el-dialog>
 
         <div class="div-30"></div>
         <el-row>
@@ -236,8 +168,11 @@
             </el-col>
         </el-row>
 
+        <edit-group-info :visible="editGroupInfoVisible"
+                         @dialogClose="editGroupInfoVisible = false"
+                         :groupInfo="groupInfo"></edit-group-info>
         <send-message :visible="sendMessageVisible"
-                      @dialogClose="dialogClose"></send-message>
+                      @dialogClose="sendMessageVisible = false"></send-message>
         <download-files :visible="downloadFilesVisible"
                         @dialogClose="downloadFilesVisible = false"
                         :year="yearValue"
@@ -247,16 +182,16 @@
 </template>
 
 <script>
-    import {getAdminCompetition, getCompetitionGroups, getRoles, getStageFile} from "@/api/adminConsole";
+    import {getAdminCompetition, getCompetitionGroups, getStageFile} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
+    import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage,downloadFiles},
+        components:{sendMessage,downloadFiles,editGroupInfo},
         data() {
             return {
-                dialogVisible:false, //编辑对话框
                 //比赛阶段选项
                 stageOptions: [],
                 //比赛阶段选择值
@@ -286,27 +221,8 @@
                         captainName: ''
                     },
                 ],
-                //修改信息表单参数
-                editForm:{
-                    teamID:'',
-                    name:'',
-                    teamName:'',
-                    projectName:'',
-                    mail:'',
-                    role:'',
-                    isSubmit:{
-                        first: {state:true, name:'初赛'},
-                        second:{state:false, name:'复赛'},
-                        third:{state:false, name:'决赛'}
-                    },
-                    isPromote:{
-                        first: {state:true, name:'初赛'},
-                        second:{state:false, name:'复赛'},
-                        third:{state:false, name:'决赛'}
-                    },
-                    authority:[],//用户权限角色
-                    projectCheck:false,
-                },
+                groupInfo: {},//编辑框传参
+                editGroupInfoVisible:false, //编辑对话框
                 sendMessageVisible:false,//发送通知对话框
                 downloadFilesVisible:false,//下载文件对话框
                 chosenGroups:[],//左侧多选数组
@@ -320,8 +236,9 @@
         },
         methods: {
             //编辑
-            handleEdit() {
-                this.dialogVisible = true;
+            handleEdit(groupInfo) {
+                this.editGroupInfoVisible = true;
+                this.groupInfo = groupInfo;
             },
             //比赛年发生变化
             handleYearChange(year) {
@@ -376,17 +293,7 @@
                 }
 
             },
-            //提交修改表单
-            submitEditForm() {
-            },
-            //获取权限角色
-            getRoles() {
-                getRoles().then(response => {
-                    this.editForm.authority = response.data.data;
-                }).catch( error => {
-                    this.$message.error(error.response.data);
-                })
-            },
+
             //发送通知
             sendNotice() {
                 if(this.chosenGroups.length === 0) {
@@ -395,10 +302,6 @@
                     this.sendMessageVisible = true;
                     this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
                 }
-            },
-            //关闭通知
-            dialogClose() {
-                this.sendMessageVisible = false;
             },
             //获取文件列表
             getFiles() {
@@ -428,7 +331,6 @@
             }
         },
         mounted() {
-            this.getRoles();
             this.getCompetitionYear();
             this.handleYearChange(this.yearValue);
 

@@ -5,6 +5,8 @@
                    width="500px"
                    center
                    :show-close="false"
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false"
                    v-loading="loading">
             <el-radio v-model="fileType" label="1">报名表</el-radio>
             <el-radio v-model="fileType" label="2">作品</el-radio>
@@ -58,20 +60,21 @@
                     stage: this.stage,
                     type: this.fileType
                 }
+
                 downloadFile(data).then( response => {
-                    const id = response.data.data
+                    this.url = '';
+                    const id = response.data.data;
                     const data = new FormData();
                     data.append('id', id);
-
                     this.checkStatus(data, this.flag);
 
                     setTimeout(() => {
                         this.flag = false
                         if(this.url === '') {
                             this.$message.error('文件阻塞,请稍后尝试！');
+                            this.loading = false;
                         }
                     }, 10000);
-
                 })
             },
 
@@ -90,7 +93,7 @@
                             this.url = status;
                             this.loading = false;
                             this.dialogClose();
-                            window.open(this.url, '_blank', 'width=400, height=400')
+                            window.open(this.url, '_blank', )
                         }
                     })
                 }

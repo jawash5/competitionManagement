@@ -63,7 +63,15 @@
             }
         },
         props:{
-            year:{type:String}
+            year:{type: String},
+            clear:{type: Boolean, default: false}
+        },
+        watch:{
+            clear(val) {
+                if(val === true) {
+                    this.handbook = '';
+                }
+            }
         },
         methods:{
             //内容变化
