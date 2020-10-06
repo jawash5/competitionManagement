@@ -17,7 +17,7 @@
             <el-tabs tab-position="top" @tab-click="chosenTap">
                 <el-tab-pane v-for="item in chosenGroups"
                              :key="item.id"
-                             :label="item.captain.name"
+                             :label="item.captainName"
                              :lazy="true">
                     <div class="markdown-body">
                         <vue-markdown :source="groupsContent"></vue-markdown>
@@ -28,7 +28,7 @@
 
             <div class="div-30"></div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogClose">取 消</el-button>
+                <el-button @click="dialogClose()">取 消</el-button>
                 <el-button type="primary" @click="conform">确 定</el-button>
             </div>
         </el-dialog>

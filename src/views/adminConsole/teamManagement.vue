@@ -96,7 +96,7 @@
                     align="center"
                     show-overflow-tooltip>
                 <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].captain.email }}</span>
+                    <span>{{ tableData[scope.$index].email }}</span>
                 </template>
             </el-table-column>
 
@@ -250,7 +250,6 @@
     import {getAdminCompetition, getCompetitionGroups, getRoles, getStageFile} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
-    import {competitionDetail} from "@/api/login";
 
     export default {
         name: "teamManagement",
@@ -333,9 +332,6 @@
             getCompetitionGroups(year) {
                 getCompetitionGroups(year).then( response => {
                     this.tableData = response.data.data;
-                    competitionDetail(this.tableData.id).then( () => {
-
-                    })
                 })
 
             },
