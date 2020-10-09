@@ -81,7 +81,7 @@
                 this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[0].captainName)
             },
             dialogClose() {
-                this.$emit("dialogClose");
+                this.$emit("update:dialogClose",false);
                 this.clear = false;
             },
             //打开对话框后的事件

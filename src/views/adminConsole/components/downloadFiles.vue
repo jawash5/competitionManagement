@@ -51,7 +51,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit("dialogClose");
+                this.$emit("update:dialogClose",false);
             },
             //下载文件
             conform() {

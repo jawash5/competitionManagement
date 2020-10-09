@@ -1,6 +1,6 @@
 <template>
     <div id="register">
-        <head-login :state='true'></head-login>
+        <head-login :state='false'></head-login>
         <div id="wrap">
             <div id="register_with_img">
                 <img id="register_img" alt="讨论" src="../../assets/main/register.png">

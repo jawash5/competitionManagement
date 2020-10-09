@@ -60,7 +60,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit('dialogClose')
+                this.$emit('update:dialogClose',false)
             },
             getToken() {
                 const time = format('YYYY-MM-DD HH:mm:ss')

@@ -37,7 +37,7 @@
         },
         data(){
             return{
-                competitionList:[],
+                competitionList:JSON.parse(sessionStorage.getItem('competitionList')) || [],
                 selectValue:'全部比赛',
                 options:[
                     {value: '选项1', label: '全部比赛'}
@@ -50,13 +50,16 @@
             }
         },
         methods: {
-            getCompetitionList:function () {
-                competitionList().then(response => {
-                    this.competitionList = response.data.data
-                }).catch(error => {
-                    this.$message.error('服务器开小差啦~');
-                    console.log(error);
-                });
+            getCompetitionList() {
+                if (this.competitionList.length === 0) {
+                    competitionList().then(response => {
+                        this.competitionList = response.data.data
+                        sessionStorage.setItem('competitionList', JSON.stringify(this.competitionList))
+                    }).catch(error => {
+                        this.$message.error('服务器开小差啦~');
+                        console.log(error);
+                    });
+                }
             }
         },
         mounted() {

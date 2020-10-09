@@ -169,12 +169,12 @@
         </el-row>
 
         <edit-group-info :visible="editGroupInfoVisible"
-                         @dialogClose="editGroupInfoVisible = false"
+                         :dialogClose.sync="editGroupInfoVisible"
                          :groupInfo="groupInfo"></edit-group-info>
         <send-message :visible="sendMessageVisible"
-                      @dialogClose="sendMessageVisible = false"></send-message>
+                      :dialogClose.sync="sendMessageVisible"></send-message>
         <download-files :visible="downloadFilesVisible"
-                        @dialogClose="downloadFilesVisible = false"
+                        :dialogClose.sync="downloadFilesVisible"
                         :year="yearValue"
                         :stage="stageValue"></download-files>
     </div>

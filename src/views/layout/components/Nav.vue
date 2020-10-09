@@ -8,7 +8,7 @@
 
             </el-avatar>
         </div>
-        <el-menu :default-active="active"
+        <el-menu :default-active="$route.path || active"
                  class="el-menu-vertical-demo"
                  background-color="transparent"
                  text-color="#fff"
@@ -34,24 +34,6 @@
 <!--                </el-submenu>-->
                 </template>
             </template>
-
-
-<!--            <el-menu-item index="viewCompetition">-->
-<!--                <i class="el-icon-search"></i>-->
-<!--                <span slot="title">查看比赛</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="myProject">-->
-<!--                <i class="el-icon-menu"></i>-->
-<!--                <span slot="title">我的项目</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="myMessage">-->
-<!--                <i class="el-icon-document"></i>-->
-<!--                <span slot="title">我的消息</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="personalInfo">-->
-<!--                <i class="el-icon-setting"></i>-->
-<!--                <span slot="title">个人信息</span>-->
-<!--            </el-menu-item>-->
         </el-menu>
     </div>
 </template>
@@ -106,6 +88,18 @@
         .avatar {
             width: 40%;
             margin: 20px auto;
+        }
+
+        /deep/.el-menu-item{
+            font-size: 14px;
+        }
+
+        /deep/.el-menu-item.is-active {
+            background-color: #f56c6c !important;
+        }
+
+        /deep/.el-menu {
+            border-right: solid 0 #e6e6e6;
         }
     }
 </style>

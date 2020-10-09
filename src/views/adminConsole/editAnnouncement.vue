@@ -22,23 +22,24 @@
         <div class="div-30"></div>
 
         <el-tabs v-model="activeName" tab-position="left" type="border-card" id="tabWrap">
-            <el-tab-pane v-for="(item,index) in announcementList"
-                         :key="item.id"
-                         :label="item.title"
-                         class="tabTitle">
-                <div class="content">
-                    {{ item.content }}
-                </div>
-                <div class="buttons">
-                    <el-button type="danger" @click="deleteAnnouncement(index)">删除</el-button>
-                    <el-button type="success" @click="topping(index)">置顶</el-button>
-                </div>
-            </el-tab-pane>
+            <div v-if="announcementList.length === 0" class="noAnnouncement">暂无公告内容</div>
+            <template v-else>
+                <el-tab-pane v-for="(item,index) in announcementList"
+                             :key="item.id"
+                             :label="item.title"
+                             class="tabTitle">
+                    <div class="title">{{item.title}}</div>
+
+                    <div class="content">
+                        {{ item.content }}
+                    </div>
+                    <div class="buttons">
+                        <el-button type="danger" @click="deleteAnnouncement(index)">删除</el-button>
+                        <el-button type="success" @click="topping(index)">置顶</el-button>
+                    </div>
+                </el-tab-pane>
+            </template>
         </el-tabs>
-
-
-
-
 
         <el-dialog
                 title="新增公告"
@@ -157,11 +158,6 @@
                 const data = {year:this.year, competitionName:this.competitionValue};
                 getBoard(data).then( response => {
                     this.announcementList = response.data.data;
-                    for (let i=0; i<this.announcementList.length; i++) {
-                        if(this.announcementList[i].title.length > 10) {
-                            this.announcementList[i].title = this.announcementList[i].title.slice(0,10) + "..."
-                        }
-                    }
                 }).catch(error => {
                     this.$message.error('服务器开小差啦~');
                     console.log(error);
@@ -220,24 +216,23 @@
             height: 85vh;
             width: 100%;
 
+            .noAnnouncement {
+                margin-top: 50px;
+                font-size: 18px;
+                color: #303133;
+                text-align: center;
+            }
+
+            .title {
+                margin-top: 30px;
+                font-size: 22px;
+                text-align: center;
+            }
+
             .content {
                 font-size: 16px;
                 padding: 50px;
-                text-indent:2em;
                 height: 50vh;
-
-                .title {
-                    font-family: "幼圆" , serif;
-                    font-size: 22px;
-                    text-align: center;
-                }
-
-                .contentWrap{
-                    margin-top: 50px;
-                    font-size: 16px;
-                    text-indent: 2em;
-                    line-height: 2em;
-                }
             }
 
             .buttons {
@@ -251,11 +246,12 @@
         }
 
         /deep/.el-tabs__item {
-            font-family: "幼圆" , serif;
-            /*width: 200px;*/
             height: 80px;
+            width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
             font-size: 16px;
-            width: 226px;
+            font-family: "幼圆" , serif;
         }
 
         /deep/.el-tabs--left .el-tabs__item.is-left {

@@ -3,47 +3,67 @@
         <div id="wrapTitle">个人资料</div>
         <div id="infoWrap">
             <div id="infoForm">
-                <el-form ref="form" :model="form" label-width="60px">
-                    <el-form-item label="用户名">
+                <el-form ref="form" :model="form" label-width="80px">
+                    <el-form-item label="用户名：">
                         <el-input v-model="form.username" :disabled="isDisabled"></el-input>
                     </el-form-item>
                     <el-row>
                         <el-col :span="12">
-                            <el-form-item label="姓名">
+                            <el-form-item label="姓名：">
                             <el-input v-model="form.name" :disabled="isDisabled" class="itemInput"></el-input>
                         </el-form-item></el-col>
                         <el-col :span="12">
-                            <el-form-item label="学号">
+                            <el-form-item label="学号：">
                                 <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
-                            <el-form-item label="学院">
-                                <el-input v-model="form.school" :disabled="editDisabled"></el-input>
+                            <el-form-item label="学院：">
+                                <el-input v-model="form.school" :disabled="isDisabled"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="学校">
+                            <el-form-item label="学校：">
                                 <el-input v-model="form.university" :disabled="isDisabled"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-form-item label="邮箱">
-                        <el-input v-model="form.email" :disabled="editDisabled"></el-input>
+                    <el-form-item label="邮箱：">
+                        <el-input v-model="form.email" :disabled="editMail" style="width: 250px;margin-right: 10px"></el-input>
+                        <el-button type="primary"
+                                   size="small"
+                                   icon="el-icon-edit"
+                                   circle
+                                   v-if="editMail"
+                                   @click="editMail = false"></el-button>
+                        <el-button type="primary"
+                                   size="small"
+                                   :icon="icon"
+                                   circle
+                                   v-if="!editMail"
+                                   @click="edit"></el-button>
                     </el-form-item>
-                    <el-form-item label="电话">
-                        <el-input v-model="form.phoneNo" :disabled="isDisabled"></el-input>
+                    <el-form-item label="电话：">
+                        <el-input v-model="form.phone" :disabled="editPhone" style="width: 250px;margin-right: 10px"></el-input>
+                        <el-button type="primary"
+                                   size="small"
+                                   icon="el-icon-edit"
+                                   circle
+                                   v-if="editPhone"
+                                   @click="editMail = false"></el-button>
+                        <el-button type="primary"
+                                   size="small"
+                                   :icon="icon"
+                                   circle
+                                   v-if="!editPhone"
+                                   @click="edit"></el-button>
                     </el-form-item>
-                    <el-form-item label="密码">
-                        <el-input show-password v-model="form.password" :disabled="editDisabled"></el-input>
+                    <el-form-item label="密码：">
+                        <el-button size="small" type="primary">修改密码</el-button>
                     </el-form-item>
                 </el-form>
-            </div>
-            <div class="submitButton">
-                <el-button type="primary" v-if="editDisabled" @click="editDisabled = false">修改资料</el-button>
-                <el-button type="danger" v-if="!editDisabled" @click="submitInfo">确定修改</el-button>
             </div>
         </div>
     </div>
@@ -58,13 +78,15 @@
         data() {
             return{
                 isDisabled: true,
-                editDisabled: true,
+                editMail: true,
+                editPhone: true,
+                icon:'el-icon-check',
                 form: {
                     studentNo: '',
                     name: '',
                     school: '',
                     university: '',
-                    phoneNo: '',
+                    phone: '',
                     email: '',
                     username: '',
                     password:''
@@ -95,9 +117,26 @@
                     })
                     this.editDisabled = true;
                     this.getPersonalInfo();
-
                 })
-
+            },
+            edit() {
+                this.icon = 'el-icon-loading';
+                const data = this.form;
+                const value = {
+                    email: data.email,
+                }
+                modifyPersonalInfo(value).then( () => {
+                    this.$message({
+                        type:"success",
+                        message:"修改成功！"
+                    })
+                    this.icon = 'el-icon-check';
+                    this.editMail = true;
+                    this.getPersonalInfo();
+                }).catch( () => {
+                    this.editMail = true;
+                    this.icon = 'el-icon-check';
+                })
             }
         },
         mounted() {
@@ -140,6 +179,10 @@
 
     /deep/.el-input.is-disabled .el-input__inner {
         cursor: auto;
-        color: #606266;
+        color: #303133;
+        background-color: #fff;
+        border-top: none;
+        border-left: none;
+        border-right: none;
     }
 </style>

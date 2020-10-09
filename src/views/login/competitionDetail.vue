@@ -12,6 +12,7 @@
                          :title="item.name"></el-step>
             </el-steps>
             <el-button class="pull-right" type="success" round @click="signUpCompetition">立即报名</el-button>
+            <el-button class="pull-right" type="success" round @click="signUpCompetition">立即报名</el-button>
             <div class="div-60"></div>
             <el-row>
                 <el-col :span="16">
@@ -40,14 +41,14 @@
                 </el-col>
             </el-row>
             <new-team :visible="newTeamVisible"
-                      @dialogClose="newTeamVisibleClose"
+                      :dialogClose.sync="newTeamVisible"
                       @success="inviteMembers"
                       :competition-name="competitionInfo.name"
                       :id="competitionInfo.id"></new-team>
 
             <invite :visible="inviteVisible"
-                    @dialogClose="inviteVisible = false"
-                    group-id="18"></invite>
+                    :dialogClose.sync="inviteVisible"
+                    :group-id="groupId"></invite>
         </div>
     </div>
 </template>
@@ -71,7 +72,8 @@
                 inviteVisible:false,
                 activeName: '',//默认公告
                 announcement:[],//公告
-                mdContent:''
+                mdContent:'',
+                groupId:''
             }
         },
         computed:{
@@ -140,13 +142,9 @@
                     this.announcement = announcement;
                 })
             },
-            //活动报名对话框关闭回调
-            newTeamVisibleClose() {
-                this.newTeamVisible = false;
-            },
-            inviteMembers() {
+            inviteMembers(id) {
+                this.groupId = id;
                 this.inviteVisible = true;
-
             }
         },
         mounted() {

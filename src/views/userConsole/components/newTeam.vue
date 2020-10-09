@@ -30,6 +30,13 @@
                         </el-col>
                     </el-row>
                 </el-form>
+                <el-transfer
+                        filterable
+                        :filter-method="function(query, item) {return item.pinyin.indexOf(query) > -1;}"
+                        filter-placeholder="请输入城市拼音"
+                        v-model="value"
+                        :data="data">
+                </el-transfer>
             </div>
 
             <span slot="footer">
@@ -62,8 +69,24 @@
             }
         },
         data() {
+            const generateData = () => {
+                const data = [];
+                const cities = [];
+                const pinyin = [];
+                cities.forEach((city, index) => {
+                    data.push({
+                        label: city,
+                        key: index,
+                        pinyin: pinyin[index]
+                    });
+                });
+                return data;
+            };
+
             return {
                 dialogVisible:true,
+                data: generateData(),
+                value: [],
                 ruleForm: {
                     teamName:'',
                     leader:'',
@@ -74,11 +97,13 @@
                     competitionId: 0,
                     groupName: "",
                 },
+                groupId:'',
+                loading:false,
             }
         },
         methods: {
             dialogClose() {
-                this.$emit('dialogClose')
+                this.$emit('update:dialogClose',false)
             },
             //前表单提交，端验证还没有加
             submitForm() {
@@ -87,18 +112,19 @@
                 this.finalForm.teammateSet = [
                     {name:this.ruleForm.leader, studentNo:this.ruleForm.leaderId, isLeader:true,}
                     ];
-
+                this.loading = true;
                 //提交报名比赛信息
                 applyCompetition(this.finalForm).then(response => {
-                    const code = response.data.code;
-                    if(code === 0) {
+                    const id = response.data.data;
+                    if(id) {
                         this.$message({
                             showClose: true,
                             message: '创建成功！',
                             type: 'success'
                         });
-                        this.$emit('success')
+                        this.$emit('success',id);
                         this.dialogClose();
+                        this.loading = false;
                     }
                 }).catch(error => {
                     this.$message({
@@ -106,6 +132,7 @@
                         message: error.response.data.message + '!',
                         type: 'error'
                     });
+                    this.loading = false;
                 })
             },
             //获取队长信息

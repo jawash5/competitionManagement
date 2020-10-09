@@ -7,7 +7,7 @@ const BASEURL = process.env.NODE_ENV === 'production' ? '/' : '/devApi';
 
 const service = axios.create({
     baseURL:BASEURL,
-    timeout:10000,
+    timeout:30000,
 });
 
 // 添加请求拦截器

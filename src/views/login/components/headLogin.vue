@@ -1,17 +1,23 @@
 <template>
     <div id="login_head">
-        <h1 id="login_head_title">竞赛管理系统</h1>
-        <div class="rooter" v-if="!state">
-            <router-link to="login" class="router_url">登录</router-link>
-            <router-link to="checkCompetition" class="router_url avatar">查看比赛</router-link>
-        </div>
+        <span id="login_head_title">竞赛管理系统</span>
+        <div class="menuPlus">
+            <el-menu :default-active="$route.path"
+                     mode="horizontal"
+                     class="menu"
+                     router
+                     background-color="#409EFF"
+                     text-color="#fff"
+                     active-text-color="#ffd04b">
+                <el-menu-item index="/checkCompetition">查看比赛</el-menu-item>
+                <el-menu-item v-if="!state" index="/login">登录</el-menu-item>
+                <el-menu-item v-if="state" :index="url">个人中心</el-menu-item>
+            </el-menu>
 
-        <div class="rooter" v-if="state">
-<!--            <router-link to="" class="router_url">消息</router-link>-->
-            <router-link :to="url" class="router_url">个人中心</router-link>
             <el-popover
                     width="100"
-                    trigger="hover">
+                    trigger="hover"
+                    v-if="state">
                 <el-button class="logoutButton" @click="exit">退出登录</el-button>
                 <el-avatar :size="40"
                            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -19,8 +25,8 @@
                            slot="reference">
                 </el-avatar>
             </el-popover>
-
         </div>
+
 
     </div>
 </template>
@@ -32,7 +38,8 @@
         name: "headLogin",
         data() {
             return{
-                url:''
+                url:'',
+                routerIndex: '/checkCompetition'
             }
         },
         props: {
@@ -44,16 +51,19 @@
         methods:{
             exit() {
                 this.$store.dispatch('app/exit').then(() => {
+                    this.routerIndex = '/login';
                     this.$router.push({
                         path:'/login'
                     })
                 }).catch( () => {
+                    this.routerIndex = '/login';
                     this.$router.push({
                         path:'/login'
                     })
                 })
             },
             setUrl() {
+                this.routerIndex = '/checkCompetition';
                 if (getRole() === '参赛者') {
                     this.url = 'myProject'
                 } else if (getRole() === '管理员') {
@@ -69,16 +79,17 @@
 
 <style scoped>
     #login_head {
-        background-color: #409EFF;
-        height: 60px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        height: 60px;
         min-width: 1200px;
         min-height: 60px;
+        background-color: #409EFF;
     }
 
     #login_head_title {
+        display: inline-block;
         font-size: 24px;
         font-family:"等线" , serif;
         color: #f2f2f2;
@@ -87,8 +98,18 @@
         font-weight: bolder;
     }
 
+    .menuPlus {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+    }
+
+    .menu {
+        margin-right: 50px;
+    }
+
     .avatar {
-        margin-left: 10px;
         margin-right: 50px;
     }
 
@@ -97,17 +118,5 @@
         width: 100%;
         border: none;
 
-    }
-
-    a:hover {
-        color: yellow;
-    }
-
-    .router_url {
-        font-family:"等线" , serif;
-        color: white;
-        padding: 0 10px;
-        font-size: 14px;
-        line-height: 40px;
     }
 </style>
