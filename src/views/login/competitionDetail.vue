@@ -90,11 +90,12 @@
             //获取比赛信息
             getCompetitionInfo() {
                 const id = this.$route.query.id
+                //检验是否已经报名
                 if(getCode() === '0') {
                     checkGroup().then( response => {
                         const groups = response.data.data;
                         for (const group of groups) {
-                            if(group.competitionId + '' === id) {
+                            if(group.competitionInfo.id === id) {
                                 this.haveSignedUp = true;
                                 break;
                             }

@@ -2,10 +2,12 @@
     <div id="project">
         <div id="projectTop">
             <span class="title2"
-                  v-if="competitionDetail.hasOwnProperty('year')">{{competitionDetail.year + '年 '}}</span>
+                  v-if="projectDetail.competitionInfo.hasOwnProperty('year')">
+                {{projectDetail.competitionInfo.year + '年 '}}</span>
             <span class="title2"
-                v-if="competitionDetail.hasOwnProperty('session')">{{ '第 ' + competitionDetail.session + ' 届'}}</span>
-            <h3 class="competitionName">{{ competitionDetail.name }}</h3>
+                v-if="projectDetail.competitionInfo.hasOwnProperty('session')">
+                {{ '第 ' + projectDetail.competitionInfo.session + ' 届'}}</span>
+            <h3 class="competitionName">{{ projectDetail.competitionInfo.name }}</h3>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
@@ -17,7 +19,6 @@
 </template>
 
 <script>
-    import {competitionDetail} from "@/api/login";
 
     export default {
         name: "project",
@@ -29,16 +30,17 @@
                     return {
                         id: '',
                         name: '',
-                        competitionId: '',
-                        captainId: '',
-                        session: ''
+                        competitionInfo:{
+                            session: '',
+                            year:'',
+                            name:''
+                        }
                     }
                 }
             }
         },
         data() {
             return {
-                competitionDetail:JSON.parse(sessionStorage.getItem(this.projectDetail.competitionId)) || '',//比赛
             }
         },
         methods:{
@@ -49,17 +51,7 @@
                     path: "/editProject",
                 });
             },
-            //获取比赛信息
-            checkCompetitionDetail(id) {
-                competitionDetail(id).then( response => {
-                    this.competitionDetail = response.data.data;
-                    sessionStorage.setItem(id, JSON.stringify(this.competitionDetail))
-                })
-            }
         },
-        mounted() {
-            this.checkCompetitionDetail(this.projectDetail.competitionId)
-        }
 
     }
 </script>

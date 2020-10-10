@@ -37,7 +37,7 @@
             </el-row>
         </el-form>
 
-        <upload :visible="uploadDialog" @dialogClose="uploadDialog = false" @uploadSuccess="getFiles()"></upload>
+        <upload :visible="uploadDialog" :dialogClose.sync="uploadDialog" @uploadSuccess="getFiles()"></upload>
 
         <el-table
                 ref="multipleTable"

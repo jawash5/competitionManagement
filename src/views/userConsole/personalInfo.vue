@@ -110,8 +110,10 @@
                         type:"success",
                         message:"修改成功！"
                     })
-                    this.getPersonalInfo();
+                }).catch( error => {
+                    this.$message.error(error.response.data);
                 }).finally( () => {
+                    this.getPersonalInfo();
                     this.emailVisible = true;
                     this.icon = 'el-icon-check';
                 })
@@ -127,8 +129,10 @@
                         type:"success",
                         message:"修改成功！"
                     })
-                    this.getPersonalInfo();
+                }).catch( error => {
+                    this.$message.error(error.response.data);
                 }).finally( () => {
+                    this.getPersonalInfo();
                     this.phoneVisible = true;
                     this.icon = 'el-icon-check';
                 })

@@ -87,7 +87,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit('dialogClose')
+                this.$emit('update:dialogClose',false)
             },
             //获取队伍列表
             getGroupList() {
@@ -95,7 +95,7 @@
                     this.groups = response.data.data;
                     for(let i=0; i<this.groups.length; i++) {
                         this.groupsOptions.push({
-                            value: this.groups[i].competitionId,
+                            value: this.groups[i].competitionInfo.id,
                             label: this.groups[i].name
                         })
                     }
