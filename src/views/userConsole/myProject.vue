@@ -34,26 +34,11 @@
                     checkGroup().then(response => {
                         this.groupList = response.data.data;
                         sessionStorage.setItem('groupList', JSON.stringify(this.groupList));
-                        console.log(this.groupList)
                     }).catch(error => {
                         this.$message.error(error.response.data);
                     })
                 }
             },
-
-
-            // reFlesh() {
-            //     this.reFleshIcon = 'el-icon-loading pull-right'
-            //     checkGroup().then(response => {
-            //         this.projectDetail = response.data.data;
-            //         this.reFleshIcon = 'el-icon-refresh-right pull-right';
-            //         sessionStorage.setItem('projectDetail', JSON.stringify(this.projectDetail));
-            //         // console.log(this.projectDetail)
-            //     }).catch(error => {
-            //         this.$message.error(error.response.data);
-            //         this.reFleshIcon = 'el-icon-refresh-right pull-right';
-            //     })
-            // }
         },
         mounted() {
             this.checkGroup();

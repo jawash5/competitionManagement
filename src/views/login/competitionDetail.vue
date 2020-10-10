@@ -11,8 +11,11 @@
                          :key="item.id"
                          :title="item.name"></el-step>
             </el-steps>
-            <el-button class="pull-right" type="success" round @click="signUpCompetition">立即报名</el-button>
-            <el-button class="pull-right" type="success" round @click="signUpCompetition">立即报名</el-button>
+            <el-button class="pull-right"
+                       type="success"
+                       round
+                       :disabled="haveSignedUp"
+                       @click="signUpCompetition">{{haveSignedUp ? '已报名': '立即报名'}}</el-button>
             <div class="div-60"></div>
             <el-row>
                 <el-col :span="16">
@@ -59,7 +62,7 @@
     import {competitionDetail} from "@/api/login";
     import { mavonEditor } from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
-    import {getBoard} from "@/api/userConsole";
+    import {getBoard,checkGroup} from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
 
     export default {
@@ -73,7 +76,8 @@
                 activeName: '',//默认公告
                 announcement:[],//公告
                 mdContent:'',
-                groupId:''
+                groupId:'',
+                haveSignedUp:false
             }
         },
         computed:{
@@ -86,6 +90,18 @@
             //获取比赛信息
             getCompetitionInfo() {
                 const id = this.$route.query.id
+                if(getCode() === '0') {
+                    checkGroup().then( response => {
+                        const groups = response.data.data;
+                        for (const group of groups) {
+                            if(group.competitionId + '' === id) {
+                                this.haveSignedUp = true;
+                                break;
+                            }
+                        }
+                    })
+                }
+
                 competitionDetail(id).then(response => {
                     this.competitionInfo = response.data.data;
                     this.mdContent = this.competitionInfo.information;

@@ -1,14 +1,12 @@
 <template>
     <div id="headWrap">
         <div class="close">
-            <div class="userInfo">
-                {{ username }}，您好！
-            </div>
+<!--            <div class="userInfo">-->
+<!--                {{ username }}，您好！-->
+<!--            </div>-->
             <el-popover
                     width="50"
                     trigger="hover">
-                <el-button class="logoutButton" @click="checkCompetition">查看比赛</el-button>
-                <el-divider class="el-divider"></el-divider>
                 <el-button class="logoutButton" @click="exit">退出登录</el-button>
                 <el-avatar :size="40"
                            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -17,6 +15,13 @@
                 </el-avatar>
             </el-popover>
         </div>
+        <el-menu :default-active="$route.path"
+                 mode="horizontal"
+                 class="pull-right"
+                 style="display: inline-block;"
+                 router>
+            <el-menu-item index="/checkCompetition">查看比赛</el-menu-item>
+        </el-menu>
     </div>
 </template>
 
@@ -40,11 +45,6 @@
                     })
                 })
             },
-            checkCompetition() {
-                this.$router.push({
-                    path:'/checkCompetition'
-                })
-            }
         },
         computed:{
             username: function (){
@@ -63,10 +63,10 @@
         right: 0;
         left: $navMenu;
         height: 60px;
+        min-width: 1000px;
         background-color: #fff;
         z-index: 1000;
         -webkit-box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
-        min-width: 1000px;
     }
 
     .logoutButton {
@@ -87,7 +87,7 @@
 
     .close {
         float: right;
-        width: 250px;
+        width: 100px;
         height: 60px;
         display: flex;
         align-items: center;

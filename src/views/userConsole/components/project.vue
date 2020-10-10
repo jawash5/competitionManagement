@@ -1,8 +1,11 @@
 <template>
     <div id="project">
         <div id="projectTop">
-            <h3 class="competitionName">{{ '第 ' + session + ' 届'}}</h3>
-            <h3 class="competitionName">{{ competitionName }}</h3>
+            <span class="title2"
+                  v-if="competitionDetail.hasOwnProperty('year')">{{competitionDetail.year + '年 '}}</span>
+            <span class="title2"
+                v-if="competitionDetail.hasOwnProperty('session')">{{ '第 ' + competitionDetail.session + ' 届'}}</span>
+            <h3 class="competitionName">{{ competitionDetail.name }}</h3>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
@@ -35,8 +38,7 @@
         },
         data() {
             return {
-                competitionName:'',//比赛
-                session:''//比赛年
+                competitionDetail:JSON.parse(sessionStorage.getItem(this.projectDetail.competitionId)) || '',//比赛
             }
         },
         methods:{
@@ -50,9 +52,8 @@
             //获取比赛信息
             checkCompetitionDetail(id) {
                 competitionDetail(id).then( response => {
-                    const competitionDetail = response.data.data;
-                    this.competitionName = competitionDetail.name;
-                    this.session = competitionDetail.session;
+                    this.competitionDetail = response.data.data;
+                    sessionStorage.setItem(id, JSON.stringify(this.competitionDetail))
                 })
             }
         },
@@ -86,6 +87,13 @@
         margin-top: 10px;
     }
 
+    .title2 {
+        margin-top: 10px;
+        color: #409EFF;
+        font-size: 18px;
+        font-family: "幼圆" , serif;
+    }
+
     #projectTop {
         margin-top: 20px;
         padding: 0 20px;
@@ -99,8 +107,8 @@
     }
 
     #teamName {
-        font-size: 16px;
         color: #303133;
+        font-size: 16px;
         font-weight: 500;
     }
 

@@ -31,34 +31,34 @@
                         </el-col>
                     </el-row>
                     <el-form-item label="邮箱：">
-                        <el-input v-model="form.email" :disabled="editMail" style="width: 250px;margin-right: 10px"></el-input>
+                        <el-input v-model="form.email" :disabled="emailVisible" style="width: 250px;margin-right: 10px"></el-input>
                         <el-button type="primary"
                                    size="small"
                                    icon="el-icon-edit"
                                    circle
-                                   v-if="editMail"
-                                   @click="editMail = false"></el-button>
+                                   v-if="emailVisible"
+                                   @click="emailVisible = false"></el-button>
                         <el-button type="primary"
                                    size="small"
                                    :icon="icon"
                                    circle
-                                   v-if="!editMail"
-                                   @click="edit"></el-button>
+                                   v-if="!emailVisible"
+                                   @click="editEmail"></el-button>
                     </el-form-item>
                     <el-form-item label="电话：">
-                        <el-input v-model="form.phone" :disabled="editPhone" style="width: 250px;margin-right: 10px"></el-input>
+                        <el-input v-model="form.phone" :disabled="phoneVisible" style="width: 250px;margin-right: 10px"></el-input>
                         <el-button type="primary"
                                    size="small"
                                    icon="el-icon-edit"
                                    circle
-                                   v-if="editPhone"
-                                   @click="editMail = false"></el-button>
+                                   v-if="phoneVisible"
+                                   @click="phoneVisible = false"></el-button>
                         <el-button type="primary"
                                    size="small"
                                    :icon="icon"
                                    circle
-                                   v-if="!editPhone"
-                                   @click="edit"></el-button>
+                                   v-if="!phoneVisible"
+                                   @click="editPhone"></el-button>
                     </el-form-item>
                     <el-form-item label="密码：">
                         <el-button size="small" type="primary">修改密码</el-button>
@@ -78,8 +78,8 @@
         data() {
             return{
                 isDisabled: true,
-                editMail: true,
-                editPhone: true,
+                emailVisible: true,
+                phoneVisible: true,
                 icon:'el-icon-check',
                 form: {
                     studentNo: '',
@@ -99,27 +99,7 @@
                     this.form = response.data.data
                 })
             },
-            submitInfo() {
-                const data = this.form;
-                if(data.password === '' || data.school === '' || data.email === '') {
-                    this.$message.error("请输入完整信息");
-                    return false;
-                }
-                const value = {
-                    password: data.password,
-                    email: data.email,
-                    college: data.school
-                }
-                modifyPersonalInfo(value).then( () => {
-                    this.$message({
-                        type:"success",
-                        message:"修改成功！"
-                    })
-                    this.editDisabled = true;
-                    this.getPersonalInfo();
-                })
-            },
-            edit() {
+            editEmail() {
                 this.icon = 'el-icon-loading';
                 const data = this.form;
                 const value = {
@@ -130,11 +110,26 @@
                         type:"success",
                         message:"修改成功！"
                     })
-                    this.icon = 'el-icon-check';
-                    this.editMail = true;
                     this.getPersonalInfo();
-                }).catch( () => {
-                    this.editMail = true;
+                }).finally( () => {
+                    this.emailVisible = true;
+                    this.icon = 'el-icon-check';
+                })
+            },
+            editPhone() {
+                this.icon = 'el-icon-loading';
+                const data = this.form;
+                const value = {
+                    phone: data.phone,
+                }
+                modifyPersonalInfo(value).then( () => {
+                    this.$message({
+                        type:"success",
+                        message:"修改成功！"
+                    })
+                    this.getPersonalInfo();
+                }).finally( () => {
+                    this.phoneVisible = true;
                     this.icon = 'el-icon-check';
                 })
             }
