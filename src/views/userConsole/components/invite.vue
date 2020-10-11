@@ -63,7 +63,7 @@
                 this.$emit('update:dialogClose',false)
             },
             getToken() {
-                const time = format('YYYY-MM-DD HH:mm:ss')
+                  const time = format('YYYY-MM-DD HH:mm:ss')
                   const data = {
                       groupId: this.groupId,
                       date: time

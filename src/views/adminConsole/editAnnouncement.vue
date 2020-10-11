@@ -22,7 +22,7 @@
         <div class="div-30"></div>
 
         <el-tabs v-model="activeName" tab-position="left" type="border-card" id="tabWrap">
-            <div v-if="announcementList.length === 0" class="noAnnouncement">暂无公告内容</div>
+            <div v-if="announcementList.length === 0" class="noAnnouncement">暂无公告信息</div>
             <template v-else>
                 <el-tab-pane v-for="(item,index) in announcementList"
                              :key="item.id"
@@ -85,6 +85,7 @@
 <script>
     import {getBoard} from "@/api/userConsole";
     import {addAnnouncement, deleteAnnouncement, topAnnouncement} from "@/api/adminConsole";
+    import format from '@/utils/timeFormat'
 
     export default {
         name: "editAnnouncement",
@@ -92,15 +93,14 @@
             return{
                 announcementList:[
                     {
-                        "id": '',
-                        "content": '',
-                        "title": '',
-                        "year": '',
-                        "isTop": '',
+                        id: '',
+                        content: '',
+                        title: '',
+                        year: '',
+                        isTop: '',
                     }
                 ],//公告列表
                 competitionValue:'电子商务比赛', //比赛名称
-                competitionList:[], //比赛列表
                 year:'2018',
                 activeName:'',//标签选择项
                 newAnnouncement:false,//显示dialog
@@ -159,8 +159,7 @@
                 getBoard(data).then( response => {
                     this.announcementList = response.data.data;
                 }).catch(error => {
-                    this.$message.error('服务器开小差啦~');
-                    console.log(error);
+                    this.$message.error(error.response.data);
                 });
             },
 
@@ -170,6 +169,16 @@
                 data.append('title',this.creatAnnouncement.name);
                 data.append('content',this.creatAnnouncement.content);
                 data.append('year',this.creatAnnouncement.year);
+
+                const time = format('YYYY-MM-DD');
+                data.append('date', time);
+
+                // //获取时间
+                // const date = new Date().toLocaleDateString();
+                // while (date.indexOf('/') !== -1) {
+                //     date.replace('/', '-')
+                // }
+                // data.append('date', date);
 
                 addAnnouncement(data).then(response => {
                     this.$message({
@@ -219,7 +228,7 @@
             .noAnnouncement {
                 margin-top: 50px;
                 font-size: 18px;
-                color: #303133;
+                color: #909399;
                 text-align: center;
             }
 
