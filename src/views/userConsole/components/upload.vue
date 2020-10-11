@@ -68,7 +68,6 @@
                 dialogVisible: false,
                 groups:[],//加入的小组
                 competitionId:'',//选中的比赛id
-                competitionName:'',//比赛名称
                 groupsOptions:[],//队伍选项
                 competitionStages:'',//选中的比赛阶段
                 competitionStagesOptions:[],//比赛阶段选择
@@ -105,18 +104,16 @@
             //获取比赛详情
             getCompetitionDetail(competitionId) {
                 for(let i=0; i<this.groups.length; i++) {
-                    if(competitionId === this.groups[i].competitionId) {
+                    if(competitionId === this.groups[i].competitionInfo.id) {
                         this.groupId = this.groups[i].id;
                     }
                 }
 
                 competitionDetail(competitionId).then(response => {
-                    const competitionDetail = response.data.data;
-                    this.competitionName = competitionDetail.name;
-                    const competitionStages = competitionDetail.stages;
+                    const competitionStages = response.data.data.stages;
                     this.competitionStagesOptions = [];
                     for(let i=0; i<competitionStages.length; i++) {
-                        this.competitionStagesOptions.push({label: competitionStages[i].name, value:competitionStages[i].name})
+                        this.competitionStagesOptions.push({label: competitionStages[i].name, value:competitionStages[i].id})
                     }
                     this.year = competitionDetail.year;
 
@@ -134,9 +131,8 @@
                     const data = new FormData();
 
                     data.append('file', this.file);
-                    data.append('competitionName', this.competitionName);
-                    data.append('year', this.year);
-                    data.append('stage', this.competitionStages);
+                    data.append('competitionId', this.competitionId);
+                    data.append('stageId', this.competitionStages);
                     data.append('groupId', this.groupId);
                     data.append('type', this.fileType);
 

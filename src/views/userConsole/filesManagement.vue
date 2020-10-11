@@ -171,7 +171,10 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    deleteFiles(this.tableData[index]).then( () => {
+                    const data = new FormData;
+                    data.append('fileId', this.tableData[index]['fileId']);
+
+                    deleteFiles(data).then( () => {
                         this.$message.success('删除成功！');
                         this.getFiles();
                     }).catch( error => {
