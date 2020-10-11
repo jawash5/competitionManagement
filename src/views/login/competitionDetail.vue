@@ -19,7 +19,9 @@
                                  :description="item.startDate + ' 至 ' + item.endDate"></el-step>
             </el-steps>
 
-            <el-button class="pull-right"
+            <el-button v-if="stepActive > 0" class="pull-right" type="success" round disabled>已过报名时间</el-button>
+            <el-button v-else
+                       class="pull-right"
                        type="success"
                        round
                        :disabled="haveSignedUp"
@@ -87,7 +89,7 @@
                 mdContent:'',
                 groupId:'',
                 haveSignedUp:false,
-                stepActive: -1
+                stepActive: 100//默认步骤条高亮值
             }
         },
         computed:{
