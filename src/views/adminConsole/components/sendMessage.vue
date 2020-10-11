@@ -26,7 +26,6 @@
                 </el-tab-pane>
             </el-tabs>
 
-
             <div class="div-30"></div>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogClose()">取 消</el-button>
@@ -58,7 +57,6 @@
                     subject: "",
                     format: {},
                     groups: [],
-                    content: ""
                 },
             }
         },
@@ -72,13 +70,15 @@
         computed:{
             myContent() {
                 let markdownIt = mavonEditor.getMarkdownIt()
-                return markdownIt.render(this.content)
+                return markdownIt.render(this.groupsContent)
             }
         },
         methods:{
             getContent(data) {
                 this.content = data;
-                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[0].captainName)
+                let content = this.content;
+                this.groupsContent = content.replaceAll('{{队长姓名}}', this.chosenGroups[0].captainName)
+
             },
             dialogClose() {
                 this.$emit("update:dialogClose",false);
@@ -89,11 +89,12 @@
                 this.subject = '';
                 this.clear = true;
                 this.chosenGroups = this.$store.getters['sendNotice/chosenGroups'];
-                // console.log(this.chosenGroups);
             },
             chosenTap(data) {
                 const index = data.index;
-                this.groupsContent = this.content.replace('{{队长姓名}}', this.chosenGroups[index].captainName)
+                let content = this.content;
+                this.groupsContent = content.replaceAll('{{队长姓名}}', this.chosenGroups[index].captainName)
+
             },
             conform() {
                 if(this.subject === '') {
@@ -101,13 +102,20 @@
                     return false;
                 }
 
-                this.submitInfo.content = this.groupsContent;
                 this.submitInfo.subject = this.subject;
                 this.submitInfo.groups = [];
-                for(let i=0; i<this.chosenGroups.length; i++) {
-                    this.submitInfo.groups.push(this.chosenGroups[i].id)
+
+                //统一修改format信息
+                const content = this.content;
+                let format = '';
+                for(const group of this.chosenGroups) {
+                    format = content.replaceAll('{{队长姓名}}', group.captainName);
+                    this.submitInfo.groups.push(group.id);
+                    this.submitInfo.format[group.id] = format || content;
+                    format = '';
                 }
-                // console.log(this.submitInfo);
+
+                console.log(this.submitInfo);
                 sendNotice(this.submitInfo).then(() => {
                     this.$message({
                         type:"success",
@@ -115,8 +123,9 @@
                     })
                 }).catch(error => {
                     this.$message.error(error.response.data)
+                }).finally( () => {
+                    this.dialogClose();
                 });
-                this.dialogClose();
             }
         },
     }
