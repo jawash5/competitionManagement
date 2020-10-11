@@ -12,7 +12,7 @@
                 {{competitionInfo.name}}
             </div>
 
-            <el-steps :space="250" :active="1" align-center finish-status="success">
+            <el-steps :space="250" :active="stepActive" align-center finish-status="success">
                         <el-step v-for="item in competitionInfo.stages"
                                  :key="item.id"
                                  :title="item.name"
@@ -72,6 +72,7 @@
     import 'mavon-editor/dist/css/index.css';
     import {getBoard,checkGroup} from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
+    import format from "@/utils/timeFormat";
 
     export default {
         name: "competitionDetail",
@@ -85,7 +86,8 @@
                 announcement:[],//公告
                 mdContent:'',
                 groupId:'',
-                haveSignedUp:false
+                haveSignedUp:false,
+                stepActive: -1
             }
         },
         computed:{
@@ -115,6 +117,7 @@
                     this.competitionInfo = response.data.data;
                     this.mdContent = this.competitionInfo.information;
                     this.sortStages('id')//按id排序
+                    this.getNowStage();
                     this.getBoard()//获取公告
                 })
             },
@@ -126,6 +129,17 @@
                   const data2 = b[key];
                   return data1 - data2;
               })
+            },
+            //获取所处当前阶段
+            getNowStage() {
+                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
+                for(let i=0, stages=this.competitionInfo.stages ; i<stages.length; i++) {
+                    const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
+                    const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
+                    if(time > startDate && time < endDate) {
+                        this.stepActive = i
+                    }
+                }
             },
             //比赛报名
             signUpCompetition() {
