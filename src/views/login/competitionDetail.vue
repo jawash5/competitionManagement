@@ -6,11 +6,19 @@
                   z-index: -1"
                   fit="cover"></el-image>
         <div class="wrap">
-            <el-steps :space="200" :active="1" finish-status="success">
-                <el-step v-for="item in competitionInfo.stages"
-                         :key="item.id"
-                         :title="item.name"></el-step>
+            <div class="competitionName">
+                <span v-if="competitionInfo.hasOwnProperty('year')">{{competitionInfo.year}} 年 </span>
+                <span v-if="competitionInfo.hasOwnProperty('session')">第 {{competitionInfo.session}} 届 </span>
+                {{competitionInfo.name}}
+            </div>
+
+            <el-steps :space="250" :active="1" align-center finish-status="success">
+                        <el-step v-for="item in competitionInfo.stages"
+                                 :key="item.id"
+                                 :title="item.name"
+                                 :description="item.startDate + ' 至 ' + item.endDate"></el-step>
             </el-steps>
+
             <el-button class="pull-right"
                        type="success"
                        round
@@ -91,7 +99,7 @@
             getCompetitionInfo() {
                 const id = this.$route.query.id
                 //检验是否已经报名
-                if(getCode() === '0') {
+                if(getCode() === '0' && getRole() === '参赛者') {
                     checkGroup().then( response => {
                         const groups = response.data.data;
                         for (const group of groups) {
@@ -184,6 +192,12 @@
 
         .wrap {
             padding: 30px 100px;
+
+            .competitionName {
+                margin: 30px 0 50px 0;
+                font-size: 26px;
+                text-align: center;
+            }
         }
 
         .noAnnouncement {

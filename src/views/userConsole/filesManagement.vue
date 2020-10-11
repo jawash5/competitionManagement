@@ -148,12 +148,12 @@
                 search:'',//搜索内容
                 //文件数据
                 tableData:JSON.parse(sessionStorage.getItem('tableData')) ||
-                    [{"competitionName": "",
-                    "year": "",
-                    "stage": "",
-                    "groupId": '',
-                    "fileName": "",
-                    "type": ""}],
+                    [{competitionName: "",
+                    year: "",
+                    stage: "",
+                    groupId: '',
+                    fileName: "",
+                    type: ""}],
                 currentPage:1,//当前页数
                 total:1, //文件数量
                 uploadDialog:false,//上传文件对话框
