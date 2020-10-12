@@ -136,3 +136,25 @@ export function acceptInvitation(data) {
         data:data
     })
 }
+
+/**
+ * 任命队长
+ */
+export function appointCaptain(data) {
+    return service.request({
+        method: "post",
+        url: '/groups/captain',
+        data: data
+    })
+}
+
+/**
+ * 删除队友
+ */
+export function deleteTeammate(data) {
+    return service.request({
+        method: "delete",
+        url: '/groups/teammates',
+        data: data
+    })
+}

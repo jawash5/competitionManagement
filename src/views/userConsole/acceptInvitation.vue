@@ -83,7 +83,6 @@
                     this.$message.success('登录成功！')
                     this.visible = false;
                     this.token = this.$route.query.token;
-                    console.log(this.token)
                 } )
             },
             accept() {
@@ -91,7 +90,7 @@
                 data.append('token', this.token)
 
                 acceptInvitation(data).then( response => {
-                    this.$message(response.data.data)
+                    this.$message.success(response.data.data)
                 })
             }
         }

@@ -1,7 +1,6 @@
-import {setGroupId, getGroupId} from '@/utils/app'
 
 const state = {
-    groupId : getGroupId() || 0
+    groupId : sessionStorage.getItem('groupId') || 0
 }
 
 const getters = {
@@ -18,7 +17,7 @@ const actions = {
     setGroupId({commit},data) {
         return new Promise((resolve) => {
             commit('SET_GROUP_ID', data)
-            setGroupId(data)
+            sessionStorage.setItem('groupId',data)
             return resolve();
         })
     }
