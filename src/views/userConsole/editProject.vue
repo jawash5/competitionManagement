@@ -36,7 +36,7 @@
                             <el-form-item label="项目成员" prop="members">
                                 <template v-if="groupInfo.teammates.length !== 0">
                                     <div class="teammates">
-                                        <template v-for="(item,index) in groupInfo.teammates">
+                                        <template v-for="(item,index) in groupInfo.teammates.slice(1)">
                                             <el-row :gutter="20" :key="index">
                                                 <el-col :span="12">
                                                     <label for="">姓名</label>
@@ -176,7 +176,8 @@
                     let groupInfo = response.data.data;
                     for(let i=0, teammates = groupInfo.teammates; i<teammates.length; i++) {
                         if(teammates[i].id === groupInfo.captainId) {
-                            groupInfo.teammates.splice(i,1);
+                            const captain = groupInfo.teammates.splice(i,1)[0];
+                            groupInfo.teammates.unshift(captain);
                         }
                     }
                     this.groupInfo = groupInfo;
