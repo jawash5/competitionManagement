@@ -1,10 +1,10 @@
 export default {
     setItem(key, value) {
         value = JSON.stringify(value);
-        window.localStorage.setItem(key, value)
+        window.sessionStorage.setItem(key, value)
     },
     getItem(key, defaultValue) {
-        let value = window.localStorage.getItem(key)
+        let value = window.sessionStorage.getItem(key)
         try {
             value = JSON.parse(value);
             // eslint-disable-next-line no-empty
@@ -15,6 +15,6 @@ export default {
     //     window.localStorage.removeItem(key)
     // },
     clear() {
-        window.localStorage.clear();
+        window.sessionStorage.clear();
     },
 }

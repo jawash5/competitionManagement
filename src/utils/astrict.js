@@ -2,7 +2,7 @@
 import storage from '@/utils/storage'
 import router from "@/router/index";
 import { MessageBox } from "element-ui";
-import {getCode, removeCode, removeRole, removeUsername} from "@/utils/app";
+import {getCode, removeCode, removeRole} from "@/utils/app";
 import { logout } from '@/api/login';
 
 let lastTime = new Date().getTime()
@@ -25,29 +25,24 @@ function checkTimeout() {
         if (currentTime - lastTime > timeOut) { //判断是否超时
             // 清除storage的数据(登陆信息和token)
             storage.clear();
-
             removeRole();
-            removeUsername();
             removeCode();
-            // eslint-disable-next-line no-unused-vars
-            logout().then(response => {
+            logout().then( () => {
                 return false
             })
 
             MessageBox.alert('登录已过期请重新登录', '提示', {
                 confirmButtonText: '确定',
                 type: 'warning'
-                // eslint-disable-next-line no-unused-vars
-            }).then( response => {
-                    // 跳到登陆页
-                // eslint-disable-next-line no-unused-vars
-                    router.push('/login').then(r => false)
+            }).then( () => {
+                // 跳到登陆页
+                router.push('/login').then(() => false)
             })
         }
     }
 }
 
 export default function () {
-        /* 定时器 间隔30秒检测是否长时间未操作页面 */
-        window.setInterval(checkTimeout, 10000);
+        /* 定时器 间隔10秒检测是否长时间未操作页面 */
+        window.setInterval(checkTimeout, 30000);
 }

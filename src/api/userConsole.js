@@ -158,3 +158,15 @@ export function deleteTeammate(data) {
         data: data
     })
 }
+
+
+/**
+ * 删除队友
+ */
+export function tokenInfo(data) {
+    return service.request({
+        method: "post",
+        url: '/groups/tokeninfo',
+        data: data
+    })
+}

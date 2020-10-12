@@ -34,7 +34,7 @@
                                 <el-input v-model="groupInfo.teammates[0].email" :disabled="true"></el-input>
                             </el-form-item>
                             <el-form-item label="项目成员" prop="members">
-                                <template v-if="groupInfo.teammates.length !== 1">
+                                <template v-if="groupInfo.teammates.length !== 0">
                                     <div class="teammates">
                                         <template v-for="(item,index) in groupInfo.teammates">
                                             <el-row :gutter="20" :key="index">

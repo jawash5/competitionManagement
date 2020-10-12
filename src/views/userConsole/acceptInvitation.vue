@@ -9,9 +9,9 @@
                     <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                                :size="80"></el-avatar>
                 </div>
-                <h3 class="content">{{username}} ，您好！您被 </h3>
-                <h3 class="content">小组{{ groupName }}的</h3>
-                <h3 class="content">组长{{groupLeaderName}}所邀请</h3>
+                <h3 class="content"><span class="underline">{{ruleForm.username}}</span> ，您好！您被 </h3>
+                <h3 class="content">小组 <span class="underline">{{ groupInfo.name }}</span> 的</h3>
+                <h3 class="content">组长 <span class="underline">{{groupInfo.captainName}}</span> 所邀请</h3>
 
                 <el-divider></el-divider>
                 <div style="font-size: 18px">请问您是否加入该小队？</div>
@@ -55,8 +55,7 @@
 </template>
 
 <script>
-    import {login} from "@/api/login";
-    import {acceptInvitation} from "@/api/userConsole";
+    import {acceptInvitation, tokenInfo} from "@/api/userConsole";
 
     export default {
         name: "acceptInvitation",
@@ -64,13 +63,15 @@
             return {
                 visible: true,
                 ruleForm:{
-                    username:'name5',
+                    username:'name',
                     password:'password123'
                 },
                 token:'',
-                username:'@username',
-                groupName:'@groupName',
-                groupLeaderName:'@leader',
+                groupInfo:{
+                    username:'@username',
+                    name:'@groupName',
+                    captainName:'@captainName',
+                },
                 arr:["第一，绝对不意气用事；","第二，绝对不漏判任何一件坏事；","第三，绝对裁判得公正漂亮;","裁判机器人蜻蜓队长前来觐见！"]
             }
         },
@@ -79,20 +80,37 @@
                 const data = new FormData();
                 data.append('username', this.ruleForm.username);
                 data.append('password', this.ruleForm.password);
-                login(data).then( () => {
+                this.$store.dispatch('app/login', data).then(() => {
                     this.$message.success('登录成功！')
                     this.visible = false;
-                    this.token = this.$route.query.token;
-                } )
+                })
             },
             accept() {
                 const data = new FormData();
                 data.append('token', this.token)
 
                 acceptInvitation(data).then( response => {
-                    this.$message.success(response.data.data)
+                    if (response.data.data === '加入成功') {
+                        this.$message.success(response.data.data);
+                        this.$router.push('/checkCompetition');
+                    } else {
+                        this.$message(response.data.data);
+                    }
+
+                })
+            },
+            //根据token获取队伍信息
+            getTeamInfo() {
+                this.token = this.$route.query.token;
+                const data = new FormData();
+                data.append('token', this.token)
+                tokenInfo(data).then(response => {
+                    this.groupInfo = response.data.data;
                 })
             }
+        },
+        mounted() {
+            this.getTeamInfo();
         }
     }
 </script>
@@ -106,6 +124,7 @@
 
     .acceptInvitation {
         height: 100vh;
+        min-height: 600px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -130,6 +149,10 @@
     .content {
         margin-top: 10px;
         font-size: 16px;
+
+        .underline {
+            border-bottom: 1px solid #303133;
+        }
     }
 
     .buttons {

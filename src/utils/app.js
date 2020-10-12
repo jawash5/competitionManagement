@@ -12,18 +12,6 @@ export function removeCode() {
     return cookie.remove('code')
 }
 
-export function setUsername(value) {
-    return cookie.set('username', value);
-}
-
-export function getUsername() {
-    return cookie.get('username');
-}
-
-export function removeUsername() {
-    return cookie.remove('username')
-}
-
 export function setRole(value) {
     return cookie.set('role', value);
 }

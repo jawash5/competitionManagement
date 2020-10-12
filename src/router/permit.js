@@ -1,5 +1,5 @@
 import router from "@/router/index";
-import {getCode, removeCode, removeUsername, removeRole} from "@/utils/app";
+import {getCode, removeCode, removeRole} from "@/utils/app";
 import store from "../store/index";
 
 const whiteRouter = ['/login', '/register', '/checkCompetition', '/competitionDetail','/acceptInvitation'];
@@ -8,7 +8,6 @@ router.beforeEach((to, from, next) =>{
     if(getCode() === '0') {
         if(to.path === '/login') {
             removeCode();
-            removeUsername();
             removeRole();
             sessionStorage.clear();
             store.commit('app/SET_CODE', '');
