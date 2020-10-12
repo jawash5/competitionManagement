@@ -6,9 +6,12 @@
                        placeholder="请选择"
                        style="margin-left: 100px"
                        @change="getAnnouncement">
-                <el-option label="2018年" value="2018"></el-option>
-                <el-option label="2019年" value="2019"></el-option>
-                <el-option label="2020年" value="2020"></el-option>
+                <el-option
+                        v-for="item in competitionYearOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
             </el-select>
 
             <el-button type="primary"
@@ -62,9 +65,12 @@
                                size="medium"
                                placeholder="请选择"
                                style="width: 100px;">
-                        <el-option label="2018年" value="2018"></el-option>
-                        <el-option label="2019年" value="2019"></el-option>
-                        <el-option label="2020年" value="2020"></el-option>
+                        <el-option
+                                v-for="item in competitionYearOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
                     </el-select>
                 </el-form-item>
 
@@ -84,24 +90,16 @@
 
 <script>
     import {getBoard} from "@/api/userConsole";
-    import {addAnnouncement, deleteAnnouncement, topAnnouncement} from "@/api/adminConsole";
+    import {addAnnouncement, deleteAnnouncement, getAdminCompetition, topAnnouncement} from "@/api/adminConsole";
     import format from '@/utils/timeFormat'
 
     export default {
         name: "editAnnouncement",
         data() {
             return{
-                announcementList:[
-                    {
-                        id: '',
-                        content: '',
-                        title: '',
-                        year: '',
-                        isTop: '',
-                    }
-                ],//公告列表
+                announcementList:[],//公告列表
                 competitionValue:'电子商务比赛', //比赛名称
-                year:'2018',
+                year:'2020',
                 activeName:'',//标签选择项
                 newAnnouncement:false,//显示dialog
                 creatAnnouncement: {
@@ -109,7 +107,8 @@
                     year: '',
                     content: '',
                     // sendNotice: false,
-                }
+                },
+                competitionYearOptions:[]
             }
         },
         methods:{
@@ -173,13 +172,6 @@
                 const time = format('YYYY-MM-DD');
                 data.append('date', time);
 
-                // //获取时间
-                // const date = new Date().toLocaleDateString();
-                // while (date.indexOf('/') !== -1) {
-                //     date.replace('/', '-')
-                // }
-                // data.append('date', date);
-
                 addAnnouncement(data).then(response => {
                     this.$message({
                         type:'success',
@@ -207,11 +199,38 @@
                         content: '',
                     // sendNotice: false,
                 };
-            }
+            },
+
+            //排序
+            sortValue(value, key) {
+                value.sort((a, b) => {
+                    const data1 = a[key];
+                    const data2 = b[key];
+                    return data1 - data2;
+                })
+            },
+
+            //获取比赛年
+            getCompetitionYear() {
+                if(this.competitionYearOptions.length === 0) {
+                    getAdminCompetition().then(response => {
+                        let competitionList =  response.data.data;//管理员维护的比赛列表
+                        this.sortValue(competitionList,'year')
+                        sessionStorage.setItem('competitionList',JSON.stringify(competitionList));
+                        for(let competition of competitionList) {
+                            this.competitionYearOptions.push({
+                                label: competition.year + '年',
+                                value: competition.year
+                            })
+                        }
+                    })
+                }
+            },
         },
 
         mounted(){
             this.getAnnouncement();
+            this.getCompetitionYear();
         }
     }
 </script>

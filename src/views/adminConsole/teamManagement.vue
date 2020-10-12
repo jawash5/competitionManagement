@@ -254,17 +254,19 @@
             },
             //获取比赛年
             getCompetitionYear() {
-                getAdminCompetition().then(response => {
-                    let competitionList =  response.data.data;//管理员维护的比赛列表
-                    sessionStorage.setItem('competitionList',JSON.stringify(competitionList));
-                    this.sortValue(competitionList,'year')
-                    for(let competition of competitionList) {
-                        this.competitionYearOptions.push({
-                            label: competition.year + '年',
-                            value: competition.year
-                        })
-                    }
-                })
+                if (this.competitionYearOptions.length === 0) {
+                    getAdminCompetition().then(response => {
+                        let competitionList =  response.data.data;//管理员维护的比赛列表
+                        this.sortValue(competitionList,'year')
+                        sessionStorage.setItem('competitionList',JSON.stringify(competitionList));
+                        for(let competition of competitionList) {
+                            this.competitionYearOptions.push({
+                                label: competition.year + '年',
+                                value: competition.year
+                            })
+                        }
+                    })
+                }
             },
             //排序
             sortValue(value, key) {
