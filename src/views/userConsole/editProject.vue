@@ -34,7 +34,7 @@
                                 <el-input v-model="groupInfo.teammates[0].email" :disabled="true"></el-input>
                             </el-form-item>
                             <el-form-item label="项目成员" prop="members">
-                                <template v-if="groupInfo.teammates.length !== 0">
+                                <template v-if="groupInfo.teammates.length !== 1">
                                     <div class="teammates">
                                         <template v-for="(item,index) in groupInfo.teammates.slice(1)">
                                             <el-row :gutter="20" :key="index">
@@ -58,11 +58,11 @@
                                             <div :key="index + 'btn'" class="buttons" v-if="editTeammate">
                                                     <el-button size="mini"
                                                                type="primary"
-                                                               @click="appointCaptain(groupInfo.teammates[index].id)">任命队长</el-button>
+                                                               @click="appointCaptain(groupInfo.teammates[index+1].id)">任命队长</el-button>
 
                                                     <el-button size="mini"
                                                                type="danger"
-                                                               @click="deleteTeammate(groupInfo.teammates[index].id)">删除组员</el-button>
+                                                               @click="deleteTeammate(groupInfo.teammates[index+1].id)">删除组员</el-button>
                                             </div>
                                             <el-divider :key="index + 'divider'"></el-divider>
                                         </template>

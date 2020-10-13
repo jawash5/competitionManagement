@@ -51,3 +51,23 @@ export function competitionDetail(data){
         url: '/competition/detail/' + data,
     })
 }
+
+/**
+ * 获取学校
+ */
+export function getUniversity(){
+    return service.request({
+        method: "get",
+        url: '/auth/university',
+    })
+}
+
+/**
+ * 获取学院
+ */
+export function getSchool(data){
+    return service.request({
+        method: "get",
+        url: '/auth/schools?name=' + data,
+    })
+}
