@@ -15,3 +15,9 @@ export function validatePhoneNo(data) {
     const phoneReg = /^1[3456789]\d{9}$/
     return phoneReg.test(data)
 }
+
+//学号验证
+export function validateStudentNumber(data) {
+    const phoneReg = /^[1-2][0-9]{7}$/
+    return phoneReg.test(data)
+}

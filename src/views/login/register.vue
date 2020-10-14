@@ -7,15 +7,19 @@
                 <span class="register_hr"></span>
                 <div id="register_wrap">
                     <h1 class="register_title">注&nbsp;&nbsp;册</h1>
-                    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="small" class="register-ruleForm">
-                        <el-form-item prop="username">
-                            <el-input placeholder="用户名"
-                                      prefix-icon="iconshequ"
+                    <el-form class="register-ruleForm"
+                             :model="ruleForm"
+                             :rules="rules"
+                             ref="ruleForm"
+                             size="small"
+                             label-width="80px">
+                        <el-form-item label="用户名" prop="username">
+                            <el-input prefix-icon="iconshequ"
                                       v-model="ruleForm.username"></el-input>
                         </el-form-item>
 
-                        <el-form-item prop="password">
-                            <el-input placeholder="请输入密码（由数字和字母组成，不少于11位）"
+                        <el-form-item label="密码" prop="password">
+                            <el-input placeholder="由数字和字母组成，不少于11位"
                                       prefix-icon="iconmima"
                                       type="password"
                                       show-password
@@ -23,77 +27,63 @@
                                       v-model="ruleForm.password"></el-input>
                         </el-form-item>
 
-                        <el-form-item prop="checkPass">
-                            <el-input placeholder="请重复密码"
-                                      prefix-icon="iconmima"
+                        <el-form-item label="重复密码" prop="checkPass">
+                            <el-input prefix-icon="iconmima"
                                       type="password"
                                       show-password
                                       clearable
                                       v-model="ruleForm.checkPass"></el-input>
                         </el-form-item>
 
-                        <el-row :gutter="20">
-                            <el-col :span="12">
-                                <el-form-item prop="name">
-                                    <el-input placeholder="学生姓名"
-                                              prefix-icon="iconchuangzuo"
-                                              v-model="ruleForm.name"></el-input>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item prop="studentNo">
-                                    <el-input placeholder="学号"
-                                              prefix-icon="iconshouji"
-                                              v-model="ruleForm.studentNo"></el-input>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row :gutter="20">
-                            <el-col :span="12">
-                                <el-form-item prop="email">
-                                    <el-input placeholder="邮箱"
-                                              prefix-icon="iconxiaoxi"
-                                              v-model="ruleForm.email"></el-input>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item prop="phoneNo">
-                                    <el-input placeholder="电话"
-                                              prefix-icon="icondianhua"
-                                              v-model="ruleForm.phoneNo"></el-input>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
+                        <el-form-item label="姓名" prop="name">
+                            <el-input prefix-icon="iconchuangzuo"
+                                      v-model="ruleForm.name"></el-input>
+                        </el-form-item>
 
-                        <el-row :gutter="20">
-                            <el-col :span="12">
-                                <el-form-item prop="university">
-                                    <el-select @change="getSchool" v-model="ruleForm.university" placeholder="请选择学校">
-                                        <span slot="prefix"><i class="iconshouye"></i></span>
-                                        <el-option
-                                                v-for="item in universityOptions"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item prop="school">
-                                    <el-select v-model="ruleForm.school" placeholder="请选择学院">
-                                        <span slot="prefix"><i class="iconshouye"></i></span>
-                                        <el-option
-                                                v-for="item in schoolOptions"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
+                        <el-form-item label="学号" prop="studentNo">
+                            <el-input placeholder="学号为8位数字"
+                                      prefix-icon="iconshouji"
+                                      v-model="ruleForm.studentNo"></el-input>
+                        </el-form-item>
 
+                        <el-form-item label="邮箱" prop="email">
+                            <el-input prefix-icon="iconxiaoxi"
+                                      v-model="ruleForm.email"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="电话" prop="phoneNo">
+                            <el-input prefix-icon="icondianhua"
+                                      v-model="ruleForm.phoneNo"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="学校" prop="university">
+                            <el-select style="display: block; width: 100%"
+                                       @change="getSchool"
+                                       v-model="ruleForm.university"
+                                       filterable>
+                                <span slot="prefix"><i class="iconshouye"></i></span>
+                                <el-option
+                                        v-for="item in universityOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="学院" prop="school">
+                            <el-select style="display: block; width: 100%"
+                                       v-model="ruleForm.school"
+                                       filterable>
+                                <span slot="prefix"><i class="iconshouye"></i></span>
+                                <el-option
+                                        v-for="item in schoolOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
                     </el-form>
                     <div class="buttons">
                         <el-button type="primary" round @click="submitInfo">立即注册</el-button>
@@ -110,7 +100,7 @@
     import headLogin from "@/views/login/components/headLogin";
     import myFooter from "@/views/login/components/myFooter";
     import { register, getUniversity, getSchool } from "@/api/login";
-    import {validatePassword, validateEmail,validatePhoneNo} from "@/utils/validator";
+    import {validatePassword, validateEmail,validatePhoneNo, validateStudentNumber} from "@/utils/validator";
 
     export default {
         name: "register",
@@ -161,6 +151,17 @@
                     callback();
                 }
             };
+            const validatestudentNo = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入学号'));
+                } else if(!validateStudentNumber(value)){
+                    callback(new Error('学号为8位数字'));
+                } else {
+                    callback();
+                }
+            };
+
+
 
             return {
                 ruleForm: {
@@ -179,24 +180,23 @@
                         { required: true, message: '请输入用户名', trigger: 'blur' },
                     ],
                     password: [
-                        { validator: validatePass, trigger: 'blur' },
+                        {  required: true, validator: validatePass, trigger: 'blur' },
                     ],
                     checkPass: [
-                        { validator: validatePass2, trigger: 'blur' },
+                        {  required: true, validator: validatePass2, trigger: 'blur' },
                     ],
                     studentNo: [
-                        { required: true, message: '请输入学号', trigger: 'blur' },
-                        { min: 8, max:8, message: '请输入正确的学号', trigger: 'blur' }
+                        { required: true, validator: validatestudentNo, trigger: 'blur' },
                     ],
                     name: [
                         { required: true, message: '请输入姓名', trigger: 'blur' },
                         { min: 2, message: '请输入正确的姓名', trigger: 'blur' }
                     ],
                     email: [
-                        { validator: validateMail, trigger: 'blur' }
+                        { required: true, validator: validateMail, trigger: 'blur' }
                     ],
                     phoneNo: [
-                        { validator: validatePhone, trigger: 'blur' }
+                        { required: true, validator: validatePhone, trigger: 'blur' }
                     ],
                     university: [
                         { required: true, message: '请选择学校', trigger: 'blur' },
@@ -296,20 +296,13 @@
         min-height: 800px;
     }
 
-    #wrap {
-        background-color: #f2f2f2;
-        height: 80vh;
-        display: flex;
-        align-items: center;
-    }
-
     #register_with_img {
-        background-color: #FFFFFF;
-        margin: 0 auto;
-        height: 600px;
-        width: 1000px;
         display: flex;
         align-items: center;
+        height: 700px;
+        width: 1000px;
+        background-color: #FFFFFF;
+        margin: 60px auto;
         box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
     }
 
@@ -333,9 +326,9 @@
     }
 
     #register_wrap {
-        background-color: #FFFFFF;
+        background-color: #fff;
         min-width: 350px;
-        height: 320px;
+        height: 420px;
         width: 350px;
         padding: 20px;
         margin: 0 auto;

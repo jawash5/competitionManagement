@@ -11,6 +11,7 @@
                      active-text-color="#ffd04b">
                 <el-menu-item index="/checkCompetition">查看比赛</el-menu-item>
                 <el-menu-item v-if="!state" index="/login">登录</el-menu-item>
+                <el-menu-item v-if="!state" index="/register">注册</el-menu-item>
                 <el-menu-item v-if="state" :index="url">个人中心</el-menu-item>
             </el-menu>
 
