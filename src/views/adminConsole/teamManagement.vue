@@ -186,6 +186,7 @@
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
+    import sortValue from "@/utils/sort";
 
     export default {
         name: "teamManagement",
@@ -258,7 +259,7 @@
                 if (this.competitionYearOptions.length === 0) {
                     getAdminCompetition().then(response => {
                         let competitionList =  response.data.data;//管理员维护的比赛列表
-                        this.sortValue(competitionList,'year')
+                        sortValue(competitionList,'year')
                         sessionStorage.setItem('competitionList',JSON.stringify(competitionList));
                         for(let competition of competitionList) {
                             this.competitionYearOptions.push({
@@ -269,21 +270,13 @@
                     })
                 }
             },
-            //排序
-            sortValue(value, key) {
-                value.sort((a, b) => {
-                    const data1 = a[key];
-                    const data2 = b[key];
-                    return data1 - data2;
-                })
-            },
             //获取比赛阶段信息
             getCompetitionStage(year) {
                 const competitionList =  JSON.parse(sessionStorage.getItem('competitionList'));
                 for(const competition of competitionList) {
                     if(competition.year === year) {
                         let stages = competition.stages;
-                        this.sortValue(stages, 'id');
+                        sortValue(stages, 'id');
                         this.stageOptions = [];
                         for(let i=0; i< stages.length; i++) {
                             this.stageOptions.push({

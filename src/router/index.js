@@ -103,15 +103,6 @@ export const asnycRouterMap = [
                 component: ()  => import("../views/userConsole/myProject")
             },
             {
-                path: '/myMessage',
-                name: '/myMessage',
-                meta:{
-                    name:'我的消息',
-                    icon:'el-icon-document'
-                },
-                component: ()  => import("../views/userConsole/myMessage")
-            },
-            {
                 path: '/personalInfo',
                 name: '/personalInfo',
                 meta:{
@@ -139,15 +130,15 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/userConsole/editProject")
             },
-            {
-                path: '/filesManagement',
-                name: '/filesManagement',
-                meta:{
-                    name:'文件管理',
-                    icon:'el-icon-tickets'
-                },
-                component: ()  => import("../views/userConsole/filesManagement")
-            },
+            // {
+            //     path: '/filesManagement',
+            //     name: '/filesManagement',
+            //     meta:{
+            //         name:'文件管理',
+            //         icon:'el-icon-tickets'
+            //     },
+            //     component: ()  => import("../views/userConsole/filesManagement")
+            // },
         ]
     },
     {

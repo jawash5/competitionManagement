@@ -170,3 +170,14 @@ export function tokenInfo(data) {
         data: data
     })
 }
+
+/**
+ * 组的某一个阶段作品上交情况
+ */
+export function stageFile(data) {
+    return service.request({
+        method: "post",
+        url: '/groups/filestatus',
+        data: data
+    })
+}

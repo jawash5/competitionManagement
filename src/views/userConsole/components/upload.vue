@@ -3,34 +3,13 @@
         <el-dialog :visible="visible"
                     title="上传文件"
                     width="500px"
-                    :show-close="false">
+                    :show-close="false"
+                    center>
             <div class="form">
                 <el-form ref="form" label-width="80px">
-                    <el-form-item label="上传小组">
-                        <el-select v-model="competitionId" placeholder="请选择" @change="getCompetitionDetail">
-                            <el-option
-                                    v-for="item in groupsOptions"
-                                    :key="item.id"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="比赛阶段">
-                        <el-select v-model="competitionStages" placeholder="请选择">
-                            <el-option
-                                    v-for="item in competitionStagesOptions"
-                                    :key="item.id"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-
                     <el-form-item label="文件类型">
-                        <el-radio v-model="fileType" label="1">报名表</el-radio>
-                        <el-radio v-model="fileType" label="2">作品</el-radio>
+                        <el-radio v-model="fileType" label="1">技术组</el-radio>
+                        <el-radio v-model="fileType" label="2">商务组</el-radio>
                     </el-form-item>
 
                     <el-form-item label="文件上传">
@@ -42,7 +21,7 @@
                                 :on-remove="handleRemove"
                                 :auto-upload="false">
                             <el-button size="small" type="primary">点击上传</el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            <div slot="tip" class="el-upload__tip">只能上传 PDF 文件，且不超过10MB</div>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -50,7 +29,7 @@
             </div>
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogClose()">取 消</el-button>
+                <el-button @click="dialogClose">取 消</el-button>
                 <el-button type="primary" @click="uploadFile">确 定</el-button>
             </span>
         </el-dialog>
@@ -58,21 +37,13 @@
 </template>
 
 <script>
-    import {competitionDetail} from "@/api/login";
-    import {upload,checkGroup,checkStatus} from "@/api/userConsole";
+    import {upload} from "@/api/userConsole";
 
     export default {
         name: "upload",
         data() {
             return {
                 dialogVisible: false,
-                groups:[],//加入的小组
-                competitionId:'',//选中的比赛id
-                groupsOptions:[],//队伍选项
-                competitionStages:'',//选中的比赛阶段
-                competitionStagesOptions:[],//比赛阶段选择
-                year:'',//比赛年
-                groupId:'',//队伍id
                 file:'',//文件
                 fileType:'',//文件类型
                 fileList:[],//文件列表
@@ -82,47 +53,38 @@
             visible:{
                 required:true,
                 type:Boolean
+            },
+            groupId:{
+                required:true,
+            },
+            competitionId: {
+                required:true,
+            },
+            stageId: {
+                required:true,
             }
         },
         methods:{
             dialogClose() {
-                this.$emit('update:dialogClose',false)
-            },
-            //获取队伍列表
-            getGroupList() {
-                checkGroup().then(response => {
-                    this.groups = response.data.data;
-                    for(let i=0; i<this.groups.length; i++) {
-                        this.groupsOptions.push({
-                            value: this.groups[i].competitionInfo.id,
-                            label: this.groups[i].name
-                        })
-                    }
-                })
-            },
-
-            //获取比赛详情
-            getCompetitionDetail(competitionId) {
-                for(let i=0; i<this.groups.length; i++) {
-                    if(competitionId === this.groups[i].competitionInfo.id) {
-                        this.groupId = this.groups[i].id;
-                    }
-                }
-
-                competitionDetail(competitionId).then(response => {
-                    const competitionStages = response.data.data.stages;
-                    this.competitionStagesOptions = [];
-                    for(let i=0; i<competitionStages.length; i++) {
-                        this.competitionStagesOptions.push({label: competitionStages[i].name, value:competitionStages[i].id})
-                    }
-                    this.year = competitionDetail.year;
-
-                }).catch(error => {
-                    this.$message.error(error.response.data)
-                })
+                this.$emit('update:dialogClose',false);
+                this.file = '';
+                this.fileType = '';
+                this.fileList = []
             },
             //上传文件
             uploadFile() {
+                const isPDF = this.file.type === 'application/pdf';
+                const isLt10M = this.file.size / 1024 / 1024 < 10;
+
+                if (!isPDF) {
+                    this.$message.error('上传文件只能是 PDF 格式!');
+                    return false;
+                }
+                if (!isLt10M) {
+                    this.$message.error('上传文件大小不超过 10MB!');
+                    return false;
+                }
+
                 this.$confirm('文件上传后会覆盖团队之前提交的文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -132,13 +94,12 @@
 
                     data.append('file', this.file);
                     data.append('competitionId', this.competitionId);
-                    data.append('stageId', this.competitionStages);
+                    data.append('stageId', this.stageId);
                     data.append('groupId', this.groupId);
                     data.append('type', this.fileType);
 
                     upload(data).then(response => {
-                        const id = response.data.data;
-                        this.checkStatus(id)
+                        this.$message.success(response.data.data);
                         this.dialogClose();
                     }).catch(error => {
                         this.$message.error(error.response.data)
@@ -156,42 +117,16 @@
                     this.dialogClose();
                 });
             },
-            //判断状态
-            checkStatus(id) {
-                const data = new FormData();
-                data.append('id', id);
-
-                checkStatus(data).then(response => {
-                    const res = response.data.data;
-                    if(res === '成功') {
-                        this.$message.success('上传成功！');
-                        this.$emit('uploadSuccess');
-                        this.competitionStages = '';
-                        this.fileType = '';
-                        this.file = '';
-                        this.fileList = [];
-                        this.competitionId = '';
-                    } else if (res === '失败') {
-                        this.$message.success('上传失败！');
-                    } else {
-                        this.checkStatus(id);
-                    }
-                })
-            },
             //文件状态改变时
             handleFileChange(file) {
                 this.file = file.raw;
-                // console.log(this.file)
             },
             //删除文件
             handleRemove() {
                 this.file = '';
-            }
+            },
 
         },
-        mounted() {
-            this.getGroupList();
-        }
     }
 </script>
 

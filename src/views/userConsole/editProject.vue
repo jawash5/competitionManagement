@@ -1,6 +1,6 @@
 <template>
         <div id="editProject">
-            <el-page-header @back="goBack" content="我的项目" class="pull-left"></el-page-header>
+            <el-page-header @back="goBack" class="pull-left"></el-page-header>
             <h1 id="competitionName">查看资料</h1>
             <el-row>
                 <el-col :span="12" :offset="2">
@@ -55,7 +55,7 @@
                                                               :disabled="true"></el-input>
                                                 </el-col>
                                             </el-row>
-                                            <div :key="index + 'btn'" class="buttons" v-if="editTeammate">
+                                            <div :key="index + 'btn'" class="buttons" v-if="isLeader">
                                                     <el-button size="mini"
                                                                type="primary"
                                                                @click="appointCaptain(groupInfo.teammates[index+1].id)">任命队长</el-button>
@@ -77,33 +77,27 @@
                 </el-col>
                 <el-col :span="6" :offset="2">
                     <div class="fileTabs">
-<!--                        <div class="title">文件上交情况</div>-->
-<!--                        <el-tabs tab-position="left" v-model="stageActiveName">-->
-<!--                            <el-tab-pane v-for="item in stageFiles"-->
-<!--                                         :key="item.id"-->
-<!--                                         :label="item.label"-->
-<!--                                         :name="item.name">-->
-<!--                                    <el-upload-->
-<!--                                            class="upload-demo"-->
-<!--                                            action="#"-->
-<!--                                            disabled-->
-<!--                                            :file-list="fileList">-->
-<!--                                    </el-upload>-->
-<!--                                </el-tab-pane>-->
-<!--                        </el-tabs>-->
-
+                        <div style="color: #606266">比赛状态</div>
+                        <div class="div-30"></div>
                         <el-timeline>
-                            <el-timeline-item v-for="item in stageFiles"
-                                              :key="item.id"
-                                              :timestamp="item.label"
+                            <el-timeline-item v-for="(item,index) in stageFiles"
+                                              :key="item.name"
+                                              :timestamp="item.name"
                                               placement="top">
                                 <el-card>
-                                    <el-upload
-                                            class="upload-demo"
-                                            action="#"
-                                            disabled
-                                            :file-list="fileList">
-                                    </el-upload>
+                                    <div class="stageTip">阶段持续时间：{{item.start}} 至 {{item.end}}</div>
+                                    <div class="div-15"></div>
+                                    <div class="stageTip">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
+                                    <div class="div-15"></div>
+                                    <div class="pull-center" v-if="item.isSignUp">已上传</div>
+                                    <div class="pull-center" v-else>
+                                        <el-button v-if="stepActive === index && isLeader"
+                                                   type="primary"
+                                                   size="small"
+                                                   @click="uploadDialog = true">上传文件</el-button>
+                                        <div v-else-if="stepActive > index">阶段已结束</div>
+                                        <div v-else-if="stepActive < index">阶段未开始</div>
+                                    </div>
                                 </el-card>
                             </el-timeline-item>
 
@@ -114,30 +108,43 @@
                 </el-col>
             </el-row>
 
-            <div id="buttons" v-if="editTeammate">
-                <el-button type="primary" @click="editForm" v-if="isEdit">立即修改</el-button>
+            <div id="buttons" v-if="isLeader">
                 <el-button type="primary" @click="inviteVisible = true">邀请队友</el-button>
             </div>
 
             <invite :visible="inviteVisible"
                     :dialogClose.sync="inviteVisible"
                     :group-id="groupInfo.id + ''"></invite>
+
+            <upload :visible="uploadDialog"
+                    :dialogClose.sync="uploadDialog"
+                    :competition-id="groupInfo.competitionId"
+                    :stage-id="stages[stepActive].id"
+                    :group-id="groupInfo.id"
+                    @uploadSuccess="getFiles()"></upload>
         </div>
 </template>
 
 <script>
-    import {getGroupFiles, getGroupInfo, personalInfo, appointCaptain, deleteTeammate} from "@/api/userConsole";
+    import {
+        getGroupFiles,
+        getGroupInfo,
+        personalInfo,
+        appointCaptain,
+        deleteTeammate,
+        stageFile
+    } from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import {competitionDetail} from "@/api/login";
     import sortValue from "@/utils/sort";
-    // import format from "@/utils/timeFormat";
+    import upload from "@/views/userConsole/components/upload";
+    import format from "@/utils/timeFormat";
 
     export default {
         name: "editProject" ,
-        components:{invite},
+        components:{invite,upload},
         data() {
             return{
-                isEdit:true,
                 inviteVisible:false,//邀请对话框
                 inputValue: '',
                 fileList: [],
@@ -171,14 +178,23 @@
                 },
                 stageActiveName:'',//阶段文件选择值
                 stageFiles:[],
-                editTeammate:false,
+                isLeader:false,
                 captainId: '',
+                uploadDialog: false,
+                stepActive:0,//当前所处阶段值
+                stages:[
+                    {
+                        endDate: "",
+                        id: "",
+                        name: "",
+                        requireUploadFile: "",
+                        startDate: "",
+                        uploadEndDate: "",
+                        uploadStartDate: ""}
+                ],
             }
         },
         methods: {
-            editForm() {
-                this.isEdit = false;
-            },
             //页头返回
             goBack() {
                 this.$router.push('/myProject')
@@ -213,7 +229,7 @@
             getPersonalAuthority() {
                 personalInfo().then( response => {
                     this.captainId = response.data.data.id;
-                    this.editTeammate = (this.captainId === this.groupInfo.captainId);
+                    this.isLeader = (this.captainId === this.groupInfo.captainId);
                 })
             },
             //任命队长
@@ -261,27 +277,59 @@
             //获取比赛阶段
             getStages(competitionId) {
                 competitionDetail(competitionId).then( response => {
-                    const stages = response.data.data.stages;
+                    let stages = response.data.data.stages;
+                    sortValue(stages, 'id');
+                    this.stages = stages;
                     this.stageFiles = [];
-                    for (const stage of stages) {
-                        this.stageFiles.push({label: stage.name, name:stage.name})
-                    }
-                    sortValue(this.stageFiles, 'id')
+                    this.pushStageFiles(stages);
+                    this.getNowStage();//获取当前阶段
                 })
-            }
+            },
+            //异步转线式
+            async pushStageFiles(stages) {
+                for (const stage of stages) {
+                    await this.getStageFile(this.groupInfo.id, stage.id).then( response => {
+                        this.stageFiles.push(
+                            {
+                                name:stage.name ,
+                                value:stage.id,
+                                isSignUp:response,
+                                start:stage.startDate,
+                                end:stage.endDate,
+                                uploadStart:stage.uploadStartDate,
+                                uploadEnd:stage.uploadEndDate,
+                            }
+                        )
+                    })
+                }
+            },
 
+            //获取阶段文件上传情况
+            getStageFile(groupId, stageId) {
+                return new Promise((resolve) => {
+                    const data = new FormData();
+                    data.append('groupId', groupId);
+                    data.append('stageId', stageId);
+                    stageFile(data).then( response => {
+                        resolve(response.data.data);
+                    })
+                })
+            },
 
-            // //获取所处当前阶段
-            // getNowStage() {
-            //     const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
-            //     for(let i=0, stages=this.competitionInfo.stages ; i<stages.length; i++) {
-            //         const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
-            //         const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
-            //         if(time > startDate && time < endDate) {
-            //             this.stepActive = i
-            //         }
-            //     }
-            // },
+            //获取所处当前阶段
+            getNowStage() {
+                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
+                for(let i=0, stages=this.stages ; i<stages.length; i++) {
+                    const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
+                    const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
+                    if(i !== stages.length && time > startDate && time < endDate) {
+                        this.stepActive = i;
+                    } else if(i === stages.length && time >endDate) {
+                        this.stepActive = 100;
+                    }
+                }
+
+            },
 
         },
         mounted() {
@@ -345,6 +393,10 @@
                 margin-bottom: 30px;
                 color: #606266;
                 font-size: 14px;
+            }
+
+            .stageTip {
+                line-height: 20px;
             }
         }
 
