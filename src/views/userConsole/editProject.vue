@@ -7,7 +7,7 @@
                     <div id="projectForm">
                         <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                             <el-form-item label="比赛名称" prop="type">
-                                <el-input v-model="competitionValue"
+                                <el-input v-model="groupInfo.competitionName"
                                           class="pull-left"
                                           :disabled="true">
                                 </el-input>
@@ -77,20 +77,38 @@
                 </el-col>
                 <el-col :span="6" :offset="2">
                     <div class="fileTabs">
-                        <div class="title">文件上交情况</div>
-                        <el-tabs tab-position="left" v-model="stageActiveName">
-                            <el-tab-pane v-for="item in stageFiles"
-                                         :key="item.id"
-                                         :label="item.label"
-                                         :name="item.name">
+<!--                        <div class="title">文件上交情况</div>-->
+<!--                        <el-tabs tab-position="left" v-model="stageActiveName">-->
+<!--                            <el-tab-pane v-for="item in stageFiles"-->
+<!--                                         :key="item.id"-->
+<!--                                         :label="item.label"-->
+<!--                                         :name="item.name">-->
+<!--                                    <el-upload-->
+<!--                                            class="upload-demo"-->
+<!--                                            action="#"-->
+<!--                                            disabled-->
+<!--                                            :file-list="fileList">-->
+<!--                                    </el-upload>-->
+<!--                                </el-tab-pane>-->
+<!--                        </el-tabs>-->
+
+                        <el-timeline>
+                            <el-timeline-item v-for="item in stageFiles"
+                                              :key="item.id"
+                                              :timestamp="item.label"
+                                              placement="top">
+                                <el-card>
                                     <el-upload
                                             class="upload-demo"
                                             action="#"
                                             disabled
                                             :file-list="fileList">
                                     </el-upload>
-                                </el-tab-pane>
-                        </el-tabs>
+                                </el-card>
+                            </el-timeline-item>
+
+                        </el-timeline>
+
                     </div>
 
                 </el-col>
@@ -110,6 +128,9 @@
 <script>
     import {getGroupFiles, getGroupInfo, personalInfo, appointCaptain, deleteTeammate} from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
+    import {competitionDetail} from "@/api/login";
+    import sortValue from "@/utils/sort";
+    // import format from "@/utils/timeFormat";
 
     export default {
         name: "editProject" ,
@@ -120,8 +141,6 @@
                 inviteVisible:false,//邀请对话框
                 inputValue: '',
                 fileList: [],
-                options: [],//比赛选择框
-                competitionValue: '',//比赛值
                 ruleForm: {
                     name: '',
                     teamName:'',
@@ -135,7 +154,7 @@
                 //创建的队伍信息
                 groupInfo: {
                     id: '',
-                    name: "",
+                    name: '',
                     competitionId: '',
                     captainId: '',
                     teammates: [
@@ -151,12 +170,7 @@
                     ]
                 },
                 stageActiveName:'',//阶段文件选择值
-                stageFiles:[
-                    {label:'报名阶段',name:'报名阶段'},
-                    {label:'初赛',name:'初赛'},
-                    {label:'复赛',name:'复赛'},
-                    {label:'决赛',name:'决赛'},
-                ],
+                stageFiles:[],
                 editTeammate:false,
                 captainId: '',
             }
@@ -181,8 +195,8 @@
                         }
                     }
                     this.groupInfo = groupInfo;
-                    this.competitionValue = this.groupInfo.competitionId;
                     this.getPersonalAuthority();
+                    this.getStages(this.groupInfo.competitionId)
                 });
             },
             //获取组文件
@@ -243,7 +257,31 @@
                         message: '已取消删除'
                     });
                 });
+            },
+            //获取比赛阶段
+            getStages(competitionId) {
+                competitionDetail(competitionId).then( response => {
+                    const stages = response.data.data.stages;
+                    this.stageFiles = [];
+                    for (const stage of stages) {
+                        this.stageFiles.push({label: stage.name, name:stage.name})
+                    }
+                    sortValue(this.stageFiles, 'id')
+                })
             }
+
+
+            // //获取所处当前阶段
+            // getNowStage() {
+            //     const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
+            //     for(let i=0, stages=this.competitionInfo.stages ; i<stages.length; i++) {
+            //         const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
+            //         const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
+            //         if(time > startDate && time < endDate) {
+            //             this.stepActive = i
+            //         }
+            //     }
+            // },
 
         },
         mounted() {

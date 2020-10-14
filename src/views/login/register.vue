@@ -151,7 +151,7 @@
                     callback();
                 }
             };
-            const validatestudentNo = (rule, value, callback) => {
+            const validateStudentNo = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入学号'));
                 } else if(!validateStudentNumber(value)){
@@ -186,7 +186,7 @@
                         {  required: true, validator: validatePass2, trigger: 'blur' },
                     ],
                     studentNo: [
-                        { required: true, validator: validatestudentNo, trigger: 'blur' },
+                        { required: true, validator: validateStudentNo, trigger: 'blur' },
                     ],
                     name: [
                         { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -244,7 +244,7 @@
                 }
 
                 //手机验证
-                if(validatePhoneNo(this.ruleForm.phoneNo)) {
+                if(!validatePhoneNo(this.ruleForm.phoneNo)) {
                     this.$message.error('请输入正确的手机号!');
                     return false;
                 }
