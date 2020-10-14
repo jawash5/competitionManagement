@@ -87,6 +87,7 @@
         min-width: 1200px;
         min-height: 60px;
         background-color: #409EFF;
+        box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
     }
 
     #login_head_title {

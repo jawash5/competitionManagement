@@ -199,7 +199,7 @@
                 //比赛年份选项
                 competitionYearOptions: [],
                 //比赛年份
-                yearValue:'2019',
+                yearValue:'',
                 //关键词选项
                 searchOptions: [
                     { value: 'name', label: '队伍名称' },
@@ -254,6 +254,7 @@
             },
             //获取比赛年
             getCompetitionYear() {
+                this.stageValue = '';//阶段值清空
                 if (this.competitionYearOptions.length === 0) {
                     getAdminCompetition().then(response => {
                         let competitionList =  response.data.data;//管理员维护的比赛列表

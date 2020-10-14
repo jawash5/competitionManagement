@@ -1,6 +1,5 @@
 <template>
     <div id="navWrap">
-<!--        <img alt="退出" src="../../../assets/main/logo.png" >-->
         <div class="pull-center">
             <el-avatar :size="80"
                        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -8,7 +7,7 @@
 
             </el-avatar>
         </div>
-        <el-menu :default-active="$route.path || active"
+        <el-menu :default-active="childrenRoute || $route.path || active"
                  class="el-menu-vertical-demo"
                  background-color="transparent"
                  text-color="#fff"
@@ -21,17 +20,6 @@
                         <i :class="subItem.meta.icon"></i>
                         <span slot="title">{{ subItem.meta.name }}</span>
                     </el-menu-item>
-<!--                <el-submenu v-if="!item.hidden" :key="item.id" :index="index">-->
-<!--                    <template slot="title">-->
-<!--                        <i class="el-icon-location"></i>-->
-<!--                        <span slot="title">{{ item.meta.name }}</span>-->
-<!--                    </template>-->
-<!--                    <el-menu-item v-for="subItem in item.children"-->
-<!--                                  :key="subItem.id"-->
-<!--                                  :index="subItem.path">-->
-<!--                        {{ subItem.meta.name }}-->
-<!--                    </el-menu-item>-->
-<!--                </el-submenu>-->
                 </template>
             </template>
         </el-menu>
@@ -61,9 +49,12 @@
                 const role = (getRole() === '参赛者' ? '/myProject' : '/teamManagement');
                 return (sessionStorage.getItem("active") || role);
             },
-            // session() {
-            //     return sessionStorage.getItem("active")
-            // }
+            childrenRoute() {
+                if(this.$route.path === '/editProject') {
+                    return '/myProject'
+                }
+                return '';
+            }
         },
 
         methods:{
