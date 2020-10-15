@@ -7,6 +7,10 @@
                     center>
             <div class="form">
                 <el-form ref="form" label-width="80px">
+                    <el-form-item label="项目名称">
+                        <el-input v-model="projectName"></el-input>
+                    </el-form-item>
+
                     <el-form-item label="文件类型">
                         <el-radio v-model="fileType" label="1">技术组</el-radio>
                         <el-radio v-model="fileType" label="2">商务组</el-radio>
@@ -43,6 +47,7 @@
         name: "upload",
         data() {
             return {
+                projectName:'',//项目名称
                 dialogVisible: false,
                 file:'',//文件
                 fileType:'',//文件类型
@@ -68,6 +73,7 @@
             dialogClose() {
                 this.$emit('update:dialogClose',false);
                 this.file = '';
+                this.projectName = ''
                 this.fileType = '';
                 this.fileList = []
             },
@@ -93,6 +99,7 @@
                     const data = new FormData();
 
                     data.append('file', this.file);
+                    data.append('fileName', this.projectName)
                     data.append('competitionId', this.competitionId);
                     data.append('stageId', this.stageId);
                     data.append('groupId', this.groupId);

@@ -22,7 +22,6 @@
 
 <script>
     import {downloadFile} from "@/api/adminConsole";
-    import {checkStatus} from "@/api/userConsole";
 
     export default {
         name: "downloadFiles",
@@ -45,7 +44,6 @@
           return {
               fileType:'',
               url:'',
-              flag:true,//判断是否访问超时
               loading: false,
           }
         },
@@ -62,42 +60,12 @@
                 }
 
                 downloadFile(data).then( response => {
-                    this.url = '';
-                    const id = response.data.data;
-                    const data = new FormData();
-                    data.append('id', id);
-                    this.checkStatus(data, this.flag);
-
-                    setTimeout(() => {
-                        this.flag = false
-                        if(this.url === '') {
-                            this.$message.error('文件阻塞,请稍后尝试！');
-                            this.loading = false;
-                        }
-                    }, 10000);
+                    this.url = response.data.data;
+                    this.loading = false;
+                    this.dialogClose();
+                    window.open(this.url, '_blank', )
                 })
             },
-
-            //判断文件状态
-            checkStatus(data, flag){
-                if(flag) {
-                    checkStatus(data).then( response => {
-                        const status = response.data.data;
-                        if (status === '下载中') {
-                            this.checkStatus(data, flag)
-                            this.loading = true;
-                        } else if (status === '失败') {
-                            this.$message.error('下载失败');
-                            this.loading = false;
-                        } else {
-                            this.url = status;
-                            this.loading = false;
-                            this.dialogClose();
-                            window.open(this.url, '_blank', )
-                        }
-                    })
-                }
-            }
         }
     }
 </script>
