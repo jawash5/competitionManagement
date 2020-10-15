@@ -1,9 +1,6 @@
 <template>
     <div id="headWrap">
         <div class="close">
-<!--            <div class="userInfo">-->
-<!--                {{ username }}，您好！-->
-<!--            </div>-->
             <el-popover
                     width="50"
                     trigger="hover">
@@ -92,11 +89,6 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-
-        .userInfo {
-            margin: 0 auto;
-        }
-
     }
 
 

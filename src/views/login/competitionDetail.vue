@@ -1,5 +1,6 @@
 <template>
     <div id="competitionDetail">
+        <head-login :state="state"></head-login>
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
         <el-image :src="competitionInfo.mainImage"
                   style="width: 100%; height: 400px;
@@ -75,10 +76,11 @@
     import {getBoard,checkGroup} from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import format from "@/utils/timeFormat";
+    import headLogin from "@/views/login/components/headLogin";
 
     export default {
         name: "competitionDetail",
-        components: {newTeam,invite},
+        components: {newTeam,invite,headLogin},
         data() {
             return{
                 competitionInfo: {},
@@ -96,7 +98,11 @@
             content() {
                 let markdownIt = mavonEditor.getMarkdownIt()
                 return markdownIt.render(this.mdContent)
+            },
+            state() {
+                return getCode() === '0';
             }
+
         },
         methods: {
             //获取比赛信息
@@ -203,7 +209,7 @@
         .header {
             position: absolute;
             left: 30px;
-            top: 30px
+            top: 90px
         }
 
         .wrap {

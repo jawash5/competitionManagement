@@ -1,20 +1,7 @@
 <template>
-    <div id="login_head">
-        <span id="login_head_title">竞赛管理系统</span>
+    <div class="loginHead">
+        <span class="loginHeadTitle">竞赛管理系统</span>
         <div class="menuPlus">
-            <el-menu :default-active="$route.path"
-                     mode="horizontal"
-                     class="menu"
-                     router
-                     background-color="#409EFF"
-                     text-color="#fff"
-                     active-text-color="#ffd04b">
-                <el-menu-item index="/checkCompetition">查看比赛</el-menu-item>
-                <el-menu-item v-if="!state" index="/login">登录</el-menu-item>
-                <el-menu-item v-if="!state" index="/register">注册</el-menu-item>
-                <el-menu-item v-if="state" :index="url">个人中心</el-menu-item>
-            </el-menu>
-
             <el-popover
                     width="100"
                     trigger="hover"
@@ -28,7 +15,15 @@
             </el-popover>
         </div>
 
-
+        <el-menu :default-active="$route.path"
+                 mode="horizontal"
+                 class="pull-right"
+                 router>
+            <el-menu-item index="/checkCompetition">查看比赛</el-menu-item>
+            <el-menu-item v-if="!state" index="/login">登录</el-menu-item>
+            <el-menu-item v-if="!state" index="/register">注册</el-menu-item>
+            <el-menu-item v-if="state" :index="url">个人中心</el-menu-item>
+        </el-menu>
     </div>
 </template>
 
@@ -79,40 +74,32 @@
 </script>
 
 <style scoped>
-    #login_head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    .loginHead {
         height: 60px;
         min-width: 1200px;
         min-height: 60px;
-        background-color: #409EFF;
+        background-color: #fff;
         box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
     }
 
-    #login_head_title {
+    .loginHeadTitle {
         display: inline-block;
-        font-size: 24px;
-        font-family:"等线" , serif;
-        color: #f2f2f2;
         padding: 0 100px;
-        cursor: default;
+        font-size: 24px;
         font-weight: bolder;
+        font-family:"等线" , serif;
+        line-height: 60px;
+        color: #303133;
+        cursor: default;
     }
 
     .menuPlus {
+        float: right;
+        width: 100px;
+        height: 60px;
         display: flex;
         align-items: center;
-        justify-content: space-around;
-
-    }
-
-    .menu {
-        margin-right: 50px;
-    }
-
-    .avatar {
-        margin-right: 50px;
+        justify-content: space-between;
     }
 
     .logoutButton {
