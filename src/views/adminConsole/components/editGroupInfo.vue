@@ -46,8 +46,6 @@
 </template>
 
 <script>
-    import {getRoles} from "@/api/adminConsole";
-
     export default {
         name: "editGroupInfo",
         props:{
@@ -88,15 +86,6 @@
                     this.getRoles();
                 }
                 // console.log(this.editForm.role)
-            },
-
-            //获取权限角色
-            getRoles() {
-                getRoles().then(response => {
-                    this.authority = response.data.data;
-                }).catch( error => {
-                    this.$message.error(error.response);
-                })
             },
         }
     }
