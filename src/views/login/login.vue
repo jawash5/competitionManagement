@@ -62,8 +62,8 @@
             return {
                 loading:false,//加载
                 ruleForm: {
-                    username: 'name',
-                    password: 'password123'
+                    username: '',
+                    password: ''
                 },
                 rules: {
                     username: [

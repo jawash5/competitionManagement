@@ -103,7 +103,7 @@
             <el-table-column
                     prop="submit"
                     label="上交"
-                    width="80"
+                    width="120"
                     align="center"
                     sortable>
                 <template slot-scope="scope">
@@ -112,37 +112,6 @@
                 </template>
             </el-table-column>
 
-            <el-table-column
-                    prop="promotion"
-                    label="晋级"
-                    width="80"
-                    align="center"
-                    sortable>
-                <template slot-scope="scope">
-                    <span v-for="item in tableData[scope.$index].isPromote"
-                          :key="item.id">{{item.state === true? '〇':'✖' }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    width="120"
-                    align="center"
-                    label="作品审核"
-                    sortable>
-                <template slot-scope="scope">
-                    <span>{{tableData[scope.$index].isCheck === true? '已审核':'未审核' }}</span>
-                </template>
-            </el-table-column>
-
-            <el-table-column
-                    prop="grades"
-                    label="得分"
-                    width="80"
-                    sortable
-                    align="center">
-                <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].grades }}</span>
-                </template>
-            </el-table-column>
             <el-table-column align="center" label="操作" width="80">
                 <template slot-scope="scope">
                     <el-button
@@ -158,9 +127,9 @@
             <el-col :span="12">
 <!--                <el-button size="small">批量删除</el-button>-->
 <!--                <el-button size="small">修改权限</el-button>-->
-<!--                <el-button size="small" >下载信息</el-button>-->
-                <el-button size="small" @click="sendNotice">发送通知</el-button>
-                <el-button size="small" @click="downloadFile">文件下载</el-button>
+                <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
+                <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
+                <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
 <!--                <el-button size="small">成绩添加</el-button>-->
             </el-col>
             <el-col :span="12">
@@ -182,7 +151,7 @@
 </template>
 
 <script>
-    import {getAdminCompetition, getCompetitionGroups, getStageFile} from "@/api/adminConsole";
+    import {getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
@@ -212,22 +181,13 @@
                 AdminCompetition:[],
                 //表单参数
                 tableData: [],
-                //比赛组参数
-                groups:[
-                    {
-                        id: '',
-                        name: '',
-                        competitionId: '',
-                        captainId: '',
-                        captainName: ''
-                    },
-                ],
                 groupInfo: {},//编辑框传参
                 editGroupInfoVisible:false, //编辑对话框
                 sendMessageVisible:false,//发送通知对话框
                 downloadFilesVisible:false,//下载文件对话框
                 chosenGroups:[],//左侧多选数组
                 search:'',//搜索参数
+                competitionId:''//比赛id
             };
         },
         computed: {
@@ -244,12 +204,14 @@
             //比赛年发生变化
             handleYearChange(year) {
                 this.getCompetitionGroups(year);
-                this.getCompetitionStage(year)
+                this.getCompetitionStage(year);
+
             },
             //获取比赛组
             getCompetitionGroups(year) {
-                getCompetitionGroups(year).then( response => {
+                    getCompetitionGroups(year).then( response => {
                     this.tableData = response.data.data;
+                    this.competitionId = response.data.data[0].competitionId
                 })
 
             },
@@ -317,6 +279,37 @@
             handleChange(selection) {
                 this.chosenGroups = selection;
             },
+            //下载队伍信息
+            downloadGroupInfo() {
+                let groupList = [];
+                for(const group of this.chosenGroups) {
+                    groupList.push(group.id)
+                }
+
+                const data = {
+                    cid: this.competitionId,
+                    groupList: groupList
+                }
+                downloadGroupInfo(data).then( response => {
+                    let fileName = '小组信息';// 文件名
+                    let blob = new Blob([response.data], {
+                        type:
+                            "application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        navigator.msSaveBlob(blob);
+                    } else {
+                        let elink = document.createElement("a");
+                        elink.href = URL.createObjectURL(blob);
+                        elink.download = fileName;
+                        elink.style.display = "none";
+                        document.body.appendChild(elink);
+                        elink.click();
+                        document.body.removeChild(elink);
+                    }
+                })
+            },
+
             //搜索
             searchInfo() {
                 if(this.searchKeyValue === 'name') {
@@ -324,11 +317,11 @@
                 } else if (this.searchKeyValue === 'captainName') {
                     return this.tableData.filter(data => !this.search || data.captainName.toLowerCase().includes(this.search.toLowerCase()))
                 }
-            }
+            },
         },
         mounted() {
             this.getCompetitionYear();
-            this.handleYearChange(this.yearValue);
+            // this.handleYearChange(this.yearValue);
 
         }
     }

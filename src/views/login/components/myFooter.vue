@@ -1,6 +1,6 @@
 <template>
     <div id="myFooter">
-        <p class="footer_title">&copy;&nbsp;杭州电子科技大学 All Rights Reserved</p>
+        <p class="footer_title">&copy;&nbsp;THE BLEND All Rights Reserved</p>
     </div>
 </template>
 

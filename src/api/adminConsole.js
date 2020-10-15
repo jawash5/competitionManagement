@@ -159,3 +159,14 @@ export function downloadFile(data) {
     })
 }
 
+/**
+ * 下载队伍信息
+ */
+export function downloadGroupInfo(data) {
+    return service.request({
+        method: "post",
+        url: '/manager/excel',
+        data: data,
+        responseType: 'blob'
+    })
+}
