@@ -303,6 +303,7 @@
                 })
             },
             getSchool() {
+                this.schoolOptions = [];
                 getSchool(this.ruleForm.university).then( response => {
                     const schools = response.data.data;
                     for (const school of schools) {
@@ -311,6 +312,7 @@
                 })
             },
             getMajor() {
+                this.majorOptions = [];
                 getMajor(this.ruleForm.school).then( response => {
                     const majors = response.data.data;
                     for (const major of majors) {
