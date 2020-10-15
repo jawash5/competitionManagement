@@ -2,12 +2,12 @@
     <div id="register">
         <head-login :state='false'></head-login>
         <div id="wrap">
-            <div id="register_with_img">
-                <img id="register_img" alt="讨论" src="../../assets/main/register.png">
-                <span class="register_hr"></span>
-                <div id="register_wrap">
-                    <h1 class="register_title">注&nbsp;&nbsp;册</h1>
-                    <el-form class="register-ruleForm"
+            <div id="registerWithImg">
+                <img id="registerImg" alt="讨论" src="../../assets/main/register.png">
+                <span class="registerHr"></span>
+                <div id="registerWrap">
+                    <h1 class="registerTitle">注&nbsp;&nbsp;册</h1>
+                    <el-form class="registerRuleForm"
                              :model="ruleForm"
                              :rules="rules"
                              ref="ruleForm"
@@ -38,6 +38,11 @@
                         <el-form-item label="姓名" prop="name">
                             <el-input prefix-icon="iconchuangzuo"
                                       v-model="ruleForm.name"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="性别" prop="gender">
+                            <el-radio v-model="ruleForm.gender" label="男"></el-radio>
+                            <el-radio v-model="ruleForm.gender" label="女"></el-radio>
                         </el-form-item>
 
                         <el-form-item label="学号" prop="studentNo">
@@ -73,6 +78,7 @@
 
                         <el-form-item label="学院" prop="school">
                             <el-select style="display: block; width: 100%"
+                                       @change="getMajor"
                                        v-model="ruleForm.school"
                                        filterable>
                                 <span slot="prefix"><i class="iconshouye"></i></span>
@@ -84,6 +90,22 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
+
+                        <el-form-item label="专业" prop="major">
+                            <el-select style="display: block; width: 100%"
+                                       v-model="ruleForm.major"
+                                       filterable>
+                                <span slot="prefix"><i class="iconpaihangbang"></i></span>
+                                <el-option
+                                        v-for="item in majorOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+
                     </el-form>
                     <div class="buttons">
                         <el-button type="primary" round @click="submitInfo">立即注册</el-button>
@@ -99,7 +121,7 @@
 <script>
     import headLogin from "@/views/login/components/headLogin";
     import myFooter from "@/views/login/components/myFooter";
-    import { register, getUniversity, getSchool } from "@/api/login";
+    import { register, getUniversity, getSchool, getMajor } from "@/api/login";
     import {validatePassword, validateEmail,validatePhoneNo, validateStudentNumber} from "@/utils/validator";
 
     export default {
@@ -174,6 +196,8 @@
                     email: '',
                     phoneNo: '',
                     university: '',
+                    major:'',
+                    gender:''
                 },
                 rules: {
                     username: [
@@ -192,6 +216,9 @@
                         { required: true, message: '请输入姓名', trigger: 'blur' },
                         { min: 2, message: '请输入正确的姓名', trigger: 'blur' }
                     ],
+                    gender: [
+                        { required: true, message: '请选择性别', trigger: 'blur' },
+                    ],
                     email: [
                         { required: true, validator: validateMail, trigger: 'blur' }
                     ],
@@ -204,9 +231,13 @@
                     school: [
                         { required: true, message: '请选择学院', trigger: 'blur' },
                     ],
+                    major: [
+                        { required: true, message: '请选择专业', trigger: 'blur' },
+                    ],
                 },
                 universityOptions:[],//学校选项
                 schoolOptions:[],//学院选项
+                majorOptions:[]//专业列表
             }
         },
         methods:{
@@ -218,7 +249,8 @@
                 // 空值验证
                 if(this.ruleForm.username === '' || this.ruleForm.password === '' || this.ruleForm.name === ''||
                     this.ruleForm.studentNo === '' || this.ruleForm.email === ''|| this.ruleForm.university === ''
-                    || this.ruleForm.school === '' || this.ruleForm.phoneNo === '') {
+                    || this.ruleForm.school === '' || this.ruleForm.phoneNo === '' || this.ruleForm.major === ''||
+                    this.ruleForm.gender === '') {
                     this.$message.error('请填写完整注册内容!');
                     return false;
                 }
@@ -277,6 +309,14 @@
                         this.schoolOptions.push({label:school, value:school})
                     }
                 })
+            },
+            getMajor() {
+                getMajor(this.ruleForm.school).then( response => {
+                    const majors = response.data.data;
+                    for (const major of majors) {
+                        this.majorOptions.push({label:major, value:major})
+                    }
+                })
             }
         },
         mounted() {
@@ -287,8 +327,6 @@
 
 <style lang="scss" scoped>
     #register {
-        background-color: #f2f2f2;
-        height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -296,46 +334,46 @@
         min-height: 800px;
     }
 
-    #register_with_img {
+    #registerWithImg {
         display: flex;
         align-items: center;
-        height: 700px;
-        width: 1000px;
+        height: 800px;
+        width: 1100px;
         background-color: #FFFFFF;
         margin: 60px auto;
         box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
     }
 
-    #register_img {
+    #registerImg {
         width: 400px;
         margin: 0 auto;
     }
 
-    .register_hr {
+    .registerHr {
         border:.5px solid #DCDFE6;
-        height:500px;
+        height:600px;
     }
 
-    .register_title {
+    .registerTitle {
         color: black;
-        margin: -80px 0 30px 0;
+        margin: -60px 0 30px 0;
         font-weight: 900;
         font-size: 30px;
         font-family: "幼圆" , serif;
         text-align: center;
     }
 
-    #register_wrap {
+    #registerWrap {
         background-color: #fff;
-        min-width: 350px;
-        height: 420px;
-        width: 350px;
+        min-width: 400px;
+        height: 550px;
+        width: 400px;
         padding: 20px;
         margin: 0 auto;
         border-radius: 4px;
     }
 
-    .register-ruleForm {
+    .registerRuleForm {
         margin: 30px 0;
     }
 

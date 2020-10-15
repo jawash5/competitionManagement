@@ -99,8 +99,7 @@
                     const data = new FormData();
 
                     data.append('file', this.file);
-                    data.append('fileName', this.projectName)
-                    data.append('competitionId', this.competitionId);
+                    data.append('fileName', this.projectName + '.pdf')
                     data.append('stageId', this.stageId);
                     data.append('groupId', this.groupId);
                     data.append('type', this.fileType);
@@ -120,7 +119,6 @@
                     this.fileType = '';
                     this.file = '';
                     this.fileList = [];
-                    this.competitionId = '';
                     this.dialogClose();
                 });
             },

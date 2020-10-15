@@ -71,3 +71,13 @@ export function getSchool(data){
         url: '/auth/schools?name=' + data,
     })
 }
+
+/**
+ * 获取专业
+ */
+export function getMajor(data){
+    return service.request({
+        method: "get",
+        url: '/auth/majors?name=' + data,
+    })
+}
