@@ -65,12 +65,16 @@
                                                                @click="deleteTeammate(groupInfo.teammates[index+1].id)">删除组员</el-button>
                                             </div>
                                             <el-divider :key="index + 'divider'"></el-divider>
+
                                         </template>
                                     </div>
                                 </template>
                                 <template v-else>
                                     <div class="noTeammate">无其他项目成员</div>
                                 </template>
+                                <div v-if="isLeader">
+                                    <el-button type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
+                                </div>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -118,10 +122,6 @@
                 </el-col>
             </el-row>
 
-            <div id="buttons" v-if="isLeader">
-                <el-button type="primary" @click="inviteVisible = true">邀请队友</el-button>
-            </div>
-
             <invite :visible="inviteVisible"
                     :dialogClose.sync="inviteVisible"
                     :group-id="groupInfo.id + ''"></invite>
@@ -130,8 +130,7 @@
                     :dialogClose.sync="uploadDialog"
                     :competition-id="groupInfo.competitionId"
                     :stage-id="stages[stepActive].id"
-                    :group-id="groupInfo.id"
-                    @uploadSuccess="getFiles()"></upload>
+                    :group-id="groupInfo.id"></upload>
         </div>
 </template>
 
@@ -307,8 +306,8 @@
                                     end:stage.endDate,
                                     uploadStart:stage.uploadStartDate,
                                     uploadEnd:stage.uploadEndDate,
-                                    file: {name: response.fileName, url:response.fileId},
-                                    stageId:response.stageId
+                                    // file: {name: response.fileName, url:response.fileId},
+                                    // stageId:response.stageId
                                 }
                             )
                         } else {
@@ -395,8 +394,8 @@
             }
         }
 
-        #buttons {
-            margin: 20px auto;
+        .inviteButton {
+
         }
 
         .labelFor {
