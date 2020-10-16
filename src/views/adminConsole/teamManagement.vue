@@ -4,22 +4,21 @@
             <el-row>
                 <el-col :span="12">
                     <el-form-item>
-                        <el-select v-model="stageValue" placeholder="请选择比赛阶段" size="small">
+                        <el-select v-model="yearValue"
+                                   placeholder="比赛年份"
+                                   size="small"
+                                   style="width: 100px;margin-right: 20px"
+                                   @change="handleYearChange">
                             <el-option
-                                    v-for="item in stageOptions"
+                                    v-for="item in competitionYearOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
                             </el-option>
                         </el-select>
-
-                        <el-select v-model="yearValue"
-                                   placeholder="比赛年份"
-                                   size="small"
-                                   style="width: 100px;margin-left: 20px"
-                                   @change="handleYearChange">
+                        <el-select v-model="stageValue" placeholder="请选择比赛阶段" size="small">
                             <el-option
-                                    v-for="item in competitionYearOptions"
+                                    v-for="item in stageOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -55,10 +54,48 @@
                 style="width: 100%"
                 :default-sort = "{prop: 'projectName', order: 'descending'}"
                 @selection-change="handleChange">
+
             <el-table-column
                     type="selection"
                     width="50"
                     align="center">
+            </el-table-column>
+
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" class="demo-table-expand">
+<!--                        <el-form-item label="小组成员">-->
+<!--                            <div v-for="item in props.row.teammates"-->
+<!--                                 :key="item.id">-->
+<!--                                {{ props.row.teammates.id }}-->
+<!--                            </div>-->
+<!--                        </el-form-item>-->
+                        <el-form-item label="队伍名称">
+                            <span>{{ props.row.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="队长姓名">
+                            <span>{{ props.row.captainName }}</span>
+                        </el-form-item>
+                        <el-form-item label="队伍邮箱">
+                            <span>{{ props.row.email }}</span>
+                        </el-form-item>
+                        <el-form-item label="领队电话">
+                            <span>{{ props.row.captainPhone }}</span>
+                        </el-form-item>
+                        <el-form-item label="小组成员">
+                            <div style="margin-left: 90px">
+                                <div v-for="item in props.row.teammates" :key="item.id">
+                                    <span class="title">姓名：</span>{{ item.name }}
+                                    <span class="title">学号：</span>{{item.studentNo}}
+                                    <span class="title">学院：</span>{{item.school}}
+                                    <span class="title">电话：</span>{{item.phoneNo}}
+                                    <span class="title">邮箱：</span>{{item.email}}
+                                </div>
+                            </div>
+                        </el-form-item>
+
+                    </el-form>
+                </template>
             </el-table-column>
 
             <el-table-column
@@ -69,35 +106,34 @@
             </el-table-column>
 
             <el-table-column
-                    prop="teamName"
+                    prop="name"
                     label="队伍名称"
                     align="center"
                     show-overflow-tooltip>
-                <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].name }}</span>
-                </template>
             </el-table-column>
 
             <el-table-column
-                    prop="name"
+                    prop="captainName"
                     label="队长姓名"
                     width="100"
                     align="center"
                     show-overflow-tooltip>
-                <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].captainName }}</span>
-                </template>
             </el-table-column>
 
             <el-table-column
-                    prop="mail"
+                    prop="email"
                     label="队伍邮箱"
                     width="250"
                     align="center"
                     show-overflow-tooltip>
-                <template slot-scope="scope">
-                    <span>{{ tableData[scope.$index].email }}</span>
-                </template>
+            </el-table-column>
+
+            <el-table-column
+                    prop="captainPhone"
+                    label="领队电话"
+                    width="200"
+                    align="center"
+                    show-overflow-tooltip>
             </el-table-column>
 
             <el-table-column
@@ -174,6 +210,9 @@
                 searchOptions: [
                     { value: 'name', label: '队伍名称' },
                     { value: 'captainName', label: '队长姓名' },
+                    { value: 'email', label: '队伍邮箱' },
+                    { value: 'captainPhone', label: '领队电话' },
+                    { value: 'teammateName', label: '组员姓名' },
                 ],
                 //关键词
                 searchKeyValue: 'name',
@@ -316,6 +355,20 @@
                     return this.tableData.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()));
                 } else if (this.searchKeyValue === 'captainName') {
                     return this.tableData.filter(data => !this.search || data.captainName.toLowerCase().includes(this.search.toLowerCase()))
+                } else if (this.searchKeyValue === 'email') {
+                    return this.tableData.filter(data => !this.search || data.email.toLowerCase().includes(this.search.toLowerCase()))
+                } else if (this.searchKeyValue === 'captainPhone') {
+                    return this.tableData.filter(data => !this.search || data.captainPhone.toLowerCase().includes(this.search.toLowerCase()))
+                } else if (this.searchKeyValue === 'teammateName') {
+                    return this.tableData.filter(data => {
+                        let flag = false;
+                        for(const teammate of data.teammates) {
+                            if(teammate.name.toLowerCase().includes(this.search.toLowerCase())) {
+                                flag = true;
+                            }
+                        }
+                        return !this.search || flag;
+                    })
                 }
             },
         },
@@ -336,6 +389,27 @@
         /deep/.el-table thead {
             font-weight: bold;
             color: #344a5f;
+        }
+
+        /*/deep/.demo-table-expand {*/
+        /*    font-size: 0;*/
+        /*}*/
+
+        .demo-table-expand {
+
+            .title:not(:first-of-type) {
+                margin-left: 2em;
+            }
+
+            /deep/.el-form-item__label {
+                width: 90px;
+                color: #99a9bf;
+            }
+
+            /deep/.el-form-item {
+                margin-right: 0;
+                margin-bottom: 0;
+            }
         }
     }
 

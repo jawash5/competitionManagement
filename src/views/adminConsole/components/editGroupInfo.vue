@@ -27,13 +27,6 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-
-                    <el-form-item label="角色管理">
-                        <el-radio v-for="item in authority"
-                                  :key="item.id"
-                                  v-model="editForm.role" :label="item.id">{{item.role}}</el-radio>
-                    </el-form-item>
-
                 </el-form>
             </div>
 
