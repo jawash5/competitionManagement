@@ -80,16 +80,23 @@
                         <div style="color: #606266">比赛状态</div>
                         <div class="div-30"></div>
                         <el-timeline>
-                            <el-timeline-item v-for="(item,index) in stageFiles"
+                            <el-timeline-item v-for="(item,index) in stageInfo"
                                               :key="item.name"
                                               :timestamp="item.name"
                                               placement="top">
                                 <el-card>
                                     <div class="stageTip">阶段持续时间：{{item.start}} 至 {{item.end}}</div>
                                     <div class="div-15"></div>
-                                    <div class="stageTip">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
+                                    <div class="stageTip" v-if="item.uploadStart !== undefined">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
                                     <div class="div-15"></div>
-                                    <div class="pull-center" v-if="item.isSignUp">已上传</div>
+                                    <div class="pull-center" v-if="item.isSignUp">
+<!--                                        <el-upload-->
+<!--                                                action="#"-->
+<!--                                                :data="{111:111}"-->
+<!--                                                :file-list="fileList">-->
+<!--                                            <el-button size="small" type="primary">点击上传</el-button>-->
+<!--                                        </el-upload>-->
+                                    </div>
                                     <div class="pull-center" v-else>
                                         <el-button v-if="stepActive === index && isLeader"
                                                    type="primary"
@@ -177,7 +184,7 @@
                     ]
                 },
                 stageActiveName:'',//阶段文件选择值
-                stageFiles:[],
+                stageInfo:[],
                 isLeader:false,
                 captainId: '',
                 uploadDialog: false,
@@ -280,7 +287,7 @@
                     let stages = response.data.data.stages;
                     sortValue(stages, 'id');
                     this.stages = stages;
-                    this.stageFiles = [];
+                    this.stageInfo = [];
                     this.pushStageFiles(stages);
                     this.getNowStage();//获取当前阶段
                 })
@@ -289,7 +296,7 @@
             async pushStageFiles(stages) {
                 for (const stage of stages) {
                     await this.getStageFile(this.groupInfo.id, stage.id).then( response => {
-                        this.stageFiles.push(
+                        this.stageInfo.push(
                             {
                                 name:stage.name ,
                                 value:stage.id,

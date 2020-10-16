@@ -61,7 +61,7 @@
                                    @click="editPhone"></el-button>
                     </el-form-item>
                     <el-form-item label="密码：">
-                        <el-button size="small" type="primary">修改密码</el-button>
+                        <el-button size="small" type="primary" @click="editPassword">修改密码</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -136,6 +136,31 @@
                     this.phoneVisible = true;
                     this.icon = 'el-icon-check';
                 })
+            },
+            editPassword() {
+                this.$prompt('请输入密码', '修改密码', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,}$/,
+                    inputErrorMessage: '密码长度至少为11位，由数字和字母组成'
+                }).then(({ value }) => {
+                    const data = {
+                        password: value,
+                    }
+                    modifyPersonalInfo(data).then( () => {
+                        this.$message({
+                            type:"success",
+                            message:"修改成功！"
+                        })
+                    }).catch( error => {
+                        this.$message.error(error.response.data);
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '以取消'
+                    });
+                });
             }
         },
         mounted() {

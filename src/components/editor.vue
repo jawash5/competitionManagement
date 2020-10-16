@@ -16,7 +16,6 @@
     import { mavonEditor } from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
     import {uploadPicture,deletePicture} from "@/api/adminConsole";
-    import {checkStatus} from "@/api/userConsole";
 
     export default {
         name: "editor",
@@ -105,34 +104,14 @@
                 // console.log(this.url)
                 const fileName = this.url.slice(-41);
                 const year = this.url.slice(-46,-42);
-                const competitionName = this.url.slice(57,-47);
                 const data = {
                     year: year,
-                    competitionName: competitionName,
                     filename: fileName
                 }
-                // console.log(data);
                 deletePicture(data).then( response => {
-                    const id = response.data.data;
-                    this.checkStatus(id);
+                   this.$message.success(response.data.data)
                 }).catch(error => {
                     this.$message.error(error.response.data)
-                })
-            },
-            //判断状态
-            checkStatus(id) {
-                const data = new FormData();
-                data.append('id', id);
-                checkStatus(data).then(response => {
-                    const res = response.data.data;
-                    if(res === '成功') {
-                        this.$message.success('删除成功！');
-                        this.$emit('uploadSuccess');
-                    } else if (res === '失败') {
-                        this.$message.success('删除失败！');
-                    } else {
-                        this.checkStatus(id);
-                    }
                 })
             },
         }
