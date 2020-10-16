@@ -64,12 +64,6 @@
             <el-table-column type="expand">
                 <template slot-scope="props">
                     <el-form label-position="left" class="demo-table-expand">
-<!--                        <el-form-item label="小组成员">-->
-<!--                            <div v-for="item in props.row.teammates"-->
-<!--                                 :key="item.id">-->
-<!--                                {{ props.row.teammates.id }}-->
-<!--                            </div>-->
-<!--                        </el-form-item>-->
                         <el-form-item label="队伍名称">
                             <span>{{ props.row.name }}</span>
                         </el-form-item>
@@ -162,7 +156,7 @@
         <el-row>
             <el-col :span="12">
 <!--                <el-button size="small">批量删除</el-button>-->
-<!--                <el-button size="small">修改权限</el-button>-->
+                <el-button size="small" type="primary" round @click="outTeam">淘汰队伍</el-button>
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
                 <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
                 <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
@@ -180,14 +174,13 @@
                       :dialogClose.sync="sendMessageVisible"></send-message>
         <download-files :visible="downloadFilesVisible"
                         :dialogClose.sync="downloadFilesVisible"
-                        :year="yearValue"
                         :stage="stageValue"></download-files>
     </div>
 
 </template>
 
 <script>
-    import {getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo} from "@/api/adminConsole";
+    import {getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo, outTeam} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
@@ -281,11 +274,11 @@
                         this.stageOptions = [];
                         for(let i=0; i< stages.length; i++) {
                             this.stageOptions.push({
-                                value: stages[i].name,
+                                value: stages[i].id,
                                 label: stages[i].name
                             })
                         }
-                        this.stageValue = this.stageOptions[0].label;
+                        this.stageValue = this.stageOptions[0].value;
                     }
                 }
 
@@ -348,6 +341,21 @@
                     }
                 })
             },
+            //淘汰队伍
+            outTeam() {
+                let groupIds = [];
+                for (const group of this.chosenGroups) {
+                    groupIds.push(group.id);
+                }
+                const data = {
+                    stageId: this.stageValue,
+                    groupIds: groupIds,
+                    isOut: true
+                }
+                outTeam(data).then( () => {
+                    this.$message.success('淘汰队伍成功');
+                })
+            },
 
             //搜索
             searchInfo() {
@@ -390,10 +398,6 @@
             font-weight: bold;
             color: #344a5f;
         }
-
-        /*/deep/.demo-table-expand {*/
-        /*    font-size: 0;*/
-        /*}*/
 
         .demo-table-expand {
 

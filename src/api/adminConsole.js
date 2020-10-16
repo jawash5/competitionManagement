@@ -170,3 +170,15 @@ export function downloadGroupInfo(data) {
         responseType: 'blob'
     })
 }
+
+/**
+ *  淘汰队伍
+ */
+export function outTeam(data) {
+    return service.request({
+        method: "post",
+        url: '/manager/group',
+        data: data,
+        responseType: 'blob'
+    })
+}

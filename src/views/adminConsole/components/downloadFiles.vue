@@ -8,9 +8,10 @@
                    :close-on-click-modal="false"
                    :close-on-press-escape="false"
                    v-loading="loading">
-            <el-radio v-model="fileType" label="1">报名表</el-radio>
-            <el-radio v-model="fileType" label="2">作品</el-radio>
-
+            <div class="pull-center">
+                <el-radio v-model="fileType" label="1">技术组</el-radio>
+                <el-radio v-model="fileType" label="2">商务组</el-radio>
+            </div>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogClose">取 消</el-button>
                 <el-button type="primary" @click="conform">确 定</el-button>
@@ -31,12 +32,7 @@
                 require:true,
                 default:false,
             },
-            year:{
-                type:String,
-                require:true,
-            },
             stage:{
-                type:String,
                 require:true,
             }
         },

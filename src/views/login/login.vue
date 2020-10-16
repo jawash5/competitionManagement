@@ -9,7 +9,7 @@
                     <div class="login_title">登&nbsp;&nbsp;录</div>
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="login-ruleForm">
                         <el-form-item prop="username">
-                            <el-input placeholder="用户名"
+                            <el-input placeholder="用户名/手机号/学号"
                                       prefix-icon="iconshequ"
                                       v-model="ruleForm.username"
                                       autocomplete="off"></el-input>
