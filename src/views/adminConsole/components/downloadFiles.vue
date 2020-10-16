@@ -2,7 +2,7 @@
     <div>
         <el-dialog :visible="visible"
                    title="文件下载"
-                   width="500px"
+                   width="420px"
                    center
                    :show-close="false"
                    :close-on-click-modal="false"

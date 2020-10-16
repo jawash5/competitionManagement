@@ -177,8 +177,7 @@ export function downloadGroupInfo(data) {
 export function outTeam(data) {
     return service.request({
         method: "post",
-        url: '/manager/group',
+        url: '/manager/group/out',
         data: data,
-        responseType: 'blob'
     })
 }

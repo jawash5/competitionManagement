@@ -16,7 +16,9 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-select v-model="stageValue" placeholder="请选择比赛阶段" size="small">
+                        <el-select v-model="stageValue"
+                                   placeholder="请选择比赛阶段"
+                                   size="small">
                             <el-option
                                     v-for="item in stageOptions"
                                     :key="item.value"
@@ -131,6 +133,17 @@
             </el-table-column>
 
             <el-table-column
+                    prop="expireAt"
+                    label="晋级"
+                    width="100"
+                    align="center"
+                    show-overflow-tooltip>
+                <template slot-scope="scope">
+                    <span>{{isPromotion(scope.row)}}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column
                     prop="submit"
                     label="上交"
                     width="120"
@@ -142,21 +155,13 @@
                 </template>
             </el-table-column>
 
-            <el-table-column align="center" label="操作" width="80">
-                <template slot-scope="scope">
-                    <el-button
-                            size="mini"
-                            @click="handleEdit(tableData[scope.$index])"
-                            >编辑</el-button>
-                </template>
-            </el-table-column>
         </el-table>
 
         <div class="div-30"></div>
         <el-row>
             <el-col :span="12">
 <!--                <el-button size="small">批量删除</el-button>-->
-                <el-button size="small" type="primary" round @click="outTeam">淘汰队伍</el-button>
+                <el-button size="small" type="primary" round @click="changeOutStatus">淘汰队伍</el-button>
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
                 <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
                 <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
@@ -167,6 +172,10 @@
             </el-col>
         </el-row>
 
+        <out-status :visible="outStatusVisible"
+                    :dialogClose.sync="outStatusVisible"
+                    :stage-value="stageValue"
+                    @success="getCompetitionGroups(yearValue)"></out-status>
         <edit-group-info :visible="editGroupInfoVisible"
                          :dialogClose.sync="editGroupInfoVisible"
                          :groupInfo="groupInfo"></edit-group-info>
@@ -180,15 +189,16 @@
 </template>
 
 <script>
-    import {getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo, outTeam} from "@/api/adminConsole";
+    import {getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo} from "@/api/adminConsole";
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
+    import outStatus from "@/views/adminConsole/components/outStatus";
     import sortValue from "@/utils/sort";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage,downloadFiles,editGroupInfo},
+        components:{sendMessage,downloadFiles,editGroupInfo,outStatus},
         data() {
             return {
                 //比赛阶段选项
@@ -217,15 +227,16 @@
                 editGroupInfoVisible:false, //编辑对话框
                 sendMessageVisible:false,//发送通知对话框
                 downloadFilesVisible:false,//下载文件对话框
+                outStatusVisible:false,//晋级选项框
                 chosenGroups:[],//左侧多选数组
                 search:'',//搜索参数
-                competitionId:''//比赛id
+                competitionId:'',//比赛id
             };
         },
         computed: {
-          total (){
-              return this.tableData.length;
-            }
+            total() {
+                return this.tableData.length;
+            },
         },
         methods: {
             //编辑
@@ -237,7 +248,18 @@
             handleYearChange(year) {
                 this.getCompetitionGroups(year);
                 this.getCompetitionStage(year);
-
+            },
+            //晋级信息显示
+            isPromotion(row) {
+                if (Object.prototype.hasOwnProperty.call(row, 'expireAt')) {
+                    if (row.expireAt <= this.stageValue) {
+                        return '×';
+                    } else if (row.expireAt > this.stageValue){
+                        return '√';
+                    }
+                } else {
+                    return '√';
+                }
             },
             //获取比赛组
             getCompetitionGroups(year) {
@@ -281,7 +303,6 @@
                         this.stageValue = this.stageOptions[0].value;
                     }
                 }
-
             },
 
             //发送通知
@@ -341,20 +362,14 @@
                     }
                 })
             },
-            //淘汰队伍
-            outTeam() {
-                let groupIds = [];
-                for (const group of this.chosenGroups) {
-                    groupIds.push(group.id);
+            //改变淘汰状态
+            changeOutStatus() {
+                if(this.chosenGroups.length === 0) {
+                    this.$message('请选择小组');
+                    return false;
                 }
-                const data = {
-                    stageId: this.stageValue,
-                    groupIds: groupIds,
-                    isOut: true
-                }
-                outTeam(data).then( () => {
-                    this.$message.success('淘汰队伍成功');
-                })
+                this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
+                this.outStatusVisible = true;
             },
 
             //搜索

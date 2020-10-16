@@ -50,7 +50,7 @@
             //验证信息
             const checkUsername = (rule, value, callback) => {
                 if (!value) {
-                    return callback(new Error('账号不能为空'));
+                    return callback(new Error('账号/手机/学号不能为空'));
                 }
             };
             const validatePass = (rule, value, callback) => {
