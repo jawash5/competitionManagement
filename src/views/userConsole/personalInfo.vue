@@ -138,7 +138,7 @@
                 })
             },
             editPassword() {
-                this.$prompt('请输入密码', '修改密码', {
+                this.$prompt('请输入新密码', '修改密码', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     inputPattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,}$/,
@@ -158,7 +158,7 @@
                 }).catch(() => {
                     this.$message({
                         type: 'info',
-                        message: '以取消'
+                        message: '已取消修改'
                     });
                 });
             }

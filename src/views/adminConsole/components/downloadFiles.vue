@@ -43,7 +43,6 @@
         data() {
           return {
               fileType:'',
-              url:'',
               loading: false,
           }
         },
@@ -54,16 +53,21 @@
             //下载文件
             conform() {
                 const data = {
-                    year: this.year,
                     stage: this.stage,
                     type: this.fileType
                 }
 
                 downloadFile(data).then( response => {
-                    this.url = response.data.data;
+                    if(response.data.data.success === true) {
+                        const url = response.data.data.msg;
+                        window.open(url, '_blank', )
+                    } else {
+                        this.$message.error(response.data.data.msg)
+                    }
+
+                }).finally( ()=> {
                     this.loading = false;
                     this.dialogClose();
-                    window.open(this.url, '_blank', )
                 })
             },
         }

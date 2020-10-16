@@ -89,21 +89,24 @@
                                     <div class="div-15"></div>
                                     <div class="stageTip" v-if="item.uploadStart !== undefined">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
                                     <div class="div-15"></div>
-                                    <div class="pull-center" v-if="item.isSignUp">
+<!--                                    <div class="pull-center">-->
 <!--                                        <el-upload-->
 <!--                                                action="#"-->
 <!--                                                :data="{111:111}"-->
 <!--                                                :file-list="fileList">-->
 <!--                                            <el-button size="small" type="primary">点击上传</el-button>-->
 <!--                                        </el-upload>-->
-                                    </div>
-                                    <div class="pull-center" v-else>
-                                        <el-button v-if="stepActive === index && isLeader"
-                                                   type="primary"
-                                                   size="small"
-                                                   @click="uploadDialog = true">上传文件</el-button>
-                                        <div v-else-if="stepActive > index">阶段已结束</div>
-                                        <div v-else-if="stepActive < index">阶段未开始</div>
+<!--                                    </div>-->
+                                    <div class="pull-center">
+                                        <el-upload
+                                                class="upload-demo"
+                                                action="https://cm.qiancaoyu.fun/user/upload"
+                                                :file-list="stageInfo[index].file">
+                                            <el-button v-if="stepActive === index && isLeader"
+                                                       type="primary"
+                                                       size="small"
+                                                       @click="uploadDialog = true">上传文件</el-button>
+                                        </el-upload>
                                     </div>
                                 </el-card>
                             </el-timeline-item>
@@ -134,7 +137,6 @@
 
 <script>
     import {
-        getGroupFiles,
         getGroupInfo,
         personalInfo,
         appointCaptain,
@@ -222,16 +224,16 @@
                     this.getStages(this.groupInfo.competitionId)
                 });
             },
-            //获取组文件
-            getFiles() {
-                const groupId = this.$store.getters['group/groupId'];
-                getGroupFiles(groupId).then( response => {
-                    const data = response.data.data;
-                    for(let i=0; i<data.length; i++) {
-                        this.fileList.push({name:data[i].fileName, url:''})
-                    }
-                })
-            },
+            // //获取组文件
+            // getFiles() {
+            //     const groupId = this.$store.getters['group/groupId'];
+            //     getGroupFiles(groupId).then( response => {
+            //         const data = response.data.data;
+            //         for(let i=0; i<data.length; i++) {
+            //             this.fileList.push({name:data[i].fileName, url:''})
+            //         }
+            //     })
+            // },
             //获取角色修改权限信息
             getPersonalAuthority() {
                 personalInfo().then( response => {
@@ -296,17 +298,32 @@
             async pushStageFiles(stages) {
                 for (const stage of stages) {
                     await this.getStageFile(this.groupInfo.id, stage.id).then( response => {
-                        this.stageInfo.push(
-                            {
-                                name:stage.name ,
-                                value:stage.id,
-                                isSignUp:response,
-                                start:stage.startDate,
-                                end:stage.endDate,
-                                uploadStart:stage.uploadStartDate,
-                                uploadEnd:stage.uploadEndDate,
-                            }
-                        )
+                        if(response !== null ) {
+                            this.stageInfo.push(
+                                {
+                                    name:stage.name ,
+                                    value:stage.id,
+                                    start:stage.startDate,
+                                    end:stage.endDate,
+                                    uploadStart:stage.uploadStartDate,
+                                    uploadEnd:stage.uploadEndDate,
+                                    file: {name: response.fileName, url:response.fileId},
+                                    stageId:response.stageId
+                                }
+                            )
+                        } else {
+                            this.stageInfo.push(
+                                {
+                                    name:stage.name ,
+                                    value:stage.id,
+                                    start:stage.startDate,
+                                    end:stage.endDate,
+                                    uploadStart:stage.uploadStartDate,
+                                    uploadEnd:stage.uploadEndDate,
+                                }
+                            )
+                        }
+
                     })
                 }
             },
@@ -341,7 +358,6 @@
         },
         mounted() {
             this.getGroupInfo();
-            this.getFiles();
         }
     }
 </script>
