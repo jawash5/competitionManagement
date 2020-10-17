@@ -105,6 +105,12 @@
                             </el-select>
                         </el-form-item>
 
+                        <el-form-item label="班级" prop="className">
+                            <el-input prefix-icon="iconpengyouquan"
+                                      v-model="ruleForm.className"
+                                      placeholder="班级为8位班级编号"></el-input>
+                        </el-form-item>
+
 
                     </el-form>
                     <div class="buttons">
@@ -197,7 +203,8 @@
                     phoneNo: '',
                     university: '',
                     major:'',
-                    gender:''
+                    gender:'',
+                    className:''
                 },
                 rules: {
                     username: [
@@ -234,6 +241,9 @@
                     major: [
                         { required: true, message: '请选择专业', trigger: 'blur' },
                     ],
+                    className: [
+                        { min:8, max:8, required: true, message: '请输入正确的班级号', trigger: 'blur' },
+                    ],
                 },
                 universityOptions:[],//学校选项
                 schoolOptions:[],//学院选项
@@ -250,7 +260,7 @@
                 if(this.ruleForm.username === '' || this.ruleForm.password === '' || this.ruleForm.name === ''||
                     this.ruleForm.studentNo === '' || this.ruleForm.email === ''|| this.ruleForm.university === ''
                     || this.ruleForm.school === '' || this.ruleForm.phoneNo === '' || this.ruleForm.major === ''||
-                    this.ruleForm.gender === '') {
+                    this.ruleForm.gender === '' || this.ruleForm.className === '') {
                     this.$message.error('请填写完整注册内容!');
                     return false;
                 }
@@ -259,13 +269,21 @@
                     this.$message.error('密码格式不正确!');
                     return false;
                 }
+
+                //重复密码验证
+                if(this.ruleForm.checkPass !== this.ruleForm.password) {
+                    this.$message.error('两次密码不一致!');
+                    return false;
+                }
+
                 //姓名验证
                 if(this.ruleForm.name.length < 2) {
                     this.$message.error('请输入正确的姓名!');
                     return false;
                 }
+
                 //学号验证
-                if(this.ruleForm.studentNo.length !== 8) {
+                if(!validateStudentNumber(this.ruleForm.studentNo)) {
                     this.$message.error('请输入正确的学号!');
                     return false;
                 }
@@ -281,8 +299,13 @@
                     return false;
                 }
 
-                register(this.ruleForm).then(response => {
-                    console.log(response);
+                //班级
+                if(this.ruleForm.className.length !== 8) {
+                    this.$message.error('请输入正确的班级号!');
+                    return false;
+                }
+
+                register(this.ruleForm).then( () => {
                     this.$message({
                         message: '注册成功！',
                         type: 'success'
