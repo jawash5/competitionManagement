@@ -6,8 +6,7 @@
                    center
                    :show-close="false"
                    :close-on-click-modal="false"
-                   :close-on-press-escape="false"
-                   v-loading="loading">
+                   :close-on-press-escape="false">
             <div class="pull-center">
                 <el-radio v-model="fileType" label="1">技术组</el-radio>
                 <el-radio v-model="fileType" label="2">商务组</el-radio>
@@ -22,7 +21,7 @@
 </template>
 
 <script>
-    import {downloadFile} from "@/api/adminConsole";
+    import {downloadFile,checkStatus} from "@/api/adminConsole";
 
     export default {
         name: "downloadFiles",
@@ -39,7 +38,6 @@
         data() {
           return {
               fileType:'',
-              loading: false,
           }
         },
         methods:{
@@ -49,23 +47,56 @@
             //下载文件
             conform() {
                 const data = {
-                    stage: this.stage,
+                    stageId: this.stage,
                     type: this.fileType
                 }
-
                 downloadFile(data).then( response => {
-                    if(response.data.data.success === true) {
-                        const url = response.data.data.msg;
-                        window.open(url, '_blank', )
-                    } else {
-                        this.$message.error(response.data.data.msg)
-                    }
+                    const fileName = response.data.data;
+                    this.$message({
+                        message:'后台玩命压缩中...请稍等...',
+                        duration: 3000
+                    })
 
+                    this.getStatus(fileName).then(response => {
+                        if(response === false) {
+                            const status = setInterval(function () {
+                                const data = new FormData;
+                                data.append('fileName',fileName);
+
+                                checkStatus(data).then( response => {
+                                    const res = response.data.data
+                                    if (res === '下载中') {
+                                        return false;
+                                    } else {
+                                        clearInterval(status);
+                                        window.open(res, '_blank')
+                                    }
+                                })
+                            }, 3000);
+                        }
+                    })
                 }).finally( ()=> {
-                    this.loading = false;
                     this.dialogClose();
-                })
+                });
             },
+            //获取状态
+            getStatus(fileName) {
+                return new Promise((resolve) =>  {
+                    const data = new FormData;
+                    data.append('fileName',fileName);
+
+                    checkStatus(data).then( response => {
+                        const res = response.data.data
+                        if (res === '下载中') {
+                            resolve(false);
+                        } else {
+                            window.open(res, '_blank');
+                            resolve(true);
+                        }
+                    })
+                })
+
+            }
         }
     }
 </script>

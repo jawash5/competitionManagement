@@ -160,6 +160,18 @@ export function downloadFile(data) {
     })
 }
 
+
+/**
+ * 文件状态
+ */
+export function checkStatus(data) {
+    return service.request({
+        method:"post",
+        url: '/manager/filestatus',
+        data:data
+    })
+}
+
 /**
  * 下载队伍信息
  */

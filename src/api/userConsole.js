@@ -74,17 +74,6 @@ export function upload(data) {
 }
 
 /**
- * 文件状态
- */
-export function checkStatus(data) {
-    return service.request({
-        method:"post",
-        url: '/competition/filestatus',
-        data:data
-    })
-}
-
-/**
  * 查看个人所有文件
  */
 export function checkFiles() {
