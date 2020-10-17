@@ -64,7 +64,7 @@ module.exports = {
       '/devApi': {
         // target: "https://cm.qiancaoyu.fun/",
 
-        target:"http://weixin.qiancaoyu.fun",
+        target: "http://122.51.66.105:8080/",
         changeOrigin: true,
         pathRewrite: {'^/devApi': ''},
       }

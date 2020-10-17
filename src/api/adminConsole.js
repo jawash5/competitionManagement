@@ -144,7 +144,8 @@ export function deletePicture(data) {
 export function getStageFile(data) {
     return service.request({
         method: "get",
-        url: '/competition/files?stage=' + data.stage + '&year=' + data.year,
+        url: '/competition/files',
+        data:data
     })
 }
 

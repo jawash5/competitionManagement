@@ -18,7 +18,8 @@
                         </el-select>
                         <el-select v-model="stageValue"
                                    placeholder="请选择比赛阶段"
-                                   size="small">
+                                   size="small"
+                                   @change="getFilesSignUp">
                             <el-option
                                     v-for="item in stageOptions"
                                     :key="item.value"
@@ -144,15 +145,10 @@
             </el-table-column>
 
             <el-table-column
-                    prop="submit"
+                    prop="file"
                     label="上交"
                     width="120"
-                    align="center"
-                    sortable>
-                <template slot-scope="scope">
-                    <span v-for="item in tableData[scope.$index].isSubmit"
-                          :key="item.id">{{item.state === true? '〇':'✖' }}</span>
-                </template>
+                    align="center">
             </el-table-column>
 
         </el-table>
@@ -233,11 +229,6 @@
                 competitionId:'',//比赛id
             };
         },
-        computed: {
-            total() {
-                return this.tableData.length;
-            },
-        },
         methods: {
             //编辑
             handleEdit(groupInfo) {
@@ -263,11 +254,47 @@
             },
             //获取比赛组
             getCompetitionGroups(year) {
-                    getCompetitionGroups(year).then( response => {
-                    this.tableData = response.data.data;
-                    this.competitionId = response.data.data[0].competitionId
-                })
+                getCompetitionGroups(year).then( response => {
+                    let tableData = response.data.data;
+                    this.competitionId = response.data.data[0].competitionId;
 
+                    const data = new FormData;
+                    data.append('stageId',this.stageValue);
+                    //获取队伍文件上交情况
+                    getStageFile(data).then( res => {
+                        const signUpGroups = res.data.data;
+
+                        for (const signUpGroup of signUpGroups) {
+                            const index = tableData.indexOf(signUpGroup.groupId);
+                            tableData[index].file = '√';
+                        }
+                        for (const group of tableData) {
+                            if(!Object.prototype.hasOwnProperty.call(group, 'file')) {
+                                group.file = '×';
+                            }
+                        }
+                        this.tableData = tableData;
+                    })
+                })
+            },
+            //获取文件列表
+            getFilesSignUp() {
+                const data = new FormData;
+                data.append('stageId',this.stageValue);
+                let tableData = this.tableData
+
+                getStageFile(data).then( response => {
+                    const signUpGroups = response.data.data;
+                    for (const signUpGroup of signUpGroups) {
+                        for (const group of tableData) {
+                            if(group.id === signUpGroup.groupId) {
+                                group.file = '√';
+                            } else {
+                                group.file = '×';
+                            }
+                        }
+                    }
+                } )
             },
             //获取比赛年
             getCompetitionYear() {
@@ -313,16 +340,6 @@
                     this.sendMessageVisible = true;
                     this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
                 }
-            },
-            //获取文件列表
-            getFiles() {
-                const data = {
-                    stage: this.competitionValue,
-                    year: this.yearValue
-                };
-                getStageFile(data).then( response => {
-                    this.fileList = response.data.data;
-                } )
             },
             //下载文件
             downloadFile() {
