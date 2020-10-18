@@ -29,14 +29,18 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    <el-form-item label="组别" prop="teamName">
+                        <el-radio v-model="finalForm.others.type" label="商务组"></el-radio>
+                        <el-radio v-model="finalForm.others.type" label="技术组"></el-radio>
+                    </el-form-item>
                 </el-form>
-                <el-transfer
-                        filterable
-                        :filter-method="function(query, item) {return item.pinyin.indexOf(query) > -1;}"
-                        filter-placeholder="请输入城市拼音"
-                        v-model="value"
-                        :data="data">
-                </el-transfer>
+<!--                <el-transfer-->
+<!--                        filterable-->
+<!--                        :filter-method="function(query, item) {return item.pinyin.indexOf(query) > -1;}"-->
+<!--                        filter-placeholder="请输入城市拼音"-->
+<!--                        v-model="value"-->
+<!--                        :data="data">-->
+<!--                </el-transfer>-->
             </div>
 
             <span slot="footer">
@@ -69,23 +73,23 @@
             }
         },
         data() {
-            const generateData = () => {
-                const data = [];
-                const cities = [];
-                const pinyin = [];
-                cities.forEach((city, index) => {
-                    data.push({
-                        label: city,
-                        key: index,
-                        pinyin: pinyin[index]
-                    });
-                });
-                return data;
-            };
+            // const generateData = () => {
+            //     const data = [];
+            //     const cities = [];
+            //     const pinyin = [];
+            //     cities.forEach((city, index) => {
+            //         data.push({
+            //             label: city,
+            //             key: index,
+            //             pinyin: pinyin[index]
+            //         });
+            //     });
+            //     return data;
+            // };
 
             return {
                 dialogVisible:true,
-                data: generateData(),
+                // data: generateData(),
                 value: [],
                 ruleForm: {
                     teamName:'',
@@ -94,8 +98,12 @@
                 },
                 //提交的表单
                 finalForm:{
-                    competitionId: 0,
-                    groupName: "",
+                    competitionId: '',
+                    groupName: '',
+                    others:{
+                        type:'商务组'
+                    }
+
                 },
                 groupId:'',
                 loading:false,
@@ -107,11 +115,11 @@
             },
             //前表单提交，端验证还没有加
             submitForm() {
+                if(this.ruleForm.teamName === '') {
+                    return false
+                }
                 this.finalForm.competitionId = this.id;
                 this.finalForm.groupName = this.ruleForm.teamName;
-                this.finalForm.teammateSet = [
-                    {name:this.ruleForm.leader, studentNo:this.ruleForm.leaderId, isLeader:true,}
-                    ];
                 this.loading = true;
                 //提交报名比赛信息
                 applyCompetition(this.finalForm).then(response => {

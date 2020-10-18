@@ -109,17 +109,7 @@
             getCompetitionInfo() {
                 const id = this.$route.query.id
                 //检验是否已经报名
-                if(getCode() === '0' && getRole() === '参赛者') {
-                    checkGroup().then( response => {
-                        const groups = response.data.data;
-                        for (const group of groups) {
-                            if(group.competitionInfo.id === id) {
-                                this.haveSignedUp = true;
-                                break;
-                            }
-                        }
-                    })
-                }
+                this.checkSignUp(id);
 
                 competitionDetail(id).then(response => {
                     this.competitionInfo = response.data.data;
@@ -138,6 +128,21 @@
                   return data1 - data2;
               })
             },
+            //检验是否报名
+            checkSignUp(id) {
+                if(getCode() === '0' && getRole() === '参赛者') {
+                    checkGroup().then( response => {
+                        const groups = response.data.data;
+                        for (const group of groups) {
+                            if(group.competitionInfo.id === id || group.competitionInfo.id + '' === id ) {
+                                this.haveSignedUp = true;
+                                break;
+                            }
+                        }
+                    })
+                }
+            },
+
             //获取所处当前阶段
             getNowStage() {
                 const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
@@ -190,6 +195,7 @@
                 })
             },
             inviteMembers(id) {
+                this.getCompetitionInfo(this.$route.query.id);
                 this.groupId = id;
                 this.inviteVisible = true;
             }
