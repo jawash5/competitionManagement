@@ -2,7 +2,7 @@
     <div>
         <el-dialog :visible="visible"
                     title="上传文件"
-                    width="500px"
+                    width="420px"
                     :show-close="false"
                     center>
             <div class="form">
@@ -25,11 +25,10 @@
                                 :on-remove="handleRemove"
                                 :auto-upload="false">
                             <el-button size="small" type="primary">点击上传</el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传 PDF 文件，且不超过10MB</div>
+                            <div slot="tip" class="el-upload__tip" style="line-height: 20px">只能上传 PDF 文件，且不超过10MB,<br/>重复上传会覆盖之前的文件</div>
                         </el-upload>
                     </el-form-item>
                 </el-form>
-
             </div>
 
             <span slot="footer" class="dialog-footer">
@@ -91,36 +90,20 @@
                     return false;
                 }
 
-                this.$confirm('文件上传后会覆盖团队之前提交的文件, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    const data = new FormData();
+                const data = new FormData();
+                data.append('file', this.file);
+                data.append('fileName', this.projectName + '.pdf')
+                data.append('stageId', this.stageId);
+                data.append('groupId', this.groupId);
+                data.append('type', this.fileType);
 
-                    data.append('file', this.file);
-                    data.append('fileName', this.projectName + '.pdf')
-                    data.append('stageId', this.stageId);
-                    data.append('groupId', this.groupId);
-                    data.append('type', this.fileType);
-
-                    upload(data).then(response => {
-                        this.$message.success(response.data.data);
-                        this.dialogClose();
-                    }).catch(error => {
-                        this.$message.error(error.response.data)
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消上传'
-                    });
-                    this.competitionStages = '';
-                    this.fileType = '';
-                    this.file = '';
-                    this.fileList = [];
+                upload(data).then(response => {
+                    this.$emit('success')
+                    this.$message.success(response.data.data);
                     this.dialogClose();
-                });
+                }).catch(error => {
+                    this.$message.error(error.response.data)
+                })
             },
             //文件状态改变时
             handleFileChange(file) {

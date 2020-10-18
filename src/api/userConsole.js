@@ -170,3 +170,25 @@ export function stageFile(data) {
         data: data
     })
 }
+
+/**
+ * 文件单独下载
+ */
+export function userDownloadFile(data) {
+    return service.request({
+        method: "get",
+        url: '/user/download',
+        data: data
+    })
+}
+
+/**
+ * 个人删除文件
+ */
+export function userDeleteFile(data) {
+    return service.request({
+        method: "delete",
+        url: '/user/deletefile',
+        data: data
+    })
+}

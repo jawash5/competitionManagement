@@ -81,37 +81,38 @@
                 </el-col>
                 <el-col :span="6" :offset="2">
                     <div class="fileTabs">
-                        <div style="color: #606266">比赛状态</div>
+                        <div style="color: #606266">比赛状态
+                            <div class="statusPoint" style="background-color: lightgreen"></div>成功
+                            <div class="statusPoint" style="background-color: #409EFF"></div>文件未提交
+                            <div class="statusPoint" style="background-color: red"></div>淘汰
+                        </div>
                         <div class="div-30"></div>
                         <el-timeline>
                             <el-timeline-item v-for="(item,index) in stageInfo"
                                               :key="item.name"
                                               :timestamp="item.name"
+                                              :color="item.color"
                                               placement="top">
                                 <el-card>
                                     <div class="stageTip">阶段持续时间：{{item.start}} 至 {{item.end}}</div>
                                     <div class="div-15"></div>
                                     <div class="stageTip" v-if="item.uploadStart !== undefined">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
                                     <div class="div-15"></div>
-<!--                                    <div class="pull-center">-->
-<!--                                        <el-upload-->
-<!--                                                action="#"-->
-<!--                                                :data="{111:111}"-->
-<!--                                                :file-list="fileList">-->
-<!--                                            <el-button size="small" type="primary">点击上传</el-button>-->
-<!--                                        </el-upload>-->
-<!--                                    </div>-->
                                     <div class="pull-center">
-                                        <el-upload
-                                                class="upload-demo"
-                                                action="https://cm.qiancaoyu.fun/user/upload"
-                                                :file-list="stageInfo[index].file">
-                                            <el-button v-if="stepActive === index && isLeader"
-                                                       type="primary"
-                                                       size="small"
-                                                       @click="uploadDialog = true">上传文件</el-button>
-                                        </el-upload>
+                                        <el-button v-if="stepActive === index && isLeader"
+                                                   type="primary"
+                                                   size="mini"
+                                                   @click="uploadDialog = true">上传文件</el-button>
                                     </div>
+                                    <el-upload
+                                            style="margin-top: -10px"
+                                            action="#"
+                                            :disabled="stepActive !== index"
+                                            :on-preview="handlePreview"
+                                            :on-remove="handleRemove"
+                                            :before-remove="beforeRemove"
+                                            :file-list="stageInfo[index].file">
+                                    </el-upload>
                                 </el-card>
                             </el-timeline-item>
 
@@ -130,7 +131,8 @@
                     :dialogClose.sync="uploadDialog"
                     :competition-id="groupInfo.competitionId"
                     :stage-id="stages[stepActive].id"
-                    :group-id="groupInfo.id"></upload>
+                    :group-id="groupInfo.id"
+                    @success="getStages(groupInfo.competitionId)"></upload>
         </div>
 </template>
 
@@ -140,7 +142,9 @@
         personalInfo,
         appointCaptain,
         deleteTeammate,
-        stageFile
+        stageFile,
+        userDownloadFile,
+        userDeleteFile
     } from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import {competitionDetail} from "@/api/login";
@@ -220,19 +224,9 @@
                     }
                     this.groupInfo = groupInfo;
                     this.getPersonalAuthority();
-                    this.getStages(this.groupInfo.competitionId)
+                    this.getStages(this.groupInfo.competitionId);
                 });
             },
-            // //获取组文件
-            // getFiles() {
-            //     const groupId = this.$store.getters['group/groupId'];
-            //     getGroupFiles(groupId).then( response => {
-            //         const data = response.data.data;
-            //         for(let i=0; i<data.length; i++) {
-            //             this.fileList.push({name:data[i].fileName, url:''})
-            //         }
-            //     })
-            // },
             //获取角色修改权限信息
             getPersonalAuthority() {
                 personalInfo().then( response => {
@@ -284,20 +278,21 @@
             },
             //获取比赛阶段
             getStages(competitionId) {
-                competitionDetail(competitionId).then( response => {
-                    let stages = response.data.data.stages;
-                    sortValue(stages, 'id');
-                    this.stages = stages;
-                    this.stageInfo = [];
-                    this.pushStageFiles(stages);
-                    this.getNowStage();//获取当前阶段
-                })
+                    competitionDetail(competitionId).then( async response => {
+                        let stages = response.data.data.stages;
+                        sortValue(stages, 'id');
+                        this.stages = stages;
+                        this.stageInfo = [];
+                        await this.pushStageInfo(stages);
+                        this.getNowStage();//获取当前阶段
+                        this.getStageStatus();//获取各阶段状态
+                    })
             },
             //异步转线式
-            async pushStageFiles(stages) {
+            async pushStageInfo(stages) {
                 for (const stage of stages) {
                     await this.getStageFile(this.groupInfo.id, stage.id).then( response => {
-                        if(response !== null ) {
+                        if(response !== undefined) {
                             this.stageInfo.push(
                                 {
                                     name:stage.name ,
@@ -306,8 +301,11 @@
                                     end:stage.endDate,
                                     uploadStart:stage.uploadStartDate,
                                     uploadEnd:stage.uploadEndDate,
-                                    // file: {name: response.fileName, url:response.fileId},
-                                    // stageId:response.stageId
+                                    file: [
+                                        {name: response.fileName, fileId: response.fileId, type:response.type,
+                                            stageId:response.stageId, groupId: response.groupId}
+                                        ],
+                                    color: '#e4e7ed'
                                 }
                             )
                         } else {
@@ -319,10 +317,10 @@
                                     end:stage.endDate,
                                     uploadStart:stage.uploadStartDate,
                                     uploadEnd:stage.uploadEndDate,
+                                    color: '#e4e7ed'
                                 }
                             )
                         }
-
                     })
                 }
             },
@@ -342,7 +340,7 @@
             //获取所处当前阶段
             getNowStage() {
                 const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
-                for(let i=0, stages=this.stages ; i<stages.length; i++) {
+                for(let i=0, stages = this.stages ; i<stages.length; i++) {
                     const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
                     const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
                     if(i !== stages.length && time > startDate && time < endDate) {
@@ -351,7 +349,69 @@
                         this.stepActive = 100;
                     }
                 }
+            },
 
+            //获取阶段状态
+            getStageStatus() {
+                for (let i=0; i<this.stageInfo.length; i++) {
+                    if(i < this.stepActive) {
+                        this.stageInfo[i].color = 'lightgreen';
+                    }
+                    if(i === this.stepActive && this.stageInfo[i].uploadStart === undefined) { //不需要提交作品
+                        this.stageInfo[i].color = 'lightgreen';
+                    } else if (i === this.stepActive && this.stageInfo[i].uploadStart !== undefined) {
+                        if (Object.prototype.hasOwnProperty.call(this.stageInfo[i], 'file')) {
+                            if (this.stageInfo[i].file.length === 1) {
+                                this.stageInfo[i].color = 'lightgreen';
+                            }
+                        } else {
+                            this.stageInfo[i].color = '#409EFF';
+                        }
+                    }
+                }
+            },
+
+            //点击已上传的文件
+            handlePreview(file) {
+                const data = new FormData();
+                data.append('stageId', file.stageId);
+                data.append('fileName', file.name);
+                data.append('type', file.type);
+                data.append('groupId', file.groupId);
+
+                // data.forEach((value, key) => {
+                //     console.log(`key ${key}: value ${value}`);
+                // })
+                userDownloadFile(data).then( response => {
+                    console.log(response);
+                })
+                // userDownloadFile(data).then( response => {
+                //     window.open(response.data.data.msg, '_blank')
+                // })
+            },
+
+            // 移除前
+            beforeRemove(file) {
+                return this.$confirm(`确定移除 ${file.name} ？`,'提示',{
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                });
+            },
+
+            //个人删除文件
+            handleRemove(file) {
+                const data = new FormData();
+                data.append('fileId',file.fileId);
+                userDeleteFile(data).then( response => {
+                    if(response.data.data.success === true) {
+                        this.$message.success('删除成功');
+                        this.getStages(this.groupInfo.competitionId);
+                        this.getStageStatus();
+                    } else {
+                        this.$message.error(response.data.data.msg)
+                    }
+                })
             },
 
         },
@@ -369,7 +429,7 @@
         flex-direction: column;
         justify-content: space-between;
         margin: 0 auto;
-        background-color: #FFFFFF;
+        background-color: #fff;
 
         #competitionName {
             font-size: 26px;
@@ -419,6 +479,15 @@
 
             .stageTip {
                 line-height: 20px;
+            }
+
+            .statusPoint {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                margin-left: 1em;
+                line-height: 16px;
+                border-radius: 50%;
             }
         }
 
