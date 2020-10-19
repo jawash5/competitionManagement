@@ -91,7 +91,7 @@
                 mdContent:'',
                 groupId:'',
                 haveSignedUp:false,
-                stepActive: 100//默认步骤条高亮值
+                stepActive: -1//默认步骤条高亮值
             }
         },
         computed:{
@@ -114,17 +114,16 @@
                 competitionDetail(id).then(response => {
                     this.competitionInfo = response.data.data;
                     this.mdContent = this.competitionInfo.information;
-                    this.sortStages('id')//按id排序
+                    this.sortStages('startDate')//按id排序
                     this.getNowStage();
                     this.getBoard()//获取公告
                 })
             },
             //阶段排序
             sortStages(key) {
-              const stages = this.competitionInfo.stages;
-              stages.sort((a, b) => {
-                  const data1 = a[key];
-                  const data2 = b[key];
+                this.competitionInfo.stages.sort((a, b) => {
+                  const data1 = Date.parse(a[key].replaceAll('-','/'));
+                  const data2 = Date.parse(b[key].replaceAll('-','/'));
                   return data1 - data2;
               })
             },
@@ -146,11 +145,22 @@
             //获取所处当前阶段
             getNowStage() {
                 const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
-                for(let i=0, stages=this.competitionInfo.stages ; i<stages.length; i++) {
+                for(let i=0, stages = this.competitionInfo.stages ; i<stages.length; i++) {
                     const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
                     const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
-                    if(time > startDate && time < endDate) {
-                        this.stepActive = i
+                    if (i < stages.length-1) {
+                        const startDateNext = Date.parse(stages[i+1].startDate.replaceAll('-','/'));
+                        if (time > startDate && time < endDate) {
+                            this.stepActive = i
+                        } else if ( time > endDate && time < startDateNext) {
+                            this.stepActive = i + 0.5
+                        }
+                    } else if (i === stages.length-1) {
+                        if (time > startDate && time < endDate) {
+                            this.stepActive = i
+                        } else if(time > endDate) {
+                            this.stepActive = 100;
+                        }
                     }
                 }
             },

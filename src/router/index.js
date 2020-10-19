@@ -130,15 +130,6 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/userConsole/editProject")
             },
-            // {
-            //     path: '/filesManagement',
-            //     name: '/filesManagement',
-            //     meta:{
-            //         name:'文件管理',
-            //         icon:'el-icon-tickets'
-            //     },
-            //     component: ()  => import("../views/userConsole/filesManagement")
-            // },
         ]
     },
     {
@@ -168,15 +159,6 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/adminConsole/editAnnouncement")
             },
-            // {
-            //     path: '/roleManagement',
-            //     name: '/roleManagement',
-            //     meta:{
-            //         name:'权限管理',
-            //         icon:'el-icon-user-solid'
-            //     },
-            //     component: ()  => import("../views/adminConsole/roleManagement")
-            // },
             {
                 path: '/competitionRelease',
                 name: '/competitionRelease',

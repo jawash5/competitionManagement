@@ -47,11 +47,11 @@
         computed:{
             state() {
                 return getCode() === '0';
-            }
+            },
         },
         methods: {
             getCompetitionList() {
-                if (this.competitionList.length === 0) {
+                if (this.competitionList.length === 0 ) {
                     competitionList().then(response => {
                         this.competitionList = response.data.data
                         sessionStorage.setItem('competitionList', JSON.stringify(this.competitionList))
@@ -60,10 +60,16 @@
                         console.log(error);
                     });
                 }
+            },
+            flesh() {
+                if(this.$route.params.flesh === 'true') {
+                    sessionStorage.removeItem('competitionList')
+                }
             }
         },
         mounted() {
-            this.getCompetitionList()
+            this.flesh();
+            this.getCompetitionList();
         }
     }
 </script>

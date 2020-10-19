@@ -254,7 +254,12 @@
                             type:"success",
                             message:response.data.data
                         })
-                        this.$router.push('/checkCompetition')
+                        this.$router.push({
+                            name: '/checkCompetition',
+                            params: {
+                                flesh: 'true'
+                            }
+                        })
                     }).catch(error => {
                         this.$message.error(error.response.data)
                     })

@@ -82,9 +82,11 @@
                 <el-col :span="6" :offset="2">
                     <div class="fileTabs">
                         <div style="color: #606266">比赛状态
-                            <div class="statusPoint" style="background-color: lightgreen"></div>成功
-                            <div class="statusPoint" style="background-color: #409EFF"></div>文件未提交
-                            <div class="statusPoint" style="background-color: red"></div>淘汰
+                            <div class="statusPoint" style="background-color: lightgreen"></div> 成功
+                            <div class="statusPoint" style="background-color: #409EFF"></div> 文件未提交
+                            <div class="div-15"></div>
+                            <div class="statusPoint" style="background-color: red; margin-left: 6em"></div> 淘汰
+                            <div class="statusPoint" style="background-color: #E4E7ED"></div> 阶段尚未开始
                         </div>
                         <div class="div-30"></div>
                         <el-timeline>
@@ -343,10 +345,19 @@
                 for(let i=0, stages = this.stages ; i<stages.length; i++) {
                     const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
                     const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
-                    if(i !== stages.length && time > startDate && time < endDate) {
-                        this.stepActive = i;
-                    } else if(i === stages.length && time >endDate) {
-                        this.stepActive = 100;
+                    if (i < stages.length-1) {
+                        const startDateNext = Date.parse(stages[i+1].startDate.replaceAll('-','/'));
+                        if (time > startDate && time < endDate) {
+                            this.stepActive = i
+                        } else if ( time > endDate && time < startDateNext) {
+                            this.stepActive = i + 0.5
+                        }
+                    } else if (i === stages.length-1) {
+                        if (time > startDate && time < endDate) {
+                            this.stepActive = i
+                        } else if(time > endDate) {
+                            this.stepActive = 100;
+                        }
                     }
                 }
             },
