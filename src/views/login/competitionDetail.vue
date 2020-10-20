@@ -2,7 +2,7 @@
     <div id="competitionDetail">
         <head-login :state="state"></head-login>
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
-        <el-image :src="competitionInfo.mainImage"
+        <el-image :src="competitionInfo.mainImage.replace('-internal', '') "
                   style="width: 100%; height: 400px;
                   z-index: -1"
                   fit="cover"></el-image>
@@ -83,7 +83,9 @@
         components: {newTeam,invite,headLogin},
         data() {
             return{
-                competitionInfo: {},
+                competitionInfo: {
+                    mainImage:''
+                },
                 newTeamVisible:false,
                 inviteVisible:false,
                 activeName: '',//默认公告
