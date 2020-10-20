@@ -63,7 +63,7 @@
         min-width: 1000px;
         background-color: #fff;
         z-index: 1000;
-        -webkit-box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
+        box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
     }
 
     .logoutButton {

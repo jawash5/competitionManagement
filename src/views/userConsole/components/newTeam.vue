@@ -100,7 +100,7 @@
                 finalForm:{
                     competitionId: '',
                     groupName: '',
-                    others:{
+                    other:{
                         type:'商务组'
                     }
 
