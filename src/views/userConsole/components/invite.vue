@@ -9,21 +9,15 @@
                    :close-on-press-escape="false"
                    @open="getToken">
             <div>
-                <div class="tip">复制以下链接或二维码发送给队友吧！(您也可以在"我的团队"中进行好友邀请)</div>
+                <div class="tip">复制以下链接或保存二维码发送给队友吧！<span v-if="$route.path!=='/editProject'">(您也可以在"我的团队"中进行好友邀请)</span></div>
 
                 <div class="link">
-                    <div style="height: 200px ;width: 200px; background-color: lightgreen"></div>
+                    <vue-qr ref="qrCode" :text="url + '?token=' + token" :callback="testCode"></vue-qr>
                     <el-divider direction="vertical"></el-divider>
                     <div style="height: 200px ;width: 200px;font-size: 16px">
-                        <div style="font-size: 16px;">链接地址：</div>
-                        <h3 class="url">{{url + '?token=' + token}}</h3>
+                        <div style="font-size: 16px;">链接地址（单击复制）：</div>
+                        <h3 class="url" @click="copyLink">{{url + '?token=' + token}}</h3>
                     </div>
-                </div>
-
-                <div class="buttons">
-                    <el-button class="copy" size="small">复制二维码</el-button>
-                    <span style="width: 0; margin: 0 50px"></span>
-                    <el-button class="copy" size="small" @click="copyLink">复制链接</el-button>
                 </div>
             </div>
 
@@ -37,10 +31,13 @@
 
 <script>
     import {inviteMembers} from "@/api/userConsole";
-    import format from '@/utils/timeFormat'
+    import format from '@/utils/timeFormat';
+    import VueQr from 'vue-qr';
+
 
     export default {
         name: "invite",
+        components:{VueQr},
         props:{
             visible:{
                 type:Boolean,
@@ -55,7 +52,8 @@
         data() {
             return {
                 token:'',
-                url: ''
+                url: '',
+                qrCode:''
             }
         },
         methods:{
@@ -75,6 +73,8 @@
                       this.$message.error(error.response.data)
                   })
             },
+
+            //复制链接
             copyLink() {
                 this.$copyText(this.url + '?token=' + this.token).then( () => {
                     this.$message.success('复制成功！')
@@ -115,16 +115,6 @@
         cursor: pointer;
         text-decoration: underline;
         margin-top: 20px;
-    }
-
-    .buttons {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .copy {
-        margin: 0 50px
     }
 
     /deep/.el-dialog__title {

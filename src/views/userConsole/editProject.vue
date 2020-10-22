@@ -72,7 +72,7 @@
                                 <template v-else>
                                     <div class="noTeammate">无其他项目成员</div>
                                 </template>
-                                <div v-if="isLeader">
+                                <div v-if="stepActive>=0 && stages[stepActive].name==='报名阶段' && isLeader">
                                     <el-button type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
                                 </div>
                             </el-form-item>
@@ -132,7 +132,7 @@
             <upload :visible="uploadDialog"
                     :dialogClose.sync="uploadDialog"
                     :competition-id="groupInfo.competitionId"
-                    :stage-id="stages[stepActive].id"
+                    :stage-id="stepActive>=0 ? stages[stepActive].id : 0"
                     :group-id="groupInfo.id"
                     @success="getStages(groupInfo.competitionId)"></upload>
         </div>
@@ -195,7 +195,7 @@
                 isLeader:false,
                 captainId: '',
                 uploadDialog: false,
-                stepActive:0,//当前所处阶段值
+                stepActive:-1,//当前所处阶段值
                 stages:[
                     {
                         endDate: "",

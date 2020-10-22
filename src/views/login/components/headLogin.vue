@@ -102,6 +102,10 @@
         justify-content: space-between;
     }
 
+    .avatar {
+        border: #409EFF solid 1px;
+    }
+
     .logoutButton {
         display: block;
         width: 100%;

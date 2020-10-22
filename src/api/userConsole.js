@@ -150,7 +150,7 @@ export function deleteTeammate(data) {
 
 
 /**
- * 删除队友
+ * token信息
  */
 export function tokenInfo(data) {
     return service.request({
