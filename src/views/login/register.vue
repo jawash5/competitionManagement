@@ -355,7 +355,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-width: 1200px;
+        min-width: 420px;
         min-height: 800px;
     }
 
@@ -405,4 +405,88 @@
     .buttons {
         text-align: center;
     }
+
+    @media screen and (max-width: 420px){
+
+        #register {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        img{
+            display: none;
+        }
+
+        #registerWithImg {
+            top: 10vh;
+            display: flex;
+            align-items: center;
+            width: 100vw;
+            height: 110vh;
+            background-color: #FFFFFF;
+            margin: 60px auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+        }
+
+        #registerWrap {
+            background-color: #fff;
+            min-width: 0;
+            height: 550px;
+            width: 60vw;
+            padding: 20px;
+            margin: 0 auto;
+            border-radius: 4px;
+        }
+
+        /deep/ .el-form-item{
+            margin-top: 3.2vh;
+        }
+
+        /deep/ .el-input__inner{
+            width: 67vw;
+        }
+
+        /deep/.registerTitle{
+            font-size: 20px;
+        }
+
+        /deep/ .el-form.registerRuleForm{
+            margin-left: -20vw;
+        }
+
+    }
+
+    @media screen and (max-width:370px ) {
+        @media screen and (max-height: 661px) {
+
+            /deep/ .registerRuleForm {
+                margin: 0;
+                top: 20vh;
+            }
+
+            #registerWrap {
+                background-color: #fff;
+                min-width: 0;
+                height: 450px;
+                width: 60vw;
+                padding: 20px;
+                margin: 0 auto;
+                border-radius: 4px;
+            }
+
+            #registerWithImg {
+                display: flex;
+                align-items: center;
+                width: 100vw;
+                height: 120vh;
+                background-color: #FFFFFF;
+                margin: 60px auto;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+            }
+        }
+    }
+
 </style>

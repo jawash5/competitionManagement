@@ -194,3 +194,24 @@ export function outTeam(data) {
         data: data,
     })
 }
+
+/**
+ * 获取教师名和教师工号
+ */
+export function getTeachersInfo(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/teachers?staffId='+data.staffId+'&teacherName='+data.teacherName,
+    })
+}
+
+/**
+ * 关联/取消关联评委
+ */
+export function toggleRelated(getData) {
+    return service.request({
+        method: "post",
+        url: '/manager/teacher',
+        data:getData,
+    })
+}

@@ -159,9 +159,9 @@ export const asnycRouterMap = [
 
                 },
                 component: ()  => import("../views/adminConsole/competitionRelease")
-            }
+            },
         ]
 
     },
-]
+];
 

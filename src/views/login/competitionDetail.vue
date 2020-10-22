@@ -2,7 +2,7 @@
     <div id="competitionDetail">
         <head-login :state="state"></head-login>
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
-        <el-image :src="competitionInfo.mainImage.replace('-internal', '') "
+        <el-image :src="competitionInfo.mainImage"
                   style="width: 100%; height: 400px;
                   z-index: -1"
                   fit="cover"></el-image>
@@ -27,9 +27,10 @@
                        round
                        :disabled="haveSignedUp"
                        @click="signUpCompetition">{{haveSignedUp ? '已报名': '立即报名'}}</el-button>
+            <el-button round class="infoButton" type="success" @click="dVisible = true">相关情报</el-button>
             <div class="div-60"></div>
             <el-row>
-                <el-col :span="16">
+                <el-col :span="16" class="dif">
                     <el-card class="content">
                         <div v-if="this.mdContent === ''">管理员很懒，什么也没有留下...</div>
                         <div class="markdown-body" v-html="content"></div>
@@ -54,6 +55,10 @@
                     </el-card>
                 </el-col>
             </el-row>
+            <el-dialog :visible="dVisible" width="90vw">
+                    <div v-if="mdContent === ''">管理员很懒，什么也没有留下...</div>
+                    <div class="markdown-body" v-html="content"></div>
+            </el-dialog>
             <new-team :visible="newTeamVisible"
                       :dialogClose.sync="newTeamVisible"
                       @success="inviteMembers"
@@ -71,9 +76,9 @@
     import {getCode, getRole} from "@/utils/app";
     import newTeam from "@/views/userConsole/components/newTeam";
     import {competitionDetail} from "@/api/login";
-    import { mavonEditor } from 'mavon-editor';
+    import {mavonEditor} from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
-    import {getBoard,checkGroup} from "@/api/userConsole";
+    import {checkGroup, getBoard} from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import format from "@/utils/timeFormat";
     import headLogin from "@/views/login/components/headLogin";
@@ -84,16 +89,17 @@
         data() {
             return{
                 competitionInfo: {
-                    mainImage:''
+                    mainImage: ''
                 },
+                dVisible:false,
                 newTeamVisible:false,
                 inviteVisible:false,
                 activeName: '',//默认公告
                 announcement:[],//公告
                 mdContent:'',
-                groupId:'',
+                groupId: 0,
                 haveSignedUp:false,
-                stepActive: -1//默认步骤条高亮值
+                stepActive: 100//默认步骤条高亮值
             }
         },
         computed:{
@@ -114,8 +120,12 @@
                 this.checkSignUp(id);
 
                 competitionDetail(id).then(response => {
-                    this.competitionInfo = response.data.data;
-                    this.mdContent = this.competitionInfo.information;
+                    let competitionInfo = response.data.data;
+                    if(Object.prototype.hasOwnProperty.call(competitionInfo, 'mainImage')) {
+                        competitionInfo.mainImage = competitionInfo.mainImage.replace('-internal', '');
+                    }
+                    this.mdContent = competitionInfo.information;
+                    this.competitionInfo = competitionInfo;
                     this.sortStages('startDate')//按id排序
                     this.getNowStage();
                     this.getBoard()//获取公告
@@ -222,7 +232,7 @@
     @import '../../styles/config';
 
     #competitionDetail {
-        min-width: 1400px;
+        min-width: 420px;
 
         .header {
             position: absolute;
@@ -292,4 +302,49 @@
             color: #fff;
         }
     }
+
+    @media screen and (max-width: 420px){
+
+        .pull-right{
+            position: absolute;
+            right: 10vw;
+        }
+
+        .infoButton{
+            position: absolute;
+            left: 10vw;
+        }
+
+        .infoButton{
+
+        }
+
+        #competitionDetail {
+            min-width: 0;
+        }
+
+        /deep/ .el-card.announcement.pull-right.is-always-shadow{
+            position: absolute;
+            right: -23vw;
+        }
+
+        .dif{
+            display: none;
+        }
+
+    }
+
+    @media screen and (max-width: 330px){
+        /deep/ .el-card.announcement.pull-right.is-always-shadow{
+            position: absolute;
+            right: -31.5vw;
+        }
+    }
+
+    @media screen and (min-width: 421px){
+        .infoButton{
+            display: none;
+        }
+    }
+
 </style>

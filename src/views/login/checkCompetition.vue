@@ -81,7 +81,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-width: 1200px;
+        min-width: 0;
         min-height: 800px;
 
         .wrap {
@@ -120,6 +120,33 @@
     /deep/.el-tabs__nav-prev{
         display: block;
         text-align: left;
+    }
+
+    @media screen and (max-width: 420px){
+
+        #checkCompetition {
+            min-width: 0;
+            max-width: 2000px;
+        }
+
+        .competitionList {
+            display: flex;
+            width: 80vw;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            /*justify-content: space-around;*/
+            justify-content: flex-start;
+        }
+
+        .competitionSelect {
+            margin-left: 0;
+        }
+
+        /deep/.card{
+            margin-left: 10vw;
+        }
+
     }
 
 </style>

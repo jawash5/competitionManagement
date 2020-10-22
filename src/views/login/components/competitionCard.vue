@@ -87,4 +87,8 @@
         transition: box-shadow 0.5s;
     }
 
+    @media screen and (max-width: 420px){
+
+    }
+
 </style>

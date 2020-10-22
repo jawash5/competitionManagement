@@ -5,58 +5,77 @@
             <div id="infoForm">
                 <el-form ref="form" :model="form" label-width="80px">
                     <el-form-item label="用户名：">
+                        <br class="diff">
                         <el-input v-model="form.username" :disabled="isDisabled"></el-input>
                     </el-form-item>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="姓名：">
+                                <br class="diff">
                             <el-input v-model="form.name" :disabled="isDisabled" class="itemInput"></el-input>
                         </el-form-item></el-col>
-                        <el-col :span="12">
+                        <el-col :span="12" class="needTurn">
                             <el-form-item label="学号：">
+                                <br class="diff">
                                 <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    <el-form-item label="学号：" class="needShow">
+                        <br class="diff">
+                        <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
+                    </el-form-item>
+                    <el-form-item label="学校：" class="needShow">
+                        <br class="diff">
+                        <el-input v-model="form.university" :disabled="isDisabled"></el-input>
+                    </el-form-item>
                     <el-row>
                         <el-col :span="12">
                             <el-form-item label="学院：">
+                                <br class="diff">
                                 <el-input v-model="form.school" :disabled="isDisabled"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :span="12" class="needTurn">
                             <el-form-item label="学校：">
+                                <br class="diff">
                                 <el-input v-model="form.university" :disabled="isDisabled"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-form-item label="邮箱：">
-                        <el-input v-model="form.email" :disabled="emailVisible" style="width: 250px;margin-right: 10px"></el-input>
+                        <br class="diff">
+                        <el-input v-model="form.email" :disabled="emailVisible" style="width: 14vw;margin-right: 10px"></el-input>
                         <el-button type="primary"
                                    size="small"
                                    icon="el-icon-edit"
                                    circle
+                                   class="bDif"
                                    v-if="emailVisible"
                                    @click="emailVisible = false"></el-button>
                         <el-button type="primary"
                                    size="small"
                                    :icon="icon"
                                    circle
+                                   class="bDif"
                                    v-if="!emailVisible"
                                    @click="editEmail"></el-button>
                     </el-form-item>
                     <el-form-item label="电话：">
-                        <el-input v-model="form.phone" :disabled="phoneVisible" style="width: 250px;margin-right: 10px"></el-input>
+                        <br class="diff">
+                        <el-input v-model="form.phone" :disabled="phoneVisible" style="width: 10vw;margin-right: 10px"></el-input>
                         <el-button type="primary"
                                    size="small"
                                    icon="el-icon-edit"
                                    circle
+                                   class="bDif"
                                    v-if="phoneVisible"
                                    @click="phoneVisible = false"></el-button>
                         <el-button type="primary"
                                    size="small"
                                    :icon="icon"
                                    circle
+                                   class="bDif"
                                    v-if="!phoneVisible"
                                    @click="editPhone"></el-button>
                     </el-form-item>
@@ -141,12 +160,13 @@
                 this.$prompt('请输入新密码', '修改密码', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    customClass: 'zysz',
                     inputPattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,}$/,
                     inputErrorMessage: '密码长度至少为11位，由数字和字母组成'
                 }).then(({ value }) => {
                     const data = {
                         password: value,
-                    }
+                    };
                     modifyPersonalInfo(data).then( () => {
                         this.$message({
                             type:"success",
@@ -170,6 +190,7 @@
 </script>
 
 <style lang="scss" scoped>
+
     #myProject {
         display: flex;
         flex-direction: column;
@@ -209,4 +230,58 @@
         border-left: none;
         border-right: none;
     }
+
+
+    @media screen and (max-width: 420px){
+
+        #infoForm {
+            width: 200px;
+            background-color: #FFFFFF;
+        }
+
+        #infoWrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0 auto;
+            padding: 0;
+            width: 200px;
+            background-color: #FFFFFF;
+        }
+
+        .bDif{
+            position: absolute;
+            bottom: 7.2vh;
+            right: 7vw
+        }
+
+        /deep/.needTurn{
+            display: none;
+        }
+
+        /deep/ .el-form{
+            position: absolute;
+            left: 0;
+        }
+
+        /deep/ .el-input__inner{
+            margin-left:-22vw;
+            width:55vw;
+            display:block;
+        }
+
+    }
+
+    @media screen and (min-width: 421px){
+
+        .diff{
+            display: none;
+        }
+
+        .needShow{
+            display: none;
+        }
+
+    }
+
 </style>

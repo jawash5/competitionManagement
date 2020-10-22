@@ -23,7 +23,7 @@
         width: 100%;
         height: 100%;
         min-height: 100vh;
-        min-width: 1500px;
+        min-width: 420px;
         padding-top: $layoutHeader + 30;
         padding-left: $navMenu + 30;
         padding-right: 30px;
@@ -40,5 +40,35 @@
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         background-color: #fff;
+    }
+
+    @media screen and (max-width: 420px){
+
+        .mainContent {
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            min-width: 0;
+            padding-top: $layoutHeader + 30;
+            padding-left: $navMenu + 30;
+            padding-right: 30px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .content {
+            position: absolute;
+            left: 35vw;
+            width: 60vw;
+            height: 100%;
+            min-height: 88vh;
+            padding-top: 20px;
+            padding-left: 10vw;
+            padding-right: 10px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
     }
 </style>

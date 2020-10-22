@@ -4,7 +4,7 @@
             <el-select v-model="year"
                        size="medium"
                        placeholder="请选择"
-                       style="margin-left: 100px"
+                       style="margin-left: 80px"
                        @change="getAnnouncement">
                 <el-option
                         v-for="item in competitionYearOptions"
@@ -294,4 +294,93 @@
             border-right: none;
         }
     }
+
+    @media screen and(max-width: 420px){
+        #adminManagement {
+            margin-left: -30vw;
+
+            #tabWrap {
+                height: 85vh;
+                width: 100%;
+
+                .noAnnouncement {
+                    margin-top: 50px;
+                    font-size: 12px;
+                    color: #909399;
+                    text-align: center;
+                }
+
+                .title {
+                    margin-top: 30px;
+                    font-size: 16px;
+                    text-align: center;
+                }
+
+                .content {
+                    font-size: 12px;
+                    padding: 20px 5px 0 5px;
+                    height: 50vh;
+                }
+
+                .buttons {
+                    text-align: center;
+                }
+            }
+
+            .addAnnouncement {
+                margin-right: 50px;
+                z-index: .5;
+            }
+
+            /deep/ .el-input__inner{
+                width: 30vw;
+            }
+
+            /deep/.el-tabs__item {
+                height: 40px;
+                width: 190px;
+                padding: 1vw;
+                text-align: right;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 12px;
+                font-family: "幼圆" , serif;
+            }
+
+            /deep/.el-tabs--left .el-tabs__item.is-left {
+                line-height: 30px;
+            }
+
+            /deep/.el-tabs--border-card {
+                background: #FFF;
+                border: 1px solid #DCDFE6;
+                box-shadow: none;
+                border-left: none;
+                border-right: none;
+            }
+
+            /deep/.el-button.addAnnouncement{
+                position: absolute;
+                right: -16vw;
+                width: 24vw;
+                font-size: 13px;
+                color: #fffdef;
+            }
+
+            /deep/.el-button.el-button--danger{
+                margin-bottom: 3vh;
+                margin-left: 2vw;
+            }
+
+            /deep/.el-form-item{
+                margin-left: -14vw;
+            }
+
+            /deep/.el-button.el-button--default{
+                margin-bottom: 2vh;
+                margin-left: 1.5vw;
+            }
+        }
+    }
+
 </style>

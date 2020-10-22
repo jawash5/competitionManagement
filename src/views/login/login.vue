@@ -122,7 +122,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-width: 1000px;
+        min-width: 0;
         min-height: 700px;
     }
 
@@ -179,4 +179,46 @@
     .buttons {
         text-align: center;
     }
+
+    @media screen and (max-width: 420px){
+
+        #login {
+            background-color: #f7f7f7;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+            min-height: 700px;
+        }
+
+        img{
+            display: none;
+        }
+
+    }
+
+    @media screen and (max-width: 363px){
+
+        #login_wrap {
+            background-color: #FFFFFF;
+            min-width: 0;
+            height: 320px;
+            width: 270px;
+            padding: 20px;
+            margin: 0 auto;
+            border-radius: 4px;
+        }
+
+        .login-ruleForm {
+            margin: 0;
+        }
+
+        /deep/ .el-input__inner{
+            width: 90vw;
+        }
+
+
+    }
+
 </style>

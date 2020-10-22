@@ -1,12 +1,13 @@
 <template>
         <div id="editProject">
             <el-page-header @back="goBack" class="pull-left"></el-page-header>
-            <h1 id="competitionName">查看资料</h1>
+            <span id="competitionName">查看资料</span>
             <el-row>
-                <el-col :span="12" :offset="2">
+                <el-col :span="12" id="desc">
                     <div id="projectForm">
                         <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                             <el-form-item label="比赛名称" prop="type">
+                                <br class="dif">
                                 <el-input v-model="groupInfo.competitionName"
                                           class="pull-left"
                                           :disabled="true">
@@ -16,21 +17,25 @@
                             <el-divider></el-divider>
 
                             <el-form-item label="队伍名称" prop="teamName">
+                                <br class="dif">
                                 <el-input v-model="groupInfo.name" :disabled="true"></el-input>
                             </el-form-item>
                             <el-row>
                                 <el-col :span="12">
                                     <el-form-item label="队长姓名"  prop="leader">
+                                        <br class="dif">
                                         <el-input v-model="groupInfo.captainName" :disabled="true"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
 
                             <el-form-item label="联系手机" prop="telephoneNumber">
+                                <br class="dif">
                                 <el-input v-model="groupInfo.teammates[0].phoneNo" :disabled="true"></el-input>
                             </el-form-item>
 
                             <el-form-item label="邮箱地址" prop="mail">
+                                <br class="dif">
                                 <el-input v-model="groupInfo.teammates[0].email" :disabled="true"></el-input>
                             </el-form-item>
                             <el-form-item label="项目成员" prop="members">
@@ -40,6 +45,7 @@
                                             <el-row :gutter="20" :key="index">
                                                 <el-col :span="12">
                                                     <label for="">姓名</label>
+                                                    <br class="dif">
                                                     <el-input class="labelFor"
                                                               v-model="item.name"
                                                               placeholder="请输入姓名"
@@ -48,6 +54,7 @@
                                                 </el-col>
                                                 <el-col :span="12">
                                                     <label for="">学号</label>
+                                                    <br class="dif">
                                                     <el-input class="labelFor"
                                                               v-model="item.studentNo"
                                                               placeholder="请输入学号"
@@ -65,21 +72,20 @@
                                                                @click="deleteTeammate(groupInfo.teammates[index+1].id)">删除组员</el-button>
                                             </div>
                                             <el-divider :key="index + 'divider'"></el-divider>
-
                                         </template>
                                     </div>
                                 </template>
                                 <template v-else>
-                                    <div class="noTeammate">无其他项目成员</div>
+                                    <div class="noTeammate">无其他成员</div>
                                 </template>
-                                <div v-if="stepActive>=0 && stages[stepActive].name==='报名阶段' && isLeader">
+                                <div v-if="stepActive >= 0 && stepActive < 100 && stages[stepActive].name==='报名阶段' && isLeader">
                                     <el-button type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
                                 </div>
                             </el-form-item>
                         </el-form>
                     </div>
                 </el-col>
-                <el-col :span="6" :offset="2">
+                <el-col :span="6" :offset="2" id="competitionState">
                     <div class="fileTabs">
                         <div style="color: #606266">比赛状态
                             <div class="statusPoint" style="background-color: lightgreen"></div> 成功
@@ -91,7 +97,7 @@
                         <div class="div-30"></div>
                         <el-timeline>
                             <el-timeline-item v-for="(item,index) in stageInfo"
-                                              :key="item.name"
+                                              :key="item.id"
                                               :timestamp="item.name"
                                               :color="item.color"
                                               placement="top">
@@ -117,11 +123,8 @@
                                     </el-upload>
                                 </el-card>
                             </el-timeline-item>
-
                         </el-timeline>
-
                     </div>
-
                 </el-col>
             </el-row>
 
@@ -132,7 +135,7 @@
             <upload :visible="uploadDialog"
                     :dialogClose.sync="uploadDialog"
                     :competition-id="groupInfo.competitionId"
-                    :stage-id="stepActive>=0 ? stages[stepActive].id : 0"
+                    :stage-id="stepActive>=0 && stepActive<100 ? stages[stepActive].id : 0"
                     :group-id="groupInfo.id"
                     @success="getStages(groupInfo.competitionId)"></upload>
         </div>
@@ -425,9 +428,17 @@
                 })
             },
 
+            getWidth(){
+                const winWide = window.screen.width;
+                if(winWide <= 420){
+                    document.getElementById('competitionState').style.display = "none"
+                }
+            }
+
         },
         mounted() {
             this.getGroupInfo();
+            this.getWidth()
         }
     }
 </script>
@@ -518,6 +529,44 @@
         }
     }
 
+    @media screen and(max-width: 420px){
+
+        #competitionState{
+            display: none;
+        }
+
+        #desc{
+            margin-left: -25vw;
+        }
+
+        #dif{
+            display: block;
+        }
+
+        /deep/ .el-input__inner{
+            margin-left:-19vw;
+            width:45vw;
+            display:block;
+        }
+
+
+    }
+
+    @media screen and(max-width: 350px){
+
+        /deep/ .el-input__inner{
+            margin-left:-35vw;
+            width:50vw;
+            display:block;
+        }
+
+    }
+
+    @media screen and (min-width: 421px){
+        .dif{
+            display: none;
+        }
+    }
 
 
 </style>

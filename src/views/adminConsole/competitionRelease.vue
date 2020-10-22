@@ -1,11 +1,10 @@
 <template>
     <div id="competitionRelease">
-        <div id="formDesign">
+        <div id="formDesign" class="dif">
             <div class="title">基本信息</div>
             <div class="div-30"></div>
             <el-card>
                 <el-form ref="form" :model="form" label-width="100px" class="elForm">
-
                     <el-row>
                         <el-col :span="10">
                             <el-form-item label="比赛年">
@@ -54,7 +53,7 @@
             <div class="title">阶段信息</div>
             <div class="div-30"></div>
 
-            <div>
+            <div class="dif">
                 <el-card class="formCard">
                     <div class="pull-center">
                         <el-tag>{{1}}</el-tag>
@@ -145,20 +144,20 @@
             <div class="title">介绍信息（提交前请保存）</div>
             <div class="div-30"></div>
 
-            <editor @content="getContent" year="2019"></editor>
+            <editor @content="getContent" year="2019" class="dif3"></editor>
 
             <div class="div-30"></div>
             <div style="text-align: center;">
                 <el-button type="primary" @click="createCompetition">发布比赛</el-button>
             </div>
         </div>
+        <span class="mobileShow">请在PC端查看并操作</span>
     </div>
 </template>
 
 <script>
-    import {createCompetition} from '@/api/adminConsole';
+    import {createCompetition,uploadPicture} from '@/api/adminConsole';
     import editor from '../../components/editor';
-    import {uploadPicture} from "@/api/adminConsole";
 
     export default {
         name: "competitionRelease",
@@ -191,6 +190,7 @@
                 submitForm:{},
                 fileList:[],
                 file:'', //上传的图片
+                dif: 'dif1',//类名toggle,
             };
         },
         methods: {
@@ -205,7 +205,7 @@
             deleteDiv() {
                 if(this.num > 0){
                     this.num -= 1;
-                    this.inputBT.pop()
+                    this.inputBT.pop();
                     this.form.competitionTime.pop();
                     this.form.requireUploadFile.pop();
                 }
@@ -227,7 +227,7 @@
                     uploadStartDate: '2019-01-01 00:00:00',
                     uploadEndDate: '2019-01-01 00:00:00',
                     requireUploadFile: form.requireUploadFile[0]
-                })
+                });
                 for(let i=0; i<form.competitionTime.length; i++) {
                     stages.push({
                         name: this.inputBT[i+1],
@@ -269,6 +269,7 @@
             getContent(data) {
                 this.form.information = data;
             },
+
             // //图片上传超出限制
             // handleExceed() {
             //     // this.$message.error('至多上传一个文件！')
@@ -282,7 +283,7 @@
             //删除文件
             handleRemove() {
                 this.file = '';
-            }
+            },
         },
         mounted() {
             window.scrollTo(0,0);
@@ -300,18 +301,18 @@
             margin: 0 auto;
 
             .peopleLimited {
-                width: 100px;
+                width: 8vw;
             }
         }
 
         .title {
-            font-size: 26px;
+            font-size: 2.2vw;
             text-align: center;
             color: #606266;
         }
 
         .elForm {
-            width: 600px;
+            width: 48vw;
             margin: 0 auto;
         }
 
@@ -354,6 +355,26 @@
         /deep/.el-input.is-disabled .el-input__inner {
             cursor: auto;
             color: #606266;
+        }
+
+    }
+
+    @media screen and (max-width: 420px){
+
+        /deep/ .dif{
+            display: none;
+        }
+
+        /deep/.v-note-wrapper.markdown-body.shadow{
+
+        }
+
+    }
+
+    @media screen and (min-width: 421px){
+
+        .mobileShow{
+            display: none;
         }
 
     }

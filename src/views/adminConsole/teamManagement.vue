@@ -28,8 +28,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <hr class="dif3"/>
                 </el-col>
-                <el-col :span="8" :offset="4">
+                <el-col :span="8" :offset="4" class="dif2">
                     <el-form-item class="pull-right">
                         <el-select v-model="searchKeyValue"
                                    placeholder="搜索关键字"
@@ -42,12 +43,41 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-input placeholder="请输入搜索内容" v-model="search" size="small" style="width: 130px; margin-left: 10px"></el-input>
+                        <el-input placeholder="请输入搜索内容" v-model="search" size="small" style="width: 130px"></el-input>
+                        <hr class="dif4">
+                        <span class="dif4">请右划查看相关信息</span>
                     </el-form-item>
 
                 </el-col>
             </el-row>
         </el-form>
+
+        <el-dialog
+                :visible.sync="selectJudges">
+            <el-form class="sform">
+                <el-form-item label="教师工号">
+                    <el-input style="display: block; width: 50%"
+                              v-model="selectedTeacherId"
+                              placeholder="请输入教师工号">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="教师姓名">
+                    <el-input style="display: block; width: 50%"
+                              v-model="selectedTeacherName"
+                              placeholder="请输入教师姓名">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="查询教师">
+                    <el-button @click="getT" round>查询</el-button>
+                </el-form-item>
+                <el-form-item label="查询结果">
+                    <span>{{getTeacher.teacherName}}</span>&nbsp;<span>{{getTeacher.staffId}}</span>
+                </el-form-item>
+                <el-form-item label="选择此教师为评委">
+                    <el-button @click="selectJudges = false" round>选择</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
 
         <el-table
                 ref="multipleTable"
@@ -152,15 +182,18 @@
             </el-table-column>
 
         </el-table>
-
+        <hr class="dif7">
         <div class="div-30"></div>
         <el-row>
-            <el-col :span="12">
+            <el-col :span="18" class="dif5">
 <!--                <el-button size="small">批量删除</el-button>-->
-                <el-button size="small" type="primary" round @click="changeOutStatus">淘汰队伍</el-button>
+                <el-button size="small" type="primary" round @click="changeOutStatus" class="dif6">淘汰队伍</el-button>
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
                 <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
                 <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
+                <el-button size="small" type="primary" round @click="selectJudges = true">选择教师</el-button>
+                <span :style="{'marginLeft':'5px','marginRight':'5px'}">{{getTeacher.teacherName}}</span>
+                <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
 <!--                <el-button size="small">成绩添加</el-button>-->
             </el-col>
             <el-col :span="12">
@@ -185,7 +218,8 @@
 </template>
 
 <script>
-    import {getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo} from "@/api/adminConsole";
+    import {getTeachersInfo,getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo,toggleRelated} from "@/api/adminConsole";
+    import {getGroupFiles} from '@/api/userConsole';
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
@@ -227,6 +261,13 @@
                 chosenGroups:[],//左侧多选数组
                 search:'',//搜索参数
                 competitionId:'',//比赛id
+                selectJudges:false,
+                getTeacher: '',
+                selectedTeacherId: '',
+                selectedTeacherName:'',
+                stageId: '',
+                fileIds:[],
+                tnames:''
             };
         },
         methods: {
@@ -281,7 +322,7 @@
             getFilesSignUp() {
                 const data = new FormData;
                 data.append('stageId',this.stageValue);
-                let tableData = this.tableData
+                let tableData = this.tableData;
 
                 getStageFile(data).then( response => {
                     const signUpGroups = response.data.data;
@@ -313,6 +354,69 @@
                     })
                 }
             },
+            //选择被派发任务教师
+            getT()  {
+                getTeachersInfo({staffId:this.selectedTeacherId,teacherName:this.selectedTeacherName}).then(res => {
+                    this.getTeacher = res.data.data[0];
+                })
+            },
+            //将选中教师和fileId关联
+            tRelated() {
+                for (let group of this.chosenGroups){
+                    this.tnames += (group.name+',');
+                    getGroupFiles(group.id).then(async res => {
+                        const info = res.data.data;
+                        for (let i of info){
+                            this.fileIds.push(i.fileId)
+                        }
+                    })
+                }
+                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发给教师${this.getTeacher.teacherName === undefined ?'(空)':this.getTeacher.teacherName}`,'派发任务').then(async () => {
+                    await this.fRelatedJ();
+                    this.fileIds = [];
+                    this.tnames = '';
+                }).catch(() => {
+                    this.fileIds = [];
+                    this.tnames = '';
+                    this.$message({
+                        type: 'info',
+                        message: '已取消分配任务',
+                    });
+                });
+                /*let stage = {
+                    teacherId: this.getTeacher.teacherId,
+                    fileId: this.fileId,
+                };
+                toggleRelated(stage).then(res => {
+                    if (res.data.data.msg === '关联成功'){
+                        this.selectState = '取消关联';
+                    } else if(res.data.data.msg === '取消关联'){
+                        this.selectState = '关联';
+                    } else {
+                        this.$message('')
+                    }
+                })*/
+            },
+
+            //关联文件和评委
+            fRelatedJ(){
+                for (let x of this.fileIds) {
+                    let data = new FormData();
+                    data.append('teacherId',this.getTeacher.teacherId);
+                    data.append('fileId',x);
+                        toggleRelated(data).then(res => {
+                            if (res.data.data.msg === '增加评委'){
+                                alert('文件'+x+'关联评委'+this.getTeacher.teacherName)
+                            } else if(res.data.data.msg === '删除评委'){
+                                alert('文件'+x+'与评委'+this.getTeacher.teacherName+'取消关联')
+                            } else {
+                                alert('文件不存在')
+                            }
+                        })
+                    }
+                },
+
+
             //获取比赛阶段信息
             getCompetitionStage(year) {
                 const competitionList =  JSON.parse(sessionStorage.getItem('competitionList'));
@@ -359,7 +463,7 @@
                 const data = {
                     cid: this.competitionId,
                     groupList: groupList
-                }
+                };
                 downloadGroupInfo(data).then( response => {
                     let fileName = '小组信息';// 文件名
                     let blob = new Blob([response.data], {
@@ -446,6 +550,67 @@
                 margin-right: 0;
                 margin-bottom: 0;
             }
+        }
+    }
+
+    @media screen and (max-width: 420px){
+
+        /deep/ .el-select.el-select--small{
+            width: 40vw;
+        }
+
+        /deep/.el-table{
+            margin-top:20vh;
+        }
+
+        .dif2{
+            position: absolute;
+            top: 15vh;
+            right: 2vw;
+        }
+
+        .dif3{
+            position: absolute;
+            width: 60vw;
+            top: 12vh;
+            right: -8vw;
+            height: 1px;
+            color: #666666;
+        }
+
+        .dif4{
+            position: absolute;
+            width: 60vw;
+            top: 14vh;
+            right: -10vw;
+            height: 1px;
+            color: #cccccc;
+        }
+
+        .dif5{
+            padding-top: 0;
+            line-height: 6vh;
+        }
+
+        .dif6{
+            margin-left: 2.2vw;
+        }
+
+        .dif7{
+            position: absolute;
+            width: 60vw;
+            bottom: 38vh;
+            right: 0;
+            height: 1px;
+            color: #cccccc;
+        }
+
+    }
+
+    @media screen and (min-width: 421px){
+
+        .dif3,.dif4{
+            display: none;
         }
     }
 

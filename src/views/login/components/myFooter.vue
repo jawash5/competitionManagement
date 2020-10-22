@@ -17,7 +17,6 @@
         display: flex;
         align-items: center;
         min-height: 60px;
-        min-width: 1200px;
     }
 
     .footer_title {
@@ -25,6 +24,19 @@
         font-family: "等线" , serif;
         color: #f2f2f2;
         margin: 0 auto;
+    }
+
+
+    @media screen and (max-width:320px ) {
+        @media screen and (max-height: 661px) {
+            #myFooter {
+                background-color: #333;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                min-height: 60px;
+            }
+        }
     }
 
 </style>

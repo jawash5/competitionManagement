@@ -12,7 +12,7 @@
                 <div class="tip">复制以下链接或保存二维码发送给队友吧！<span v-if="$route.path!=='/editProject'">(您也可以在"我的团队"中进行好友邀请)</span></div>
 
                 <div class="link">
-                    <vue-qr ref="qrCode" :text="url + '?token=' + token" :callback="testCode"></vue-qr>
+                    <vue-qr ref="qrCode" :text="url + '?token=' + token"></vue-qr>
                     <el-divider direction="vertical"></el-divider>
                     <div style="height: 200px ;width: 200px;font-size: 16px">
                         <div style="font-size: 16px;">链接地址（单击复制）：</div>
@@ -45,7 +45,7 @@
                 default:false,
             },
             groupId: {
-                type: String,
+                type: Number,
                 require: true
             }
         },
@@ -125,4 +125,6 @@
         height: 250px;
         margin: 0 50px;
     }
+
+
 </style>

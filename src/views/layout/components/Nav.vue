@@ -92,5 +92,23 @@
         /deep/.el-menu {
             border-right: solid 0 #e6e6e6;
         }
+
+    }
+
+    @media screen and(max-width: 420px){
+
+        /deep/ .avatar{
+            display: none;
+        }
+
+        #navWrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 35vw;
+            height: 140vh;
+            background-color: #344a5f;
+            z-index:100;
+        }
     }
 </style>

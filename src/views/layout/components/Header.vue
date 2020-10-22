@@ -60,7 +60,7 @@
         right: 0;
         left: $navMenu;
         height: 60px;
-        min-width: 1000px;
+        min-width: 420px;
         background-color: #fff;
         z-index: 1000;
         box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
@@ -91,5 +91,31 @@
         justify-content: space-between;
     }
 
+    @media screen and (max-width: 420px){
+
+        #headWrap {
+            position: fixed;
+            top: 0;
+            left: 35vw;
+            height: 60px;
+            min-width: 0;
+            background-color: #fff;
+            z-index: 1000;
+            -webkit-box-shadow: 0 3px 16px 0 rgba(0,0,0,.1);
+        }
+
+        .avatar {
+            position: absolute;
+            top: 1vh;
+            left: 10vw;
+            border: #409EFF solid 1px;
+            z-index: 1;
+        }
+
+        .close {
+            width: 20px;
+        }
+
+    }
 
 </style>

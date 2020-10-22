@@ -12,7 +12,6 @@
         <el-divider></el-divider>
         <div id="projectBottom">
             <h4 id="teamName">队伍名称：{{ projectDetail.name }}</h4>
-            <div class="div-30"></div>
             <el-button type="primary" class="checkInfo" @click="editMaterials">查看资料</el-button>
         </div>
     </div>
@@ -108,6 +107,52 @@
         margin: 20px 0 0 0;
         display: block;
         width: 100%;
+    }
+
+    @media screen and (max-width: 420px){
+
+        #project {
+            margin: 0;
+            width: 40vw;
+            height: 180px;
+            border-radius: 15px;
+            background-color: #f7f7f7;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+        }
+
+        .competitionName{
+            font-size: 10px;
+            color: #409EFF;
+            font-family: "幼圆" , serif;
+            margin-top: 5px;
+        }
+
+        .title2 {
+            margin-top: 5px;
+            color: #409EFF;
+            font-size: 9px;
+            font-family: "幼圆" , serif;
+        }
+
+        #projectTop {
+            margin-top: 10px;
+            padding: 0 10px;
+            text-align: center;
+        }
+
+        #projectBottom {
+            height: 75px;
+            margin: 0 20px 10px 20px;
+            text-align: center;
+        }
+
+        #teamName {
+            color: #303133;
+            font-size: 8px;
+            font-weight: 500;
+        }
+
+
     }
 
 </style>

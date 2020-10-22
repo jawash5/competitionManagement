@@ -2,7 +2,7 @@
     <div>
         <el-dialog title="活动报名"
                    :visible.sync="visible"
-                   width="800px"
+                   width=800px
                    center
                    :show-close="false"
                    :close-on-click-modal="false"
@@ -30,8 +30,8 @@
                         </el-col>
                     </el-row>
                     <el-form-item label="组别" prop="teamName">
-                        <el-radio v-model="finalForm.others.type" label="商务组"></el-radio>
-                        <el-radio v-model="finalForm.others.type" label="技术组"></el-radio>
+                        <el-radio v-model="finalForm.other.type" label="商务组"></el-radio>
+                        <el-radio v-model="finalForm.other.type" label="技术组"></el-radio>
                     </el-form-item>
                 </el-form>
 <!--                <el-transfer-->
@@ -151,11 +151,12 @@
                         this.ruleForm.leaderId = response.data.data.studentNo + "";
                     })
                 }
-            }
+            },
+
         },
         mounted() {
             this.getLeader();
-        }
+        },
     }
 </script>
 
@@ -185,4 +186,10 @@
         cursor: auto;
         color: #606266;
     }
+
+    @media screen and (max-width: 420px){
+
+
+    }
+
 </style>

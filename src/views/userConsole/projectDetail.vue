@@ -21,7 +21,7 @@
                 </el-form-item>
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="队长姓名"  prop="leader">
+                        <el-form-item label=""  prop="leader">
                             <el-input v-model="ruleForm.leader" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
