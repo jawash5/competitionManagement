@@ -206,12 +206,24 @@ export function getTeachersInfo(data) {
 }
 
 /**
- * 关联/取消关联评委
+ * 文件关联/取消关联评委
  */
-export function toggleRelated(getData) {
+export function toggleRelated(data) {
     return service.request({
         method: "post",
         url: '/manager/teacher',
+        data:data,
+    })
+}
+
+/**
+ * 比赛关联/取消关联评委
+ */
+export function relatedT(getData) {
+    return service.request({
+        method: "post",
+        url: '/manager/getTeacher',
         data:getData,
     })
 }
+
