@@ -71,7 +71,7 @@
                     <el-button @click="getT" round>查询</el-button>
                 </el-form-item>
                 <el-form-item label="查询结果">
-                    <span>{{getTeacher.teacherName}}</span>&nbsp;<span>{{getTeacher.staffId}}</span>
+                    <span v-for="item in getTeachers" :key="item.teacherId"><span>{{item.teacherName}}</span></span>
                 </el-form-item>
                 <el-form-item label="选择此教师为评委">
                     <el-button @click="selectJudges = false" round>选择</el-button>
@@ -191,9 +191,14 @@
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
                 <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
                 <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
-                <el-button size="small" type="primary" round @click="selectJudges = true">选择教师</el-button>
-                <span :style="{'marginLeft':'5px','marginRight':'5px'}">{{getTeacher.teacherName}}</span>
-                <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
+                <div :style="{'marginTop':'4vh'}">
+                    <el-button size="small" type="primary" round @click="selectJudges = true">选择教师</el-button>
+                    <span :style="{'marginLeft':'5px','marginRight':'5px'}"  v-for="item in getTeachers" :key="item.teacherId">
+                    <span>{{item.teacherName}}</span>
+                    </span>
+                    <el-button size="small" type="primary" round @click="cRelatedT">关联比赛/取消</el-button>
+                    <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
+                </div>
 <!--                <el-button size="small">成绩添加</el-button>-->
             </el-col>
             <el-col :span="12">
@@ -225,6 +230,7 @@
         getStageFile,
         downloadGroupInfo,
         toggleRelated,
+        relatedT,
         yearCompetitionId} from "@/api/adminConsole";
     import {getGroupFiles} from '@/api/userConsole';
     import sendMessage from "@/views/adminConsole/components/sendMessage";
@@ -269,7 +275,8 @@
                 search:'',//搜索参数
                 competitionId:'',//比赛id
                 selectJudges:false,
-                getTeacher: '',
+                getTeachers: [],
+                getTeacherIds:[],
                 selectedTeacherId: '',
                 selectedTeacherName:'',
                 stageId: '',
@@ -369,7 +376,17 @@
             //选择被派发任务教师
             getT()  {
                 getTeachersInfo({staffId:this.selectedTeacherId,teacherName:this.selectedTeacherName}).then(res => {
-                    this.getTeacher = res.data.data[0];
+                    this.getTeachers.push(res.data.data[0]);
+                    this.getTeacherIds.push(res.data.data[0].teacherId)
+                })
+            },
+            //将选中教师与competitionId关联
+            cRelatedT(){
+                let data = new FormData();
+                data.append('teacherId',this.getTeachers[0].teacherId);
+                data.append('competitionId',this.competitionId);
+                relatedT(data).then( res => {
+                    alert(res.data.data.msg);
                 })
             },
             //将选中教师和fileId关联
@@ -383,51 +400,18 @@
                         }
                     })
                 }
-                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发给教师${this.getTeacher.teacherName === undefined ?'(空)':this.getTeacher.teacherName}`,'派发任务').then(async () => {
-                    await this.fRelatedJ();
-                    this.fileIds = [];
-                    this.tnames = '';
-                }).catch(() => {
-                    this.fileIds = [];
-                    this.tnames = '';
-                    this.$message({
-                        type: 'info',
-                        message: '已取消分配任务',
+                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发/(取消派发）给选中教师？`).then(async () => {
+                    let dataz = {
+                        fileId:this.fileIds,
+                        teacherId:this.getTeacherIds
+                    };
+                    await toggleRelated(dataz).then(res => {
+                        alert(res.data.data.msg);
                     });
+                    this.fileIds = [];
+                    this.tnames = '';
                 });
-                /*let stage = {
-                    teacherId: this.getTeacher.teacherId,
-                    fileId: this.fileId,
-                };
-                toggleRelated(stage).then(res => {
-                    if (res.data.data.msg === '关联成功'){
-                        this.selectState = '取消关联';
-                    } else if(res.data.data.msg === '取消关联'){
-                        this.selectState = '关联';
-                    } else {
-                        this.$message('')
-                    }
-                })*/
             },
-
-            //关联文件和评委
-            fRelatedJ(){
-                for (let x of this.fileIds) {
-                    let data = new FormData();
-                    data.append('teacherId',this.getTeacher.teacherId);
-                    data.append('fileId',x);
-                        toggleRelated(data).then(res => {
-                            if (res.data.data.msg === '增加评委'){
-                                this.$message.success('文件'+x+'关联评委'+this.getTeacher.teacherName)
-                            } else if(res.data.data.msg === '删除评委'){
-                                this.$message.success('文件'+x+'与评委'+this.getTeacher.teacherName+'取消关联')
-                            } else {
-                                this.$message.error('文件不存在')
-                            }
-                        })
-                    }
-                },
-
 
             //获取比赛阶段信息
             getCompetitionStage(year) {
