@@ -161,6 +161,27 @@ export const asnycRouterMap = [
                 component: ()  => import("../views/adminConsole/competitionRelease")
             },
         ]
+    },
+    {
+        path: '/teacherConsole',
+        name: '/teacherConsole',
+        meta: {
+            systemID: '老师',
+            name: '老师中心'
+        },
+        component: () => import("../views/layout/index.vue"),
+        children: [
+            {
+                path: '/teacherConsole/scoringWork',
+                name: '/teacherConsole/scoringWork',
+                meta:{
+                    name:'评分中心',
+                    icon:'el-icon-date'
+
+                },
+                component: ()  => import("../views/teacher/scoringWork")
+            },
+        ]
 
     },
 ];

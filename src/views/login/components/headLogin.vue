@@ -75,10 +75,13 @@
             },
             setUrl() {
                 this.routerIndex = '/checkCompetition';
-                if (getRole() === '参赛者') {
-                    this.url = 'myProject'
-                } else if (getRole() === '管理员') {
-                    this.url = 'teamManagement'
+                const role = getRole();
+                if (role === '参赛者') {
+                    this.url = '/myProject'
+                } else if (role === '管理员') {
+                    this.url = '/teamManagement'
+                } else if (role === '老师') {
+                    this.url = '/teacherConsole/scoringWork'
                 }
             },
         },
@@ -119,6 +122,7 @@
 
     .avatar {
         border: #409EFF solid 1px;
+        margin-left: 10px;
     }
 
     .logoutButton {

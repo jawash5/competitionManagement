@@ -3,7 +3,7 @@
         <head-login :state="state"></head-login>
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
         <el-image :src="competitionInfo.mainImage"
-                  style="width: 100%; height: 400px;
+                  style="width: 100%; height: 40vh;
                   z-index: -1"
                   fit="cover"></el-image>
         <div class="wrap">
@@ -27,7 +27,7 @@
                        round
                        :disabled="haveSignedUp"
                        @click="signUpCompetition">{{haveSignedUp ? '已报名': '立即报名'}}</el-button>
-            <el-button round class="infoButton" type="success" @click="dVisible = true">相关情报</el-button>
+            <el-button round class="infoButton" type="success" @click="dVisible = true">比赛介绍</el-button>
             <div class="div-60"></div>
             <el-row>
                 <el-col :span="16" class="dif">
@@ -55,7 +55,7 @@
                     </el-card>
                 </el-col>
             </el-row>
-            <el-dialog :visible="dVisible" width="90vw">
+            <el-dialog :visible.sync="dVisible" width="90vw">
                     <div v-if="mdContent === ''">管理员很懒，什么也没有留下...</div>
                     <div class="markdown-body" v-html="content"></div>
             </el-dialog>
@@ -126,7 +126,7 @@
                     }
                     this.mdContent = competitionInfo.information;
                     this.competitionInfo = competitionInfo;
-                    this.sortStages('startDate')//按id排序
+                    this.sortStages('startDate')//按开始时间排序
                     this.getNowStage();
                     this.getBoard()//获取公告
                 })
@@ -232,12 +232,12 @@
     @import '../../styles/config';
 
     #competitionDetail {
-        min-width: 420px;
+        min-width: 1200px;
 
         .header {
             position: absolute;
             left: 30px;
-            top: 90px
+            top: 90px;
         }
 
         .wrap {

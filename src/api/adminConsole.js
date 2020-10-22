@@ -215,3 +215,13 @@ export function toggleRelated(getData) {
         data:getData,
     })
 }
+
+/**
+ * 某年的比赛Id
+ */
+export function yearCompetitionId(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/name?year=' + data,
+    })
+}

@@ -35,7 +35,7 @@
                         <el-select v-model="searchKeyValue"
                                    placeholder="搜索关键字"
                                    size="small"
-                                   style="width: 100px;line-height: 40px">
+                                   style="width: 100px;line-height: 40px;margin-right: 10px">
                             <el-option
                                     v-for="item in searchOptions"
                                     :key="item.value"
@@ -84,7 +84,7 @@
                 :data="searchInfo()"
                 tooltip-effect="dark"
                 stripe
-                style="width: 100%"
+                style="width: 100%;height: 60vh;overflow: auto"
                 :default-sort = "{prop: 'projectName', order: 'descending'}"
                 @selection-change="handleChange">
 
@@ -218,7 +218,14 @@
 </template>
 
 <script>
-    import {getTeachersInfo,getAdminCompetition, getCompetitionGroups, getStageFile, downloadGroupInfo,toggleRelated} from "@/api/adminConsole";
+    import {
+        getTeachersInfo,
+        getAdminCompetition,
+        getCompetitionGroups,
+        getStageFile,
+        downloadGroupInfo,
+        toggleRelated,
+        yearCompetitionId} from "@/api/adminConsole";
     import {getGroupFiles} from '@/api/userConsole';
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
@@ -280,6 +287,7 @@
             handleYearChange(year) {
                 this.getCompetitionGroups(year);
                 this.getCompetitionStage(year);
+                this.getCompetitionId(year);
             },
             //晋级信息显示
             isPromotion(row) {
@@ -297,8 +305,6 @@
             getCompetitionGroups(year) {
                 getCompetitionGroups(year).then( response => {
                     let tableData = response.data.data;
-                    this.competitionId = response.data.data[0].competitionId;
-
                     const data = new FormData;
                     data.append('stageId',this.stageValue);
                     //获取队伍文件上交情况
@@ -354,6 +360,12 @@
                     })
                 }
             },
+            //获取比赛年Id
+            getCompetitionId(year) {
+                yearCompetitionId(year).then( response => {
+                    this.competitionId = response.data.data;
+                })
+            },
             //选择被派发任务教师
             getT()  {
                 getTeachersInfo({staffId:this.selectedTeacherId,teacherName:this.selectedTeacherName}).then(res => {
@@ -406,11 +418,11 @@
                     data.append('fileId',x);
                         toggleRelated(data).then(res => {
                             if (res.data.data.msg === '增加评委'){
-                                alert('文件'+x+'关联评委'+this.getTeacher.teacherName)
+                                this.$message.success('文件'+x+'关联评委'+this.getTeacher.teacherName)
                             } else if(res.data.data.msg === '删除评委'){
-                                alert('文件'+x+'与评委'+this.getTeacher.teacherName+'取消关联')
+                                this.$message.success('文件'+x+'与评委'+this.getTeacher.teacherName+'取消关联')
                             } else {
-                                alert('文件不存在')
+                                this.$message.error('文件不存在')
                             }
                         })
                     }
@@ -609,7 +621,7 @@
 
     @media screen and (min-width: 421px){
 
-        .dif3,.dif4{
+        .dif3,.dif4,.dif7{
             display: none;
         }
     }

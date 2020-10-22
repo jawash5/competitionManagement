@@ -130,7 +130,7 @@
 
             <invite :visible="inviteVisible"
                     :dialogClose.sync="inviteVisible"
-                    :group-id="groupInfo.id + ''"></invite>
+                    :group-id="groupInfo.id"></invite>
 
             <upload :visible="uploadDialog"
                     :dialogClose.sync="uploadDialog"
@@ -153,7 +153,6 @@
     } from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import {competitionDetail} from "@/api/login";
-    import sortValue from "@/utils/sort";
     import upload from "@/views/userConsole/components/upload";
     import format from "@/utils/timeFormat";
 
@@ -177,7 +176,7 @@
                 },
                 //创建的队伍信息
                 groupInfo: {
-                    id: '',
+                    id: 0,
                     name: '',
                     competitionId: '',
                     captainId: '',
@@ -281,11 +280,19 @@
                     });
                 });
             },
+            //阶段排序
+            sortStages(key, value) {
+                value.sort((a, b) => {
+                    const data1 = Date.parse(a[key].replaceAll('-','/'));
+                    const data2 = Date.parse(b[key].replaceAll('-','/'));
+                    return data1 - data2;
+                })
+            },
             //获取比赛阶段
             getStages(competitionId) {
                     competitionDetail(competitionId).then( async response => {
                         let stages = response.data.data.stages;
-                        sortValue(stages, 'id');
+                        this.sortStages('startDate',stages)//按开始时间排序
                         this.stages = stages;
                         this.stageInfo = [];
                         await this.pushStageInfo(stages);
@@ -393,15 +400,11 @@
                 data.append('type', file.type);
                 data.append('groupId', file.groupId);
 
-                // data.forEach((value, key) => {
-                //     console.log(`key ${key}: value ${value}`);
-                // })
                 userDownloadFile(data).then( response => {
-                    console.log(response);
+                    if (response.data.data.success === true) {
+                        window.open(response.data.data.msg, '_blank')
+                    }
                 })
-                // userDownloadFile(data).then( response => {
-                //     window.open(response.data.data.msg, '_blank')
-                // })
             },
 
             // 移除前
@@ -428,17 +431,9 @@
                 })
             },
 
-            getWidth(){
-                const winWide = window.screen.width;
-                if(winWide <= 420){
-                    document.getElementById('competitionState').style.display = "none"
-                }
-            }
-
         },
         mounted() {
             this.getGroupInfo();
-            this.getWidth()
         }
     }
 </script>

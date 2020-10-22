@@ -176,7 +176,7 @@ export function stageFile(data) {
  */
 export function userDownloadFile(data) {
     return service.request({
-        method: "get",
+        method: "post",
         url: '/user/download',
         data: data
     })
