@@ -184,8 +184,8 @@
         </el-table>
         <hr class="dif7">
         <div class="div-30"></div>
-        <el-row>
-            <el-col :span="18" class="dif5">
+
+            <div class="dif5">
 <!--                <el-button size="small">批量删除</el-button>-->
                 <el-button size="small" type="primary" round @click="changeOutStatus" class="dif6">淘汰队伍</el-button>
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
@@ -200,11 +200,8 @@
                     <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
                 </div>
 <!--                <el-button size="small">成绩添加</el-button>-->
-            </el-col>
-            <el-col :span="12">
+            </div>
 
-            </el-col>
-        </el-row>
 
         <out-status :visible="outStatusVisible"
                     :dialogClose.sync="outStatusVisible"

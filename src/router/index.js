@@ -181,6 +181,15 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/teacher/scoringWork")
             },
+            {
+                path: '/teacherConsole/markGroup',
+                name: '/teacherConsole/markGroup',
+                hidden: true,
+                meta:{
+                    name:'队伍打分',
+                },
+                component: ()  => import("../views/teacher/markGroup")
+            },
         ]
 
     },

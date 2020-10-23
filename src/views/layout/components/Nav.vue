@@ -52,6 +52,8 @@
             childrenRoute() {
                 if(this.$route.path === '/editProject') {
                     return '/myProject'
+                } else if(this.$route.path === '/teacherConsole/markGroup') {
+                    return '/teacherConsole/scoringWork'
                 }
                 return '';
             }
