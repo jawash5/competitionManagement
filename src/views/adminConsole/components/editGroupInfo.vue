@@ -75,9 +75,6 @@
             //打开对话框
             openDialog() {
                 this.editForm = this.groupInfo;
-                if(this.authority.length === 0) {
-                    this.getRoles();
-                }
                 // console.log(this.editForm.role)
             },
         }

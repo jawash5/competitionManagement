@@ -1,6 +1,6 @@
 //密码验证 数字+字母
 export function validatePassword(data) {
-    const passwordReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,}$/
+    const passwordReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,20}$/
     return passwordReg.test(data)
 }
 

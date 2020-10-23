@@ -2,7 +2,7 @@
     <div>
         <el-page-header @back="goBack"></el-page-header>
         <div class="div-30"></div>
-        <el-select v-model="stage" placeholder="请选择" size="small" style="margin-left: 30px">
+        <el-select v-model="stage" placeholder="请选择" size="small" style="margin-left: 30px" @change="getGroups">
             <el-option
                     v-for="item in stageOptions"
                     :key="item.value"

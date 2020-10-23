@@ -370,6 +370,11 @@
                     this.competitionId = response.data.data;
                 })
             },
+            //各小组的组别
+            getType() {
+
+            },
+
             //选择被派发任务教师
             getT()  {
                 getTeachersInfo({staffId:this.selectedTeacherId,teacherName:this.selectedTeacherName}).then(res => {

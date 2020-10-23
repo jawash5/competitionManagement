@@ -238,6 +238,7 @@
             position: absolute;
             left: 30px;
             top: 90px;
+            background-color: rgba(127, 127, 127, 0.3);
         }
 
         .wrap {
