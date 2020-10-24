@@ -1,6 +1,6 @@
 <template>
     <div class="loginHead">
-        <span class="loginHeadTitle">竞赛管理系统</span>
+<!--        <span class="loginHeadTitle">竞赛管理系统</span>-->
         <div class="menuPlus">
             <el-popover
                     width="80"
@@ -92,6 +92,7 @@
 </script>
 
 <style scoped>
+
     .loginHead {
         height: 60px;
         min-width: 420px;
@@ -103,9 +104,9 @@
     .loginHeadTitle {
         display: inline-block;
         padding: 0 100px;
-        font-size: 24px;
+        font-size: 30px;
         font-weight: bolder;
-        font-family:"等线" , serif;
+        /*font-family: FZZJW;*/
         line-height: 60px;
         color: #303133;
         cursor: default;

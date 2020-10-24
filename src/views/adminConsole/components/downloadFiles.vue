@@ -64,7 +64,7 @@
                                 data.append('fileName',fileName);
 
                                 checkStatus(data).then( response => {
-                                    const res = response.data.data
+                                    let res = response.data.data
                                     if (res === '下载中') {
                                         return false;
                                     } else {

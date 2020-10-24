@@ -448,6 +448,10 @@
             },
             //下载文件
             downloadFile() {
+                if (this.stageValue === '') {
+                    this.$message('请先选择比赛与比赛阶段');
+                    return false;
+                }
                 this.downloadFilesVisible = true;
             },
             //左侧多选选中事件
