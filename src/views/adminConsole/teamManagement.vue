@@ -328,18 +328,22 @@
             },
             //获取文件列表
             getFilesSignUp() {
-                const data = new FormData;
-                data.append('stageId',this.stageValue);
                 let tableData = this.tableData;
-
-                getStageFile(data).then( response => {
+                getStageFile(this.stageValue).then( response => {
                     const signUpGroups = response.data.data;
-                    for (const signUpGroup of signUpGroups) {
+
+                    if (signUpGroups.length === 0) {
                         for (const group of tableData) {
-                            if(group.id === signUpGroup.groupId) {
-                                group.file = '√';
-                            } else {
                                 group.file = '×';
+                        }
+                    } else {
+                        for (const signUpGroup of signUpGroups) {
+                            for (const group of tableData) {
+                                if(group.id === signUpGroup.groupId) {
+                                    group.file = '√';
+                                } else {
+                                    group.file = '×';
+                                }
                             }
                         }
                     }
