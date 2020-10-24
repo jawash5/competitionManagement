@@ -65,7 +65,8 @@
                             <el-select style="display: block; width: 100%"
                                        @change="getSchool"
                                        v-model="ruleForm.university"
-                                       filterable>
+                                       filterable
+                                       placeholder="请选择学校">
                                 <span slot="prefix"><i class="iconshouye"></i></span>
                                 <el-option
                                         v-for="item in universityOptions"
@@ -80,7 +81,8 @@
                             <el-select style="display: block; width: 100%"
                                        @change="getMajor"
                                        v-model="ruleForm.school"
-                                       filterable>
+                                       filterable
+                                       placeholder="请选择学院">
                                 <span slot="prefix"><i class="iconshouye"></i></span>
                                 <el-option
                                         v-for="item in schoolOptions"
@@ -94,7 +96,9 @@
                         <el-form-item label="专业" prop="major">
                             <el-select style="display: block; width: 100%"
                                        v-model="ruleForm.major"
-                                       filterable>
+                                       filterable
+                                       allow-create
+                                       placeholder="若无所在专业，请手动键入">
                                 <span slot="prefix"><i class="iconpaihangbang"></i></span>
                                 <el-option
                                         v-for="item in majorOptions"
@@ -115,7 +119,6 @@
                     </el-form>
                     <div class="buttons">
                         <el-button type="primary" round @click="submitInfo">立即注册</el-button>
-                        <el-button round @click="gotoLogin">登录</el-button>
                     </div>
                 </div>
             </div>
@@ -251,9 +254,6 @@
             }
         },
         methods:{
-            gotoLogin() {
-                this.$router.push("login")
-            },
             submitInfo() {
                 // 提交表单前验证
                 // 空值验证
@@ -318,12 +318,20 @@
                 });
             },
             getUniversity() {
-                getUniversity().then( response => {
-                    const universities = response.data.data;
-                    for (const university of universities) {
+                const universityData = JSON.parse(sessionStorage.getItem('university'));
+                if (universityData) {
+                    for (const university of universityData) {
                         this.universityOptions.push({label:university, value:university})
                     }
-                })
+                } else {
+                    getUniversity().then( response => {
+                        const universities = response.data.data;
+                        sessionStorage.setItem('university', JSON.stringify(universities))
+                        for (const university of universities) {
+                            this.universityOptions.push({label:university, value:university})
+                        }
+                    })
+                }
             },
             getSchool() {
                 this.schoolOptions = [];
@@ -362,7 +370,7 @@
     #registerWithImg {
         display: flex;
         align-items: center;
-        height: 800px;
+        height: 900px;
         width: 1100px;
         background-color: #FFFFFF;
         margin: 60px auto;
@@ -376,7 +384,7 @@
 
     .registerHr {
         border:.5px solid #DCDFE6;
-        height:600px;
+        height:800px;
     }
 
     .registerTitle {

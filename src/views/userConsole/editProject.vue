@@ -402,7 +402,8 @@
 
                 userDownloadFile(data).then( response => {
                     if (response.data.data.success === true) {
-                        window.open(response.data.data.msg, '_blank')
+                        const url = response.data.data.msg.replace('-internal', '');
+                        window.open(url, '_blank')
                     }
                 })
             },

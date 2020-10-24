@@ -69,7 +69,7 @@
                                         return false;
                                     } else {
                                         clearInterval(status);
-                                        window.open(res, '_blank')
+                                        window.open(res.replace('-internal', ''), '_blank')
                                     }
                                 })
                             }, 3000);
