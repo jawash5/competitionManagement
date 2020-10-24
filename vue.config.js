@@ -65,6 +65,7 @@ module.exports = {
         // target: "https://cm.qiancaoyu.fun/",
         target: "http://122.51.66.105:8080/",
         changeOrigin: true,
+        secure: false,
         pathRewrite: {'^/devApi': ''},
       }
     },
