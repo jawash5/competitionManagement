@@ -103,7 +103,10 @@
 
                 this.$store.dispatch("app/login", data).then(() => {
                     this.$router.push({
-                        path:this.$route.query.redirect || '/checkCompetition'
+                        path: this.$route.query.redirect || '/checkCompetition',
+                        query: {
+                            token: this.$route.query.token
+                        }
                     });
                     this.loading = false;
                 }).catch(error => {

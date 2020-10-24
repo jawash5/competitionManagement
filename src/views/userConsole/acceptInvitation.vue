@@ -9,7 +9,7 @@
                     <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                                :size="80"></el-avatar>
                 </div>
-                <h3 class="content"><span class="underline">{{ruleForm.username}}</span> ，您好！您被 </h3>
+                <h3 class="content"><span class="underline">{{groupInfo.username}}</span> ，您好！您被 </h3>
                 <h3 class="content">小组 <span class="underline">{{ groupInfo.name }}</span> 的</h3>
                 <h3 class="content">组长 <span class="underline">{{groupInfo.captainName}}</span> 所邀请</h3>
 
@@ -22,50 +22,18 @@
             <h3 style="color:DarkOrange; font-size: 20px;">注意事项：</h3>
                     <div class="content" v-for="(item,index) in arr" :key="item.id">{{index+1}}、{{item}}</div>
         </el-card>
-
-        <el-dialog title="登录"
-                   :visible.sync="visible"
-                   width="500px"
-                   center
-                   :show-close="false"
-                   :close-on-click-modal="false"
-                   :close-on-press-escape="false">
-            <el-form :model="ruleForm" ref="ruleForm" class="login">
-                <el-form-item prop="username">
-                    <el-input placeholder="用户名"
-                              prefix-icon="iconshequ"
-                              v-model="ruleForm.username"
-                              autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input placeholder="请输入密码"
-                              prefix-icon="iconmima"
-                              type="password"
-                              show-password
-                              clearable
-                              v-model="ruleForm.password"
-                              autocomplete="off"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="login">确 定</el-button>
-            </span>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-    import {acceptInvitation, tokenInfo} from "@/api/userConsole";
+    import {acceptInvitation, tokenInfo, personalInfo} from "@/api/userConsole";
+    import {getCode} from "@/utils/app";
 
     export default {
         name: "acceptInvitation",
         data() {
             return {
                 visible: true,
-                ruleForm:{
-                    username:'name',
-                    password:'password123'
-                },
                 token:'',
                 groupInfo:{
                     username:'@username',
@@ -76,15 +44,6 @@
             }
         },
         methods:{
-            login() {
-                const data = new FormData();
-                data.append('username', this.ruleForm.username);
-                data.append('password', this.ruleForm.password);
-                this.$store.dispatch('app/login', data).then(() => {
-                    this.$message.success('登录成功！')
-                    this.visible = false;
-                })
-            },
             accept() {
                 const data = new FormData();
                 data.append('token', this.token)
@@ -92,7 +51,7 @@
                 acceptInvitation(data).then( response => {
                     if (response.data.data === '加入成功') {
                         this.$message.success(response.data.data);
-                        this.$router.push('/checkCompetition');
+                        this.$router.push('/myProject');
                     } else {
                         this.$message(response.data.data);
                     }
@@ -105,12 +64,33 @@
                 const data = new FormData();
                 data.append('token', this.token)
                 tokenInfo(data).then(response => {
-                    this.groupInfo = response.data.data;
+                    const groupInfo = this.groupInfo
+                    groupInfo.name = response.data.data.name;
+                    groupInfo.captainName = response.data.data.captainName;
                 })
+            },
+            //检验登录状态
+            checkLogin() {
+                if (getCode() === '0') {
+                    personalInfo().then( response => {
+                        this.getTeamInfo();
+                        this.groupInfo.username = response.data.data.name;
+                    })
+                } else {
+                    this.$message('未登录请先登录')
+                    this.$router.push({
+                        path:'/login',
+                        query:{
+                            redirect: this.$route.path,
+                            token: this.$route.query.token
+                        }
+                    })
+                }
+
             }
         },
         mounted() {
-            this.getTeamInfo();
+            this.checkLogin();
         }
     }
 </script>
