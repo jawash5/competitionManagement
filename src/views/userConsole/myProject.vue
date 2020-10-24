@@ -20,7 +20,6 @@
                 leader:'',//队长名称
                 groupList: JSON.parse(sessionStorage.getItem('groupList')) || [],
                 competitionName:'',//比赛名称
-                reFleshIcon:'el-icon-refresh-right pull-right'
             }
         },
         components: {

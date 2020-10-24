@@ -460,6 +460,10 @@
             },
             //下载队伍信息
             downloadGroupInfo() {
+                if (this.chosenGroups === []) {
+                    this.$message('请先选择小组');
+                    return false;
+                }
                 let groupList = [];
                 for(const group of this.chosenGroups) {
                     groupList.push(group.id)

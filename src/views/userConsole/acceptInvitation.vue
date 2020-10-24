@@ -51,6 +51,7 @@
                 acceptInvitation(data).then( response => {
                     if (response.data.data === '加入成功') {
                         this.$message.success(response.data.data);
+                        sessionStorage.removeItem('groupList');
                         this.$router.push('/myProject');
                     } else {
                         this.$message(response.data.data);

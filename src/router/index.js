@@ -103,16 +103,6 @@ export const asnycRouterMap = [
                 component: ()  => import("../views/userConsole/personalInfo")
             },
             {
-                path: '/projectDetail',
-                name: '/projectDetail',
-                hidden:true,
-                meta:{
-                    name:'项目详情'
-                },
-                component: ()  => import("../views/userConsole/projectDetail")
-            },
-
-            {
                 path: '/editProject',
                 name: '/editProject',
                 hidden:true,

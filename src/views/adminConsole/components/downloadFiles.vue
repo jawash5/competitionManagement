@@ -91,7 +91,8 @@
                         if (res === '下载中') {
                             resolve(false);
                         } else {
-                            window.open(res, '_blank');
+                            const url = res.replace('-internal', '');
+                            window.open( url, '_blank');
                             resolve(true);
                         }
                     })
