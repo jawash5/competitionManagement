@@ -27,6 +27,7 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
+                        <el-button @click="selectJudges = true" size="small" style="margin-left: 22px;color: #909399">关联评委{{tnames}}</el-button>
                     </el-form-item>
                     <hr class="dif3"/>
                 </el-col>
@@ -68,13 +69,13 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label="查询教师">
-                    <el-button @click="getT" round>查询</el-button>
+                    <el-button @click="getT" round>查询并选择</el-button>
                 </el-form-item>
                 <el-form-item label="查询结果">
-                    <span v-for="item in getTeachers" :key="item.teacherId"><span>{{item.teacherName}}</span></span>
+                    <span v-for="item in getTeachers" :key="item.teacherId"><span>{{item.teacherName+','}}</span></span>
                 </el-form-item>
-                <el-form-item label="选择此教师为评委">
-                    <el-button @click="selectJudges = false" round>选择</el-button>
+                <el-form-item label="关联查询到的第一个评委">
+                    <el-button round @click="cRelatedT">关联/取消关联</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -191,14 +192,7 @@
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
                 <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
                 <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
-                <div :style="{'marginTop':'4vh'}">
-                    <el-button size="small" type="primary" round @click="selectJudges = true">选择教师</el-button>
-                    <span :style="{'marginLeft':'5px','marginRight':'5px'}"  v-for="item in getTeachers" :key="item.teacherId">
-                    <span>{{item.teacherName}}</span>
-                    </span>
-                    <el-button size="small" type="primary" round @click="cRelatedT">关联比赛/取消</el-button>
-                    <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
-                </div>
+                <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
 <!--                <el-button size="small">成绩添加</el-button>-->
             </div>
 
@@ -389,7 +383,8 @@
                 data.append('competitionId',this.competitionId);
                 relatedT(data).then( res => {
                     alert(res.data.data.msg);
-                })
+                });
+                this.selectJudges = false;
             },
             //将选中教师和fileId关联
             tRelated() {
@@ -402,7 +397,7 @@
                         }
                     })
                 }
-                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发/(取消派发）给选中教师？`).then(async () => {
+                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发/(取消派发）给已选择关联教师？`).then(async () => {
                     let dataz = {
                         fileId:this.fileIds,
                         teacherId:this.getTeacherIds
