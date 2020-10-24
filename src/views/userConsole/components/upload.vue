@@ -79,10 +79,11 @@
             //上传文件
             uploadFile() {
                 const isPDF = this.file.type === 'application/pdf';
+                const isZIP = this.file.type === 'application/x-zip-compressed';
                 const isLt10M = this.file.size / 1024 / 1024 < 10;
 
-                if (!isPDF) {
-                    this.$message.error('上传文件只能是 PDF 格式!');
+                if (!isPDF && !isZIP) {
+                    this.$message.error('上传文件只能是 PDF 或 ZIP 格式!');
                     return false;
                 }
                 if (!isLt10M) {
@@ -113,7 +114,6 @@
             handleRemove() {
                 this.file = '';
             },
-
         },
     }
 </script>
