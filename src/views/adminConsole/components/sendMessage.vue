@@ -77,7 +77,7 @@
             getContent(data) {
                 this.content = data;
                 let content = this.content;
-                this.groupsContent = content.replaceAll('{{队长姓名}}', this.chosenGroups[0].captainName)
+                this.groupsContent = content.replace(new RegExp("{{队长姓名}}","gm"), this.chosenGroups[0].captainName)
 
             },
             dialogClose() {
@@ -93,7 +93,7 @@
             chosenTap(data) {
                 const index = data.index;
                 let content = this.content;
-                this.groupsContent = content.replaceAll('{{队长姓名}}', this.chosenGroups[index].captainName)
+                this.groupsContent = content.replace(new RegExp("{{队长姓名}}","gm"), this.chosenGroups[index].captainName)
 
             },
             conform() {
@@ -109,7 +109,7 @@
                 const content = this.content;
                 let format = '';
                 for(const group of this.chosenGroups) {
-                    format = content.replaceAll('{{队长姓名}}', group.captainName);
+                    format = content.replace(new RegExp("{{队长姓名}}","gm"), group.captainName);
                     this.submitInfo.groups.push(group.id);
                     this.submitInfo.format[group.id] = format || content;
                     format = '';

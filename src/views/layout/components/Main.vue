@@ -27,7 +27,6 @@
         padding-top: $layoutHeader + 30;
         padding-left: $navMenu + 30;
         padding-right: 30px;
-        -webkit-box-sizing: border-box;
         box-sizing: border-box;
     }
     .content {
@@ -37,7 +36,6 @@
         padding-top: 30px;
         padding-right: 30px;
         padding-left: 30px;
-        -webkit-box-sizing: border-box;
         box-sizing: border-box;
         background-color: #fff;
     }
@@ -52,7 +50,6 @@
             padding-top: $layoutHeader + 30;
             padding-left: $navMenu + 30;
             padding-right: 30px;
-            -webkit-box-sizing: border-box;
             box-sizing: border-box;
         }
 
@@ -65,7 +62,6 @@
             padding-top: 20px;
             padding-left: 10vw;
             padding-right: 10px;
-            -webkit-box-sizing: border-box;
             box-sizing: border-box;
             background-color: #fff;
         }

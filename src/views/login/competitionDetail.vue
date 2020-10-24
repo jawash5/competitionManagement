@@ -134,8 +134,8 @@
             //阶段排序
             sortStages(key) {
                 this.competitionInfo.stages.sort((a, b) => {
-                  const data1 = Date.parse(a[key].replaceAll('-','/'));
-                  const data2 = Date.parse(b[key].replaceAll('-','/'));
+                  const data1 = Date.parse(a[key].replace(/-/g, '/'));
+                  const data2 = Date.parse(b[key].replace(/-/g, '/'));
                   return data1 - data2;
               })
             },
@@ -156,12 +156,12 @@
 
             //获取所处当前阶段
             getNowStage() {
-                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replaceAll('-','/'));
+                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g, '/'));
                 for(let i=0, stages = this.competitionInfo.stages ; i<stages.length; i++) {
-                    const startDate = Date.parse(stages[i].startDate.replaceAll('-','/'));
-                    const endDate = Date.parse(stages[i].endDate.replaceAll('-','/'));
+                    const startDate = Date.parse(stages[i].startDate.replace(/-/g, '/'));
+                    const endDate = Date.parse(stages[i].endDate.replace(/-/g, '/'));
                     if (i < stages.length-1) {
-                        const startDateNext = Date.parse(stages[i+1].startDate.replaceAll('-','/'));
+                        const startDateNext = Date.parse(stages[i+1].startDate.replace(/-/g, '/'));
                         if (time > startDate && time < endDate) {
                             this.stepActive = i
                         } else if ( time > endDate && time < startDateNext) {

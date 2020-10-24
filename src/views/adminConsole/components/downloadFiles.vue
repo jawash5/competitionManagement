@@ -69,7 +69,8 @@
                                         return false;
                                     } else {
                                         clearInterval(status);
-                                        window.open(res.replace('-internal', ''), '_blank')
+                                        const url = res.replace('-internal', '');
+                                        window.open( url, '_blank');
                                     }
                                 })
                             }, 3000);
