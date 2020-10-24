@@ -93,11 +93,14 @@
 
                 const data = new FormData();
                 data.append('file', this.file);
-                data.append('fileName', this.projectName + '.pdf')
                 data.append('stageId', this.stageId);
                 data.append('groupId', this.groupId);
                 data.append('type', this.fileType);
-
+                if (isPDF) {
+                    data.append('fileName', this.projectName + '.pdf')
+                } else if (isZIP) {
+                    data.append('fileName', this.projectName + '.zip')
+                }
                 upload(data).then(response => {
                     this.$emit('success')
                     this.$message.success(response.data.data);

@@ -19,7 +19,7 @@
                         </el-form-item>
 
                         <el-form-item label="密码" prop="password">
-                            <el-input placeholder="由数字和字母组成，不少于11位"
+                            <el-input placeholder="长度为11至20位，由数字和字母组成"
                                       prefix-icon="iconmima"
                                       type="password"
                                       show-password
@@ -51,32 +51,6 @@
                                       v-model="ruleForm.studentNo"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="邮箱" prop="email">
-                            <el-input prefix-icon="iconxiaoxi"
-                                      v-model="ruleForm.email"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="电话" prop="phoneNo">
-                            <el-input prefix-icon="icondianhua"
-                                      v-model="ruleForm.phoneNo"></el-input>
-                        </el-form-item>
-
-                        <el-form-item label="学校" prop="university">
-                            <el-select style="display: block; width: 100%"
-                                       @change="getSchool"
-                                       v-model="ruleForm.university"
-                                       filterable
-                                       placeholder="请选择学校">
-                                <span slot="prefix"><i class="iconshouye"></i></span>
-                                <el-option
-                                        v-for="item in universityOptions"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-
                         <el-form-item label="学院" prop="school">
                             <el-select style="display: block; width: 100%"
                                        @change="getMajor"
@@ -96,6 +70,7 @@
                         <el-form-item label="专业" prop="major">
                             <el-select style="display: block; width: 100%"
                                        v-model="ruleForm.major"
+                                       clearable
                                        filterable
                                        allow-create
                                        placeholder="若无所在专业，请手动键入">
@@ -115,6 +90,17 @@
                                       placeholder="班级为8位班级编号"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="邮箱" prop="email">
+                            <el-input prefix-icon="iconxiaoxi"
+                                      v-model="ruleForm.email"
+                                      placeholder="队长必须填写此项"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="电话" prop="phoneNo">
+                            <el-input prefix-icon="icondianhua"
+                                      v-model="ruleForm.phoneNo"
+                                      placeholder="队长必须填写此项"></el-input>
+                        </el-form-item>
 
                     </el-form>
                     <div class="buttons">
@@ -130,7 +116,7 @@
 <script>
     import headLogin from "@/views/login/components/headLogin";
     import myFooter from "@/views/login/components/myFooter";
-    import { register, getUniversity, getSchool, getMajor } from "@/api/login";
+    import { register, getSchool, getMajor } from "@/api/login";
     import {validatePassword, validateEmail,validatePhoneNo, validateStudentNumber} from "@/utils/validator";
 
     export default {
@@ -144,7 +130,7 @@
                 if (value === '') {
                     callback(new Error('请输入密码'));
                 } else if (!validatePassword(value)){
-                    callback(new Error('长度至少为11位，由数字和字母组成'));
+                    callback(new Error('长度为11至20位，由数字和字母组成'));
                 } else {
                     if (this.ruleForm.checkPass !== '') {
                         this.$refs.ruleForm.validateField('checkPass');
@@ -204,7 +190,7 @@
                     school: '',
                     email: '',
                     phoneNo: '',
-                    university: '',
+                    university: '杭州电子科技大学',
                     major:'',
                     gender:'',
                     className:''
@@ -230,13 +216,10 @@
                         { required: true, message: '请选择性别', trigger: 'blur' },
                     ],
                     email: [
-                        { required: true, validator: validateMail, trigger: 'blur' }
+                        { required: false, validator: validateMail, trigger: 'blur' }
                     ],
                     phoneNo: [
-                        { required: true, validator: validatePhone, trigger: 'blur' }
-                    ],
-                    university: [
-                        { required: true, message: '请选择学校', trigger: 'blur' },
+                        { required: false, validator: validatePhone, trigger: 'blur' }
                     ],
                     school: [
                         { required: true, message: '请选择学院', trigger: 'blur' },
@@ -248,7 +231,6 @@
                         { min:8, max:8, required: true, message: '请输入正确的班级号', trigger: 'blur' },
                     ],
                 },
-                universityOptions:[],//学校选项
                 schoolOptions:[],//学院选项
                 majorOptions:[]//专业列表
             }
@@ -258,8 +240,7 @@
                 // 提交表单前验证
                 // 空值验证
                 if(this.ruleForm.username === '' || this.ruleForm.password === '' || this.ruleForm.name === ''||
-                    this.ruleForm.studentNo === '' || this.ruleForm.email === ''|| this.ruleForm.university === ''
-                    || this.ruleForm.school === '' || this.ruleForm.phoneNo === '' || this.ruleForm.major === ''||
+                    this.ruleForm.studentNo === '' || this.ruleForm.school === '' || this.ruleForm.major === ''||
                     this.ruleForm.gender === '' || this.ruleForm.className === '') {
                     this.$message.error('请填写完整注册内容!');
                     return false;
@@ -287,17 +268,6 @@
                     this.$message.error('请输入正确的学号!');
                     return false;
                 }
-                //邮箱验证
-                if (!validateEmail(this.ruleForm.email)) {
-                    this.$message.error('请输入正确的邮箱!');
-                    return false;
-                }
-
-                //手机验证
-                if(!validatePhoneNo(this.ruleForm.phoneNo)) {
-                    this.$message.error('请输入正确的手机号!');
-                    return false;
-                }
 
                 //班级
                 if(this.ruleForm.className.length !== 8) {
@@ -316,22 +286,6 @@
                 }).catch(error => {
                     this.$message.error(error.response.data);
                 });
-            },
-            getUniversity() {
-                const universityData = JSON.parse(sessionStorage.getItem('university'));
-                if (universityData) {
-                    for (const university of universityData) {
-                        this.universityOptions.push({label:university, value:university})
-                    }
-                } else {
-                    getUniversity().then( response => {
-                        const universities = response.data.data;
-                        sessionStorage.setItem('university', JSON.stringify(universities))
-                        for (const university of universities) {
-                            this.universityOptions.push({label:university, value:university})
-                        }
-                    })
-                }
             },
             getSchool() {
                 this.schoolOptions = [];
@@ -353,7 +307,7 @@
             }
         },
         mounted() {
-            this.getUniversity()
+            this.getSchool()
         }
     }
 </script>
