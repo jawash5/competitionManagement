@@ -238,6 +238,8 @@
             position: absolute;
             left: 30px;
             top: 90px;
+            padding: 5px 10px;
+            border-radius: 15px;
             background-color: rgba(127, 127, 127, 0.3);
         }
 

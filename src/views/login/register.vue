@@ -55,8 +55,10 @@
                             <el-select style="display: block; width: 100%"
                                        @change="getMajor"
                                        v-model="ruleForm.school"
+                                       clearable
                                        filterable
-                                       placeholder="请选择学院">
+                                       allow-create
+                                       placeholder="若无所在学院，请手动键入">
                                 <span slot="prefix"><i class="iconshouye"></i></span>
                                 <el-option
                                         v-for="item in schoolOptions"

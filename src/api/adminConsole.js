@@ -101,8 +101,7 @@ export function deletePicture(data) {
 export function getStageFile(data) {
     return service.request({
         method: "get",
-        url: '/competition/files',
-        data:data
+        url: '/competition/files?stageId=' + data,
     })
 }
 

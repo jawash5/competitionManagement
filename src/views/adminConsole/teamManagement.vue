@@ -303,14 +303,18 @@
             getCompetitionGroups(year) {
                 getCompetitionGroups(year).then( response => {
                     let tableData = response.data.data;
-                    const data = new FormData;
-                    data.append('stageId',this.stageValue);
+
                     //获取队伍文件上交情况
-                    getStageFile(data).then( res => {
+                    getStageFile(this.stageValue).then( res => {
                         const signUpGroups = res.data.data;
 
                         for (const signUpGroup of signUpGroups) {
-                            const index = tableData.indexOf(signUpGroup.groupId);
+                            let index = -1;
+                            for (let i=0; i<tableData.length; i++) {
+                                if (tableData[i].id === signUpGroup.groupId) {
+                                    index = i;
+                                }
+                            }
                             tableData[index].file = '√';
                         }
                         for (const group of tableData) {
