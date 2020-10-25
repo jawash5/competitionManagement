@@ -3,7 +3,8 @@
         <div class="competitionName">
             <span class="title2" v-if="competition.hasOwnProperty('year')">{{ competition.year }}年 </span>
             <span class="title2" v-if="competition.hasOwnProperty('session')">第 {{ competition.session }} 届</span>
-            <div class="title">{{ competition.name }}</div>
+<!--            <div :class="titleClass">{{ competition.name }}</div>-->
+            <div :class="titleClass">{{ competition.name }}</div>
             <el-divider></el-divider>
             <div class="time">开始：{{ competition.start }}</div>
             <div class="time">结束：{{ competition.end }}</div>
@@ -19,6 +20,15 @@
         name: "competitionCard",
         data() {
             return{}
+        },
+        computed:{
+            titleClass() {
+                if (this.competition.name.length > 10) {
+                    return 'title--long';
+                } else {
+                    return 'title'
+                }
+            }
         },
         methods:{
             getCompetitionDetail () {
@@ -51,12 +61,16 @@
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
         .competitionName {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
             text-align: center;
-            margin: 20px;
+            height: 210px;
+            padding: 20px 0;
 
             .title2 {
-                margin-top: 10px;
-                font-size: 20px;
+                font-size: 18px;
                 font-family: "幼圆" , serif;
             }
 
@@ -64,19 +78,26 @@
                 margin-top: 10px;
                 font-size: 22px;
                 font-family: "幼圆" , serif;
-                font-weight: 600;
+                font-weight: 500;
+            }
+
+            .title--long {
+                margin-top: 10px;
+                font-size: 16px;
+                font-family: "幼圆" , serif;
+                font-weight: 500;
             }
 
             .time {
                 text-align: center;
                 font-size: 16px;
-                margin-bottom: 10px;
+                line-height: 1.5;
                 color: #303133;
                 font-weight: 500;
             }
 
             /deep/.el-divider--horizontal {
-                margin: 10px 0 20px 0;
+                margin: 10px 0 10px 0;
             }
         }
 

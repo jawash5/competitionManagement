@@ -206,9 +206,9 @@
                          :groupInfo="groupInfo"></edit-group-info>
         <send-message :visible="sendMessageVisible"
                       :dialogClose.sync="sendMessageVisible"></send-message>
-        <download-files :visible="downloadFilesVisible"
-                        :dialogClose.sync="downloadFilesVisible"
-                        :stage="stageValue"></download-files>
+<!--        <download-files :visible="downloadFilesVisible"-->
+<!--                        :dialogClose.sync="downloadFilesVisible"-->
+<!--                        :stage="stageValue"></download-files>-->
     </div>
 
 </template>
@@ -222,17 +222,18 @@
         downloadGroupInfo,
         toggleRelated,
         relatedT,
-        yearCompetitionId} from "@/api/adminConsole";
+        yearCompetitionId, downloadFile, checkStatus
+    } from "@/api/adminConsole";
     import {getGroupFiles} from '@/api/userConsole';
     import sendMessage from "@/views/adminConsole/components/sendMessage";
-    import downloadFiles from "@/views/adminConsole/components/downloadFiles";
+    // import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
     import outStatus from "@/views/adminConsole/components/outStatus";
     import sortValue from "@/utils/sort";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage,downloadFiles,editGroupInfo,outStatus},
+        components:{sendMessage,editGroupInfo,outStatus},
         data() {
             return {
                 //比赛阶段选项
@@ -446,13 +447,70 @@
                     this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
                 }
             },
+            // //下载文件
+            // downloadFile() {
+            //     if (this.stageValue === '') {
+            //         this.$message('请先选择比赛与比赛阶段');
+            //         return false;
+            //     }
+            //     // this.downloadFilesVisible = true;
+            // },
             //下载文件
             downloadFile() {
                 if (this.stageValue === '') {
                     this.$message('请先选择比赛与比赛阶段');
                     return false;
                 }
-                this.downloadFilesVisible = true;
+                const data = {
+                    stageId: this.stageValue,
+                    type: '1'
+                }
+                downloadFile(data).then( response => {
+                    const fileName = response.data.data;
+                    this.$message({
+                        message:'后台玩命压缩中...请稍等...',
+                        duration: 3000
+                    })
+
+                    this.getStatus(fileName).then(response => {
+                        if(response === false) {
+                            const status = setInterval(function () {
+                                const data = new FormData;
+                                data.append('fileName',fileName);
+
+                                checkStatus(data).then( response => {
+                                    let res = response.data.data
+                                    if (res === '下载中') {
+                                        return false;
+                                    } else {
+                                        clearInterval(status);
+                                        const url = res.replace('-internal', '');
+                                        window.open( url, '_blank');
+                                    }
+                                })
+                            }, 3000);
+                        }
+                    })
+                })
+            },
+            //获取状态
+            getStatus(fileName) {
+                return new Promise((resolve) =>  {
+                    const data = new FormData;
+                    data.append('fileName',fileName);
+
+                    checkStatus(data).then( response => {
+                        const res = response.data.data
+                        if (res === '下载中') {
+                            resolve(false);
+                        } else {
+                            const url = res.replace('-internal', '');
+                            window.open( url, '_blank');
+                            resolve(true);
+                        }
+                    })
+                })
+
             },
             //左侧多选选中事件
             handleChange(selection) {

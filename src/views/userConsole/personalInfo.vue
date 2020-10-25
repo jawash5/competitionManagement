@@ -91,6 +91,7 @@
 
 <script>
     import {modifyPersonalInfo, personalInfo} from "@/api/userConsole";
+    import {validateEmail, validatePhoneNo } from "@/utils/validator";
 
     export default {
         name: "personalInfo",
@@ -119,8 +120,13 @@
                 })
             },
             editEmail() {
-                this.icon = 'el-icon-loading';
                 const data = this.form;
+                if(!validateEmail(data.email)) {
+                    this.$message('邮箱格式错误')
+                    return false;
+                }
+
+                this.icon = 'el-icon-loading';
                 const value = {
                     email: data.email,
                 }
@@ -138,11 +144,16 @@
                 })
             },
             editPhone() {
-                this.icon = 'el-icon-loading';
                 const data = this.form;
+                if(!validatePhoneNo(data.phone)) {
+                    this.$message('电话格式错误')
+                    return false;
+                }
+                this.icon = 'el-icon-loading';
                 const value = {
                     phone: data.phone,
                 }
+
                 modifyPersonalInfo(value).then( () => {
                     this.$message({
                         type:"success",

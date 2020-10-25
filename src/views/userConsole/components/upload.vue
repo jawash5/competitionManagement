@@ -11,10 +11,10 @@
                         <el-input v-model="projectName"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="文件类型">
-                        <el-radio v-model="fileType" label="1">技术组</el-radio>
-                        <el-radio v-model="fileType" label="2">商务组</el-radio>
-                    </el-form-item>
+<!--                    <el-form-item label="文件类型">-->
+<!--                        <el-radio v-model="fileType" label="1">技术组</el-radio>-->
+<!--                        <el-radio v-model="fileType" label="2">商务组</el-radio>-->
+<!--                    </el-form-item>-->
 
                     <el-form-item label="文件上传">
                         <el-upload
@@ -49,7 +49,7 @@
                 projectName:'',//项目名称
                 dialogVisible: false,
                 file:'',//文件
-                fileType:'',//文件类型
+                fileType:'1',//文件类型
                 fileList:[],//文件列表
             }
         },

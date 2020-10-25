@@ -7,7 +7,7 @@
             <span class="title2"
                 v-if="projectDetail.competitionInfo.hasOwnProperty('session')">
                 {{ '第 ' + projectDetail.competitionInfo.session + ' 届'}}</span>
-            <h3 class="competitionName">{{ projectDetail.competitionInfo.name }}</h3>
+            <div :class="titleClass">{{ projectDetail.competitionInfo.name }}</div>
         </div>
         <el-divider></el-divider>
         <div id="projectBottom">
@@ -42,6 +42,15 @@
             return {
             }
         },
+        computed:{
+            titleClass() {
+                if (this.projectDetail.competitionInfo.name.length > 10) {
+                    return 'competitionName--long';
+                } else {
+                    return 'competitionName'
+                }
+            }
+        },
         methods:{
             //点击编辑后事件
             editMaterials() {
@@ -58,9 +67,9 @@
 <style lang="scss" scoped>
 
     #project {
-        margin: 20px;
         width: 280px;
         height: 250px;
+        margin: 20px;
         border-radius: 15px;
         background-color: #f7f7f7;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
@@ -73,21 +82,27 @@
 
     .competitionName{
         font-size: 20px;
-        color: #409EFF;
+        color: #303133;
+        font-family: "幼圆" , serif;
+        margin-top: 10px;
+    }
+
+    .competitionName--long{
+        font-size: 16px;
+        color: #303133;
         font-family: "幼圆" , serif;
         margin-top: 10px;
     }
 
     .title2 {
         margin-top: 10px;
-        color: #409EFF;
-        font-size: 18px;
+        color: #303133;
+        font-size: 16px;
         font-family: "幼圆" , serif;
     }
 
     #projectTop {
         margin-top: 20px;
-        padding: 0 20px;
         text-align: center;
     }
 
@@ -122,14 +137,14 @@
 
         .competitionName{
             font-size: 10px;
-            color: #409EFF;
+            color: #303133;
             font-family: "幼圆" , serif;
             margin-top: 5px;
         }
 
         .title2 {
             margin-top: 5px;
-            color: #409EFF;
+            color: #303133;
             font-size: 9px;
             font-family: "幼圆" , serif;
         }
