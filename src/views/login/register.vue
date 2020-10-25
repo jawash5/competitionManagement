@@ -153,21 +153,17 @@
 
             const validateMail = (rule, value, callback) => {
                 if (value === '') {
-                    callback(new Error('请输入邮箱'));
+                    callback();
                 } else if(!validateEmail(value)){
                     callback(new Error('请输入正确的邮箱'));
-                } else {
-                    callback();
                 }
             };
 
             const validatePhone = (rule, value, callback) => {
                 if (value === '') {
-                    callback(new Error('请输入手机号'));
+                    callback();
                 } else if(!validatePhoneNo(value)){
                     callback(new Error('请输入正确的手机号'));
-                } else {
-                    callback();
                 }
             };
             const validateStudentNo = (rule, value, callback) => {
