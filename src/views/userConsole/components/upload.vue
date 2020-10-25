@@ -11,11 +11,6 @@
                         <el-input v-model="projectName"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="文件类型">
-                        <el-radio v-model="fileType" label="1">技术组</el-radio>
-                        <el-radio v-model="fileType" label="2">商务组</el-radio>
-                    </el-form-item>
-
                     <el-form-item label="文件上传">
                         <el-upload
                                 action="#"
@@ -50,7 +45,6 @@
                 projectName:'',//项目名称
                 dialogVisible: false,
                 file:'',//文件
-                fileType:'',//文件类型
                 fileList:[],//文件列表
             }
         },
@@ -74,12 +68,11 @@
                 this.$emit('update:dialogClose',false);
                 this.file = '';
                 this.projectName = ''
-                this.fileType = '';
                 this.fileList = []
             },
             //上传文件
             uploadFile() {
-                if (this.projectName === '' || this.file === '' || this.fileType === '') {
+                if (this.projectName === '' || this.file === '') {
                     this.$message('信息填写不完整')
                     return false;
                 }
@@ -105,7 +98,6 @@
                 data.append('file', this.file);
                 data.append('stageId', this.stageId);
                 data.append('groupId', this.groupId);
-                data.append('type', this.fileType);
                 if (isPDF) {
                     data.append('fileName', this.projectName + '.pdf')
                 }
