@@ -25,7 +25,8 @@
                                 :on-remove="handleRemove"
                                 :auto-upload="false">
                             <el-button size="small" type="primary">点击上传</el-button>
-                            <div slot="tip" class="el-upload__tip" style="line-height: 20px">只能上传 PDF 文件，且不超过10MB,<br/>重复上传会覆盖之前的文件</div>
+                            <div slot="tip" class="el-upload__tip" style="line-height: 20px">只能上传 PDF 文件，且不超过10MB,
+                                <br/>重复上传会覆盖之前的文件</div>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -84,11 +85,15 @@
                 }
 
                 const isPDF = this.file.type === 'application/pdf';
-                const isZIP = this.file.type === 'application/x-zip-compressed';
+                // const isZIP = this.file.type === 'application/x-zip-compressed';
                 const isLt10M = this.file.size / 1024 / 1024 < 10;
 
-                if (!isPDF && !isZIP) {
-                    this.$message.error('上传文件只能是 PDF 或 ZIP 格式!');
+                // if (!isPDF && !isZIP) {
+                //     this.$message.error('上传文件只能是 PDF 或 ZIP 格式!');
+                //     return false;
+                // }
+                if (!isPDF) {
+                    this.$message.error('上传文件只能是 PDF 格式!');
                     return false;
                 }
                 if (!isLt10M) {
@@ -103,9 +108,10 @@
                 data.append('type', this.fileType);
                 if (isPDF) {
                     data.append('fileName', this.projectName + '.pdf')
-                } else if (isZIP) {
-                    data.append('fileName', this.projectName + '.zip')
                 }
+                // else if (isZIP) {
+                //     data.append('fileName', this.projectName + '.zip')
+                // }
                 upload(data).then(response => {
                     this.$emit('success')
                     this.$message.success(response.data.data);

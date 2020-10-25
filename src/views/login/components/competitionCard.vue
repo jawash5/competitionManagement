@@ -3,7 +3,6 @@
         <div class="competitionName">
             <span class="title2" v-if="competition.hasOwnProperty('year')">{{ competition.year }}年 </span>
             <span class="title2" v-if="competition.hasOwnProperty('session')">第 {{ competition.session }} 届</span>
-<!--            <div :class="titleClass">{{ competition.name }}</div>-->
             <div :class="titleClass">{{ competition.name }}</div>
             <el-divider></el-divider>
             <div class="time">开始：{{ competition.start }}</div>
@@ -76,6 +75,7 @@
 
             .title {
                 margin-top: 10px;
+                padding: 0 2em;
                 font-size: 22px;
                 font-family: "幼圆" , serif;
                 font-weight: 500;
@@ -83,6 +83,7 @@
 
             .title--long {
                 margin-top: 10px;
+                padding: 0 2em;
                 font-size: 16px;
                 font-family: "幼圆" , serif;
                 font-weight: 500;

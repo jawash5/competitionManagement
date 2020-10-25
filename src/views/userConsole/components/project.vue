@@ -81,17 +81,19 @@
     }
 
     .competitionName{
+        margin-top: 10px;
+        padding: 0 2em;
         font-size: 20px;
         color: #303133;
         font-family: "幼圆" , serif;
-        margin-top: 10px;
     }
 
     .competitionName--long{
+        margin-top: 10px;
+        padding: 0 2em;
         font-size: 16px;
         color: #303133;
         font-family: "幼圆" , serif;
-        margin-top: 10px;
     }
 
     .title2 {

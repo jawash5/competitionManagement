@@ -107,7 +107,7 @@
                                     <div class="stageTip" v-if="item.uploadStart !== undefined">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
                                     <div class="div-15"></div>
                                     <div class="pull-center">
-                                        <el-button v-if="stepActive === index && isLeader"
+                                        <el-button v-if="stepActive === index && isLeader && inUploadTime"
                                                    type="primary"
                                                    size="mini"
                                                    @click="uploadDialog = true">上传文件</el-button>
@@ -115,7 +115,7 @@
                                     <el-upload
                                             style="margin-top: -10px"
                                             action="#"
-                                            :disabled="stepActive !== index"
+                                            :disabled="stepActive !== index || !inUploadTime"
                                             :on-preview="handlePreview"
                                             :on-remove="handleRemove"
                                             :before-remove="beforeRemove"
@@ -208,6 +208,20 @@
                         uploadEndDate: "",
                         uploadStartDate: ""}
                 ],
+            }
+        },
+        computed:{
+            //是否在上传阶段
+            inUploadTime() {
+                const stepActive = this.stepActive;
+                if (stepActive !== -1) {
+                    const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
+                    const startDate = Date.parse(this.stages[stepActive].uploadStartDate.replace(/-/g,'/'));
+                    const endDate = Date.parse(this.stages[stepActive].uploadEndDate.replace(/-/g,'/'));
+                    return time >= startDate && time <= endDate;
+                } else {
+                    return false;
+                }
             }
         },
         methods: {
@@ -381,11 +395,10 @@
                     }
                     if(i === this.stepActive && this.stageInfo[i].uploadStart === undefined) { //不需要提交作品
                         this.stageInfo[i].color = 'lightgreen';
-                    } else if (i === this.stepActive && this.stageInfo[i].uploadStart !== undefined) {
-                        if (Object.prototype.hasOwnProperty.call(this.stageInfo[i], 'file')) {
-                            if (this.stageInfo[i].file.length === 1) {
+                    } else if (i === this.stepActive && this.stageInfo[i].uploadStart !== undefined) {//需要提交作品
+                        if (Object.prototype.hasOwnProperty.call(this.stageInfo[i], 'file') &&
+                            this.stageInfo[i].file.length === 1) {
                                 this.stageInfo[i].color = 'lightgreen';
-                            }
                         } else {
                             this.stageInfo[i].color = '#409EFF';
                         }
