@@ -34,13 +34,6 @@
                         <el-radio v-model="finalForm.other.type" label="技术组"></el-radio>
                     </el-form-item>
                 </el-form>
-<!--                <el-transfer-->
-<!--                        filterable-->
-<!--                        :filter-method="function(query, item) {return item.pinyin.indexOf(query) > -1;}"-->
-<!--                        filter-placeholder="请输入城市拼音"-->
-<!--                        v-model="value"-->
-<!--                        :data="data">-->
-<!--                </el-transfer>-->
             </div>
 
             <span slot="footer">
@@ -73,23 +66,8 @@
             }
         },
         data() {
-            // const generateData = () => {
-            //     const data = [];
-            //     const cities = [];
-            //     const pinyin = [];
-            //     cities.forEach((city, index) => {
-            //         data.push({
-            //             label: city,
-            //             key: index,
-            //             pinyin: pinyin[index]
-            //         });
-            //     });
-            //     return data;
-            // };
-
             return {
                 dialogVisible:true,
-                // data: generateData(),
                 value: [],
                 ruleForm: {
                     teamName:'',
@@ -132,6 +110,7 @@
                         });
                         this.$emit('success',id);
                         this.dialogClose();
+                        sessionStorage.removeItem('groupList');
                         this.loading = false;
                     }
                 }).catch(error => {

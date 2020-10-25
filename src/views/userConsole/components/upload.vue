@@ -11,10 +11,10 @@
                         <el-input v-model="projectName"></el-input>
                     </el-form-item>
 
-<!--                    <el-form-item label="文件类型">-->
-<!--                        <el-radio v-model="fileType" label="1">技术组</el-radio>-->
-<!--                        <el-radio v-model="fileType" label="2">商务组</el-radio>-->
-<!--                    </el-form-item>-->
+                    <el-form-item label="文件类型">
+                        <el-radio v-model="fileType" label="1">技术组</el-radio>
+                        <el-radio v-model="fileType" label="2">商务组</el-radio>
+                    </el-form-item>
 
                     <el-form-item label="文件上传">
                         <el-upload
@@ -49,7 +49,7 @@
                 projectName:'',//项目名称
                 dialogVisible: false,
                 file:'',//文件
-                fileType:'1',//文件类型
+                fileType:'',//文件类型
                 fileList:[],//文件列表
             }
         },
@@ -78,6 +78,11 @@
             },
             //上传文件
             uploadFile() {
+                if (this.projectName === '' || this.file === '' || this.fileType === '') {
+                    this.$message('信息填写不完整')
+                    return false;
+                }
+
                 const isPDF = this.file.type === 'application/pdf';
                 const isZIP = this.file.type === 'application/x-zip-compressed';
                 const isLt10M = this.file.size / 1024 / 1024 < 10;

@@ -171,7 +171,6 @@
                 this.$prompt('请输入新密码', '修改密码', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    customClass: 'zysz',
                     inputPattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,}$/,
                     inputErrorMessage: '密码长度至少为11位，由数字和字母组成'
                 }).then(({ value }) => {
