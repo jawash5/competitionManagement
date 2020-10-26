@@ -140,4 +140,12 @@
         margin: 20px 10px 0 10px;
         width: 100px;
     }
+
+    @media screen and (max-width: 420px) {
+        .card {
+            width: 100%;
+            height: 500px;
+            padding: 40px;
+        }
+    }
 </style>
