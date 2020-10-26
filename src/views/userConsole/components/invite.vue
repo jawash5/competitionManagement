@@ -12,11 +12,11 @@
                 <div class="tip">复制以下链接或保存二维码发送给队友吧！<span v-if="$route.path!=='/editProject'">(您也可以在"我的团队"中进行好友邀请)</span></div>
 
                 <div class="link">
-                    <vue-qr ref="qrCode" :text="url + '?token=' + token"></vue-qr>
+                    <vue-qr ref="qrCode" :text="completeURL"></vue-qr>
                     <el-divider direction="vertical"></el-divider>
                     <div style="height: 200px ;width: 200px;font-size: 16px">
                         <div style="font-size: 16px;">链接地址（单击复制）：</div>
-                        <h3 class="url" @click="copyLink">{{url + '?token=' + token}}</h3>
+                        <h3 class="url" @click="copyLink">{{completeURL}}</h3>
                     </div>
                 </div>
             </div>
@@ -54,6 +54,11 @@
                 token:'',
                 url: '',
                 qrCode:''
+            }
+        },
+        computed:{
+            completeURL() {
+                return this.url + '?token=' + this.token;
             }
         },
         methods:{

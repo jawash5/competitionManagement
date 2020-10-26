@@ -138,6 +138,9 @@
                     :stage-id="stepActive>=0 && stepActive<100 ? stages[stepActive].id : 0"
                     :group-id="groupInfo.id"
                     @success="getStages(groupInfo.competitionId)"></upload>
+
+            <progress-loading :visible.sync="loading"
+                              :is-finished.sync="finish"></progress-loading>
         </div>
 </template>
 
@@ -155,13 +158,16 @@
     import {competitionDetail} from "@/api/login";
     import upload from "@/views/userConsole/components/upload";
     import format from "@/utils/timeFormat";
+    import progressLoading from "@/components/progressLoading";
 
     export default {
         name: "editProject" ,
-        components:{invite,upload},
+        components:{invite,upload,progressLoading},
         data() {
             return{
                 inviteVisible:false,//邀请对话框
+                loading:false,//加载框显示
+                finish:false,//加载框是否完成
                 inputValue: '',
                 fileList: [],
                 ruleForm: {
@@ -365,7 +371,6 @@
 
             //获取所处当前阶段
             getNowStage() {
-
                 const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
                 for(let i=0, stages = this.stages ; i<stages.length; i++) {
                     const startDate = Date.parse(stages[i].startDate.replace(/-/g,'/'));
@@ -410,9 +415,10 @@
             handlePreview(file) {
                 const data = new FormData();
                 data.append('fileId', file.fileId);
-
+                this.loading = true;
                 userDownloadFile(data).then( response => {
                     if (response.data.data.success === true) {
+                        this.finish = true;
                         const url = response.data.data.msg.replace('-internal', '');
                         window.open(url, '_blank')
                     }

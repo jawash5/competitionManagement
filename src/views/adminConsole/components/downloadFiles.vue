@@ -17,14 +17,19 @@
             </div>
         </el-dialog>
 
+        <progress-loading :visible.sync="loading"
+                          :is-finished.sync="finish"></progress-loading>
+
     </div>
 </template>
 
 <script>
     import {downloadFile,checkStatus} from "@/api/adminConsole";
+    import progressLoading from "@/components/progressLoading";
 
     export default {
         name: "downloadFiles",
+        components:{progressLoading},
         props:{
             visible:{
                 type:Boolean,
@@ -38,6 +43,8 @@
         data() {
           return {
               fileType:'',
+              loading:false,
+              finish:false,
           }
         },
         methods:{
@@ -52,12 +59,9 @@
                 }
                 downloadFile(data).then( response => {
                     const fileName = response.data.data;
-                    this.$message({
-                        message:'后台玩命压缩中...请稍等...',
-                        duration: 3000
-                    })
 
                     this.getStatus(fileName).then(response => {
+                        this.loading = true;
                         if(response === false) {
                             const status = setInterval(function () {
                                 const data = new FormData;
@@ -68,6 +72,8 @@
                                     if (res === '下载中') {
                                         return false;
                                     } else {
+                                        this.finish = true;//下载完成，加速进度条
+
                                         clearInterval(status);
                                         const url = res.replace('-internal', '');
                                         window.open( url, '_blank');
@@ -91,6 +97,8 @@
                         if (res === '下载中') {
                             resolve(false);
                         } else {
+                            this.finish = true;//下载完成，加速进度条
+
                             const url = res.replace('-internal', '');
                             window.open( url, '_blank');
                             resolve(true);

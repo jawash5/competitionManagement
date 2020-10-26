@@ -12,6 +12,7 @@
                             <el-input placeholder="用户名/手机号/学号"
                                       prefix-icon="iconshequ"
                                       v-model="ruleForm.username"
+                                      @keyup.enter.native="submitInfo"
                                       autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item prop="password">
@@ -21,6 +22,7 @@
                                       show-password
                                       clearable
                                       v-model="ruleForm.password"
+                                      @keyup.enter.native="submitInfo"
                                       autocomplete="off"></el-input>
                         </el-form-item>
                     </el-form>
@@ -62,8 +64,8 @@
             return {
                 loading:false,//加载
                 ruleForm: {
-                    username: '',
-                    password: ''
+                    username: 'name123',
+                    password: 'password123'
                 },
                 rules: {
                     username: [

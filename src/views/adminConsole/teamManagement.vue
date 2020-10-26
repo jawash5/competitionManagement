@@ -209,6 +209,8 @@
         <download-files :visible="downloadFilesVisible"
                         :dialogClose.sync="downloadFilesVisible"
                         :stage="stageValue"></download-files>
+        <progress-loading :visible.sync="loading"
+                          :isFinished.sync="finish"></progress-loading>
     </div>
 
 </template>
@@ -230,10 +232,11 @@
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
     import outStatus from "@/views/adminConsole/components/outStatus";
     import sortValue from "@/utils/sort";
+    import progressLoading from "@/components/progressLoading";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage,editGroupInfo,outStatus,downloadFiles},
+        components:{sendMessage,editGroupInfo,outStatus,downloadFiles,progressLoading},
         data() {
             return {
                 //比赛阶段选项
@@ -263,6 +266,8 @@
                 sendMessageVisible:false,//发送通知对话框
                 downloadFilesVisible:false,//下载文件对话框
                 outStatusVisible:false,//晋级选项框
+                loading:false,//加载框
+                finish:false,//加载是否完成
                 chosenGroups:[],//左侧多选数组
                 search:'',//搜索参数
                 competitionId:'',//比赛id
@@ -465,6 +470,7 @@
                     this.$message('请先选择小组');
                     return false;
                 }
+                this.loading = true;
                 let groupList = [];
                 for(const group of this.chosenGroups) {
                     groupList.push(group.id)
@@ -480,6 +486,7 @@
                         type:
                             "application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     });
+                    this.finish = true;//下载完成，进度条加快
                     if (window.navigator.msSaveOrOpenBlob) {
                         navigator.msSaveBlob(blob);
                     } else {
