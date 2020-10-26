@@ -3,8 +3,7 @@
         <head-login :state="state"></head-login>
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
         <el-image :src="competitionInfo.mainImage"
-                  style="width: 100%; height: 400px;
-                  z-index: -1"
+                  style="width: 100%; z-index: -1"
                   fit="cover"></el-image>
         <div class="wrap">
             <div class="competitionName">
