@@ -409,10 +409,7 @@
             //点击已上传的文件
             handlePreview(file) {
                 const data = new FormData();
-                data.append('stageId', file.stageId);
-                data.append('fileName', file.name);
-                data.append('type', file.type);
-                data.append('groupId', file.groupId);
+                data.append('fileId', file.fileId);
 
                 userDownloadFile(data).then( response => {
                     if (response.data.data.success === true) {

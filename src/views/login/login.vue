@@ -25,7 +25,7 @@
                         </el-form-item>
                     </el-form>
                     <div class="buttons">
-                        <el-button type="primary" round @click="submitInfo">登录</el-button>
+                        <el-button type="primary" round @click="submitInfo" >登录</el-button>
                         <el-button round @click="gotoRegister">注册</el-button>
                     </div>
                 </div>
@@ -62,8 +62,6 @@
             return {
                 loading:false,//加载
                 ruleForm: {
-                    // username: 'name',
-                    // password: 'password123'
                     username: '',
                     password: ''
                 },

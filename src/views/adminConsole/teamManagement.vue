@@ -292,12 +292,12 @@
             isPromotion(row) {
                 if (Object.prototype.hasOwnProperty.call(row, 'expireAt')) {
                     if (row.expireAt <= this.stageValue) {
-                        return '×';
+                        return '❌';
                     } else if (row.expireAt > this.stageValue){
-                        return '√';
+                        return '⭕';
                     }
                 } else {
-                    return '√';
+                    return '⭕';
                 }
             },
             //获取比赛组
@@ -316,11 +316,11 @@
                                     index = i;
                                 }
                             }
-                            tableData[index].file = '√';
+                            tableData[index].file = '⭕';
                         }
                         for (const group of tableData) {
                             if(!Object.prototype.hasOwnProperty.call(group, 'file')) {
-                                group.file = '×';
+                                group.file = '❌';
                             }
                         }
                         this.tableData = tableData;
@@ -335,15 +335,15 @@
 
                     if (signUpGroups.length === 0) {
                         for (const group of tableData) {
-                                group.file = '×';
+                                group.file = '❌';
                         }
                     } else {
                         for (const signUpGroup of signUpGroups) {
                             for (const group of tableData) {
                                 if(group.id === signUpGroup.groupId) {
-                                    group.file = '√';
+                                    group.file = '⭕';
                                 } else {
-                                    group.file = '×';
+                                    group.file = '❌';
                                 }
                             }
                         }
@@ -455,63 +455,6 @@
                 }
                 this.downloadFilesVisible = true;
             },
-            //下载文件
-            // downloadFile() {
-            //     if (this.stageValue === '') {
-            //         this.$message('请先选择比赛与比赛阶段');
-            //         return false;
-            //     }
-            //     const data = {
-            //         stageId: this.stageValue,
-            //         type: '1'
-            //     }
-            //     downloadFile(data).then( response => {
-            //         const fileName = response.data.data;
-            //         this.$message({
-            //             message:'后台玩命压缩中...请稍等...',
-            //             duration: 3000
-            //         })
-            //
-            //         this.getStatus(fileName).then(response => {
-            //             if(response === false) {
-            //                 const status = setInterval(function () {
-            //                     const data = new FormData;
-            //                     data.append('fileName',fileName);
-            //
-            //                     checkStatus(data).then( response => {
-            //                         let res = response.data.data
-            //                         if (res === '下载中') {
-            //                             return false;
-            //                         } else {
-            //                             clearInterval(status);
-            //                             const url = res.replace('-internal', '');
-            //                             window.open( url, '_blank');
-            //                         }
-            //                     })
-            //                 }, 3000);
-            //             }
-            //         })
-            //     })
-            // },
-            // //获取状态
-            // getStatus(fileName) {
-            //     return new Promise((resolve) =>  {
-            //         const data = new FormData;
-            //         data.append('fileName',fileName);
-            //
-            //         checkStatus(data).then( response => {
-            //             const res = response.data.data
-            //             if (res === '下载中') {
-            //                 resolve(false);
-            //             } else {
-            //                 const url = res.replace('-internal', '');
-            //                 window.open( url, '_blank');
-            //                 resolve(true);
-            //             }
-            //         })
-            //     })
-            //
-            // },
             //左侧多选选中事件
             handleChange(selection) {
                 this.chosenGroups = selection;

@@ -288,6 +288,7 @@
             padding-left: 20px;
             padding-right: 20px;
             background-color: #f7f7f7;
+            white-space: pre-wrap;
         }
 
         /deep/.el-page-header__left .el-icon-back {
