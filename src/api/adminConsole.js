@@ -192,3 +192,14 @@ export function yearCompetitionId(data) {
         url: '/manager/name?year=' + data,
     })
 }
+
+/**
+ * 显示组的类别
+ */
+export function showType(data) {
+    return service.request({
+        method: "post",
+        url: '/competition/commerce/group/type',
+        data:data
+    })
+}

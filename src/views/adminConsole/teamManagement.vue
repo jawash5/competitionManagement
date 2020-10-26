@@ -86,7 +86,7 @@
                 tooltip-effect="dark"
                 stripe
                 style="width: 100%;height: 60vh;overflow: auto"
-                :default-sort = "{prop: 'projectName', order: 'descending'}"
+                :default-sort = "{ prop: 'type', order: 'descending'}"
                 @selection-change="handleChange">
 
             <el-table-column
@@ -134,6 +134,14 @@
             </el-table-column>
 
             <el-table-column
+                    prop="type"
+                    label="组别"
+                    sortable
+                    align="center"
+                    width="100">
+            </el-table-column>
+
+            <el-table-column
                     prop="name"
                     label="队伍名称"
                     align="center"
@@ -167,9 +175,9 @@
             <el-table-column
                     prop="expireAt"
                     label="晋级"
+                    sortable
                     width="100"
-                    align="center"
-                    show-overflow-tooltip>
+                    align="center">
                 <template slot-scope="scope">
                     <span>{{isPromotion(scope.row)}}</span>
                 </template>
@@ -178,6 +186,7 @@
             <el-table-column
                     prop="file"
                     label="上交"
+                    sortable
                     width="120"
                     align="center">
             </el-table-column>
@@ -224,7 +233,8 @@
         downloadGroupInfo,
         toggleRelated,
         relatedT,
-        yearCompetitionId
+        yearCompetitionId,
+        showType
     } from "@/api/adminConsole";
     import {getGroupFiles} from '@/api/userConsole';
     import sendMessage from "@/views/adminConsole/components/sendMessage";
@@ -254,6 +264,7 @@
                     { value: 'email', label: '队伍邮箱' },
                     { value: 'captainPhone', label: '领队电话' },
                     { value: 'teammateName', label: '组员姓名' },
+                    { value: 'type', label: '组别' },
                 ],
                 //关键词
                 searchKeyValue: 'name',
@@ -305,7 +316,7 @@
                     return '⭕';
                 }
             },
-            //获取比赛组
+            //获取比赛组,添加文件上交情况，组别情况
             getCompetitionGroups(year) {
                 getCompetitionGroups(year).then( response => {
                     let tableData = response.data.data;
@@ -313,7 +324,6 @@
                     //获取队伍文件上交情况
                     getStageFile(this.stageValue).then( res => {
                         const signUpGroups = res.data.data;
-
                         for (const signUpGroup of signUpGroups) {
                             let index = -1;
                             for (let i=0; i<tableData.length; i++) {
@@ -328,11 +338,32 @@
                                 group.file = '❌';
                             }
                         }
-                        this.tableData = tableData;
+
+                        //获取组别
+                        this.getType(tableData);
                     })
                 })
             },
-            //获取文件列表
+            //获取各小组的组别
+            getType(groupList) {
+                let groupIdList = [];
+                for (const group of groupList) {
+                    groupIdList.push(group.id);
+                }
+                const data = {
+                    'groupIdList': groupIdList
+                }
+                showType(data).then( response => {
+                    const type = response.data.data
+                    for (let i=0; i<groupList.length; i++) {
+                        if (Object.prototype.hasOwnProperty.call(type, groupList[i].id+'')) {
+                            groupList[i]['type'] = type[groupList[i].id+''];
+                        }
+                    }
+                    this.tableData = groupList;
+                })
+            },
+            //阶段切换时，获取文件列表，查看作品是否提交
             getFilesSignUp() {
                 let tableData = this.tableData;
                 getStageFile(this.stageValue).then( response => {
@@ -355,7 +386,7 @@
                     }
                 } )
             },
-            //获取比赛年
+            //获取比赛年，表现在年份下拉框中
             getCompetitionYear() {
                 this.stageValue = '';//阶段值清空
                 if (this.competitionYearOptions.length === 0) {
@@ -378,11 +409,6 @@
                     this.competitionId = response.data.data;
                 })
             },
-            //各小组的组别
-            getType() {
-
-            },
-
             //选择被派发任务教师
             getT()  {
                 getTeachersInfo({staffId:this.selectedTeacherId,teacherName:this.selectedTeacherName}).then(res => {
@@ -530,6 +556,8 @@
                         }
                         return !this.search || flag;
                     })
+                } else if (this.searchKeyValue === 'type') {
+                    return this.tableData.filter(data => !this.search || data.type.toLowerCase().includes(this.search.toLowerCase()))
                 }
             },
         },
@@ -550,6 +578,14 @@
         /deep/.el-table thead {
             font-weight: bold;
             color: #344a5f;
+        }
+
+        /deep/.el-table th>.cell {
+            line-height: 34px;
+        }
+
+        .el-table::before {
+            height: 0;
         }
 
         .demo-table-expand {
