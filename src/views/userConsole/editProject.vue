@@ -107,7 +107,7 @@
                                     <div class="stageTip" v-if="item.uploadStart !== undefined">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
                                     <div class="div-15"></div>
                                     <div class="pull-center">
-                                        <el-button v-if="stepActive === index && isLeader && inUploadTime"
+                                        <el-button v-if="isUploadTime[index] && isLeader "
                                                    type="primary"
                                                    size="mini"
                                                    @click="uploadDialog = true">上传文件</el-button>
@@ -115,7 +115,7 @@
                                     <el-upload
                                             style="margin-top: -10px"
                                             action="#"
-                                            :disabled="stepActive !== index || !inUploadTime"
+                                            :disabled="!isUploadTime[index] || !isLeader"
                                             :on-preview="handlePreview"
                                             :on-remove="handleRemove"
                                             :before-remove="beforeRemove"
@@ -204,6 +204,7 @@
                 captainId: '',
                 uploadDialog: false,
                 stepActive:-1,//当前所处阶段值
+                isUploadTime:[],//文件提交时间
                 stages:[
                     {
                         endDate: "",
@@ -216,24 +217,24 @@
                 ],
             }
         },
-        computed:{
-            //是否在上传阶段
-            inUploadTime() {
-                const stepActive = this.stepActive;
-                if (stepActive !== -1) {
-                    const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
-                    if (Object.prototype.hasOwnProperty.call(this.stages[stepActive], 'uploadStartDate')) {
-                        const startDate = Date.parse(this.stages[stepActive].uploadStartDate.replace(/-/g,'/'));
-                        const endDate = Date.parse(this.stages[stepActive].uploadEndDate.replace(/-/g,'/'));
-                        return time >= startDate && time <= endDate;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            }
-        },
+        // computed:{
+        //     //是否在上传阶段
+        //     inUploadTime() {
+        //         const stepActive = this.stepActive;
+        //         if (stepActive !== -1) {
+        //             const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
+        //             if (Object.prototype.hasOwnProperty.call(this.stages[stepActive], 'uploadStartDate')) {
+        //                 const startDate = Date.parse(this.stages[stepActive].uploadStartDate.replace(/-/g,'/'));
+        //                 const endDate = Date.parse(this.stages[stepActive].uploadEndDate.replace(/-/g,'/'));
+        //                 return time >= startDate && time <= endDate;
+        //             } else {
+        //                 return false;
+        //             }
+        //         } else {
+        //             return false;
+        //         }
+        //     }
+        // },
         methods: {
             //页头返回
             goBack() {
@@ -321,6 +322,7 @@
                         this.stageInfo = [];
                         await this.pushStageInfo(stages);
                         this.getNowStage();//获取当前阶段
+                        this.checkUpload();
                         this.getStageStatus();//获取各阶段状态
                     })
             },
@@ -375,36 +377,55 @@
 
             //获取所处当前阶段
             getNowStage() {
-                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
+                let stepActive = -1;
+                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));//获取当前时间
+
                 for(let i=0, stages = this.stages ; i<stages.length; i++) {
+                    //阶段持续时间
                     const startDate = Date.parse(stages[i].startDate.replace(/-/g,'/'));
                     const endDate = Date.parse(stages[i].endDate.replace(/-/g,'/'));
-                    if (i < stages.length-1) {
+
+                    if (i < stages.length-1) {                 //如果在最后一个阶段前
                         const startDateNext = Date.parse(stages[i+1].startDate.replace(/-/g,'/'));
                         if (time > startDate && time < endDate) {
-                            this.stepActive = i
+                            stepActive = i
                         } else if ( time > endDate && time < startDateNext) {
-                            this.stepActive = i + 0.5
+                            stepActive = i + 0.5
                         }
-                    } else if (i === stages.length-1) {
+                    } else if (i === stages.length-1) {       //最后一个阶段验证
                         if (time > startDate && time < endDate) {
-                            this.stepActive = i
+                            stepActive = i
                         } else if(time > endDate) {
-                            this.stepActive = 100;
+                            stepActive = 100;
                         }
                     }
                 }
+                this.stepActive = stepActive
+            },
+
+            //判断文件是否目前能上传
+            checkUpload() {
+                let stages = this.stages;
+                let isUploadTime = new Array(stages.length);
+                const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));//获取当前时间
+                for(let i=0 ; i<stages.length; i++) {
+                    if (Object.prototype.hasOwnProperty.call(stages[i], 'uploadStartDate')) {
+                        const uploadStartDate = Date.parse(stages[i].uploadStartDate.replace(/-/g,'/'));
+                        const uploadEndDate = Date.parse(stages[i].uploadEndDate.replace(/-/g,'/'));
+                        if (time > uploadStartDate && time < uploadEndDate) {
+                            isUploadTime[i] = true;
+                        }
+                    }
+                }
+                this.isUploadTime = isUploadTime;
             },
 
             //获取阶段状态
             getStageStatus() {
                 for (let i=0; i<this.stageInfo.length; i++) {
-                    if(i < this.stepActive) {
+                    if(i <= this.stepActive && this.stageInfo[i].uploadStart === undefined) { //不需要提交作品
                         this.stageInfo[i].color = 'lightgreen';
-                    }
-                    if(i === this.stepActive && this.stageInfo[i].uploadStart === undefined) { //不需要提交作品
-                        this.stageInfo[i].color = 'lightgreen';
-                    } else if (i === this.stepActive && this.stageInfo[i].uploadStart !== undefined) {//需要提交作品
+                    } else if (i <= this.stepActive && this.stageInfo[i].uploadStart !== undefined) {//需要提交作品
                         if (Object.prototype.hasOwnProperty.call(this.stageInfo[i], 'file') &&
                             this.stageInfo[i].file.length === 1) {
                                 this.stageInfo[i].color = 'lightgreen';
