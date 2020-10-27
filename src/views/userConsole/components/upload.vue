@@ -65,7 +65,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit('update:dialogClose',false);
+                this.$emit('update:visible',false);
                 this.file = '';
                 this.projectName = ''
                 this.fileList = []

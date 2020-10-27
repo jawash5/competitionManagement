@@ -110,7 +110,7 @@
                                         <el-button v-if="isUploadTime[index] && isLeader "
                                                    type="primary"
                                                    size="mini"
-                                                   @click="uploadDialog = true">上传文件</el-button>
+                                                   @click="uploadFile(index)">上传文件</el-button>
                                     </div>
                                     <el-upload
                                             style="margin-top: -10px"
@@ -132,10 +132,9 @@
                     :dialogClose.sync="inviteVisible"
                     :group-id="groupInfo.id"></invite>
 
-            <upload :visible="uploadDialog"
-                    :dialogClose.sync="uploadDialog"
+            <upload :visible.sync="uploadDialog"
                     :competition-id="groupInfo.competitionId"
-                    :stage-id="stepActive>=0 && stepActive<100 ? stages[stepActive].id : 0"
+                    :stage-id="stages[clickIndex].id"
                     :group-id="groupInfo.id"
                     @success="getStages(groupInfo.competitionId)"></upload>
 
@@ -215,26 +214,9 @@
                         uploadEndDate: "",
                         uploadStartDate: ""}
                 ],
+                clickIndex: 0,
             }
         },
-        // computed:{
-        //     //是否在上传阶段
-        //     inUploadTime() {
-        //         const stepActive = this.stepActive;
-        //         if (stepActive !== -1) {
-        //             const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
-        //             if (Object.prototype.hasOwnProperty.call(this.stages[stepActive], 'uploadStartDate')) {
-        //                 const startDate = Date.parse(this.stages[stepActive].uploadStartDate.replace(/-/g,'/'));
-        //                 const endDate = Date.parse(this.stages[stepActive].uploadEndDate.replace(/-/g,'/'));
-        //                 return time >= startDate && time <= endDate;
-        //             } else {
-        //                 return false;
-        //             }
-        //         } else {
-        //             return false;
-        //         }
-        //     }
-        // },
         methods: {
             //页头返回
             goBack() {
@@ -432,6 +414,13 @@
                         } else {
                             this.stageInfo[i].color = '#409EFF';
                         }
+                    } else if (this.isUploadTime[i] === true) {
+                        if (Object.prototype.hasOwnProperty.call(this.stageInfo[i], 'file') &&
+                            this.stageInfo[i].file.length === 1) {
+                            this.stageInfo[i].color = 'lightgreen';
+                        } else {
+                            this.stageInfo[i].color = '#409EFF';
+                        }
                     }
                 }
             },
@@ -473,6 +462,12 @@
                     }
                 })
             },
+
+            //上传文件
+            uploadFile(stageIndex) {
+                this.uploadDialog = true;
+                this.clickIndex = stageIndex;
+            }
 
         },
         mounted() {
