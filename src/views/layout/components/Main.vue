@@ -1,5 +1,6 @@
 <template>
     <div id="mainWrap">
+        <div class="mobile">请前往PC端查看相关信息</div>
         <div class="mainContent">
             <div class="content">
                 <router-view></router-view>
@@ -40,9 +41,24 @@
         background-color: #fff;
     }
 
+    .mobile {
+        display: none;
+    }
+
     @media screen and (max-width: 420px){
 
+        .mobile {
+            display: block;
+            position: absolute;
+            top: 300px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            color: #303133;
+        }
+
         .mainContent {
+            display: none;
             width: 100%;
             height: 100%;
             min-height: 100vh;

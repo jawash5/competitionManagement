@@ -106,7 +106,7 @@
         #navWrap {
             position: fixed;
             top: 0;
-            left: 0;
+            left: -1000px;
             width: 35vw;
             height: 140vh;
             background-color: #344a5f;
