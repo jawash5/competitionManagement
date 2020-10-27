@@ -9,9 +9,10 @@
                     <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                                :size="80"></el-avatar>
                 </div>
-                <h3 class="content"><span class="underline">{{groupInfo.username}}</span> ，您好！您被 </h3>
-                <h3 class="content">小组 <span class="underline">{{ groupInfo.name }}</span> 的</h3>
-                <h3 class="content">组长 <span class="underline">{{groupInfo.captainName}}</span> 所邀请</h3>
+
+                <h3 class="content" v-show="isLogin"><span class="underline">{{groupInfo.username}}</span> ，您好！您被 </h3>
+                <h3 class="content" v-show="isLogin">小组 <span class="underline">{{ groupInfo.name }}</span> 的</h3>
+                <h3 class="content" v-show="isLogin">组长 <span class="underline">{{groupInfo.captainName}}</span> 所邀请</h3>
 
                 <el-divider></el-divider>
                 <div style="font-size: 18px">请问您是否加入该小队？</div>
@@ -40,11 +41,23 @@
                     name:'@groupName',
                     captainName:'@captainName',
                 },
-                arr:["第一，绝对不意气用事；","第二，绝对不漏判任何一件坏事；","第三，绝对裁判得公正漂亮;","裁判机器人蜻蜓队长前来觐见！"]
+                arr:["第一，绝对不意气用事；","第二，绝对不漏判任何一件坏事；","第三，绝对裁判得公正漂亮;","裁判机器人蜻蜓队长前来觐见！"],
+                isLogin:false,
             }
         },
         methods:{
             accept() {
+                if (getCode() !== '0') {
+                    this.$message('未登录请先登录')
+                    this.$router.push({
+                        path:'/login',
+                        query:{
+                            redirect: this.$route.path,
+                            token: this.$route.query.token
+                        }
+                    })
+                }
+
                 const data = new FormData();
                 data.append('token', this.token)
 
@@ -73,22 +86,14 @@
             //检验登录状态
             checkLogin() {
                 if (getCode() === '0') {
-                    personalInfo().then( response => {
-                        this.getTeamInfo();
+                    personalInfo().then( async response => {
+                        await this.getTeamInfo();
                         this.groupInfo.username = response.data.data.name;
-                    })
-                } else {
-                    this.$message('未登录请先登录')
-                    this.$router.push({
-                        path:'/login',
-                        query:{
-                            redirect: this.$route.path,
-                            token: this.$route.query.token
-                        }
+                        this.isLogin = true;
                     })
                 }
-
             }
+
         },
         mounted() {
             this.checkLogin();
