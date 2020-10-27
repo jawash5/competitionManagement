@@ -222,9 +222,13 @@
                 const stepActive = this.stepActive;
                 if (stepActive !== -1) {
                     const time = Date.parse(format('YYYY-MM-DD HH:mm:ss').replace(/-/g,'/'));
-                    const startDate = Date.parse(this.stages[stepActive].uploadStartDate.replace(/-/g,'/'));
-                    const endDate = Date.parse(this.stages[stepActive].uploadEndDate.replace(/-/g,'/'));
-                    return time >= startDate && time <= endDate;
+                    if (Object.prototype.hasOwnProperty.call(this.stages[stepActive], 'uploadStartDate')) {
+                        const startDate = Date.parse(this.stages[stepActive].uploadStartDate.replace(/-/g,'/'));
+                        const endDate = Date.parse(this.stages[stepActive].uploadEndDate.replace(/-/g,'/'));
+                        return time >= startDate && time <= endDate;
+                    } else {
+                        return false;
+                    }
                 } else {
                     return false;
                 }
