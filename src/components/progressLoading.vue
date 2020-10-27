@@ -21,6 +21,7 @@
         data() {
             return {
                 dialogVisible: false,
+                finish: false,
                 loadingNum: 0,
             }
         },
@@ -39,8 +40,12 @@
         watch:{
             visible (newValue) {
                 this.dialogVisible = newValue;
+            },
+            isFinished (newValue) {
+                this.finish = newValue;
             }
         },
+
         methods:{
             normalLoadingNum() {
                 this.loadingNum = 0;
@@ -48,7 +53,7 @@
                     if (this.loadingNum < 99) {
                         this.loadingNum += 1
                     }
-                    if (this.isFinished) {
+                    if (this.finish) {
                         clearInterval(normal);
                         this.fastenLoadingNum();
                     }
@@ -67,6 +72,7 @@
             },
             close() {
                 this.dialogVisible = false;
+                this.finish = false;
                 this.$emit('update:visible', false)
                 this.$emit('update:isFinished', false)
             }

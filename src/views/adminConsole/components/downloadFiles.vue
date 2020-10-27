@@ -43,8 +43,8 @@
         data() {
           return {
               fileType:'',
-              loading:false,
-              finish:false,
+              loading: false,
+              finish: false,
           }
         },
         methods:{
@@ -59,14 +59,13 @@
                 }
                 downloadFile(data).then( response => {
                     const fileName = response.data.data;
-
+                    this.loading = true;
                     this.getStatus(fileName).then(response => {
-                        this.loading = true;
                         if(response === false) {
-                            const status = setInterval(function () {
-                                const data = new FormData;
-                                data.append('fileName',fileName);
+                            const data = new FormData;
+                            data.append('fileName',fileName);
 
+                            const status = setInterval(() => {
                                 checkStatus(data).then( response => {
                                     let res = response.data.data
                                     if (res === '下载中') {
@@ -74,9 +73,9 @@
                                     } else {
                                         this.finish = true;//下载完成，加速进度条
 
-                                        clearInterval(status);
                                         const url = res.replace('-internal', '');
                                         window.open( url, '_blank');
+                                        clearInterval(status);
                                     }
                                 })
                             }, 3000);
@@ -98,7 +97,6 @@
                             resolve(false);
                         } else {
                             this.finish = true;//下载完成，加速进度条
-
                             const url = res.replace('-internal', '');
                             window.open( url, '_blank');
                             resolve(true);

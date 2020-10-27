@@ -15,7 +15,7 @@
                     <vue-qr ref="qrCode" :text="completeURL"></vue-qr>
                     <el-divider direction="vertical"></el-divider>
                     <div style="height: 200px ;width: 200px;font-size: 16px">
-                        <div style="font-size: 16px;">链接地址（单击复制）：</div>
+                        <div style="font-size: 16px;">链接地址，单击复制（请勿重复生成链接，新链接生成将导致旧链接无效！）：</div>
                         <h3 class="url" @click="copyLink">{{completeURL}}</h3>
                     </div>
                 </div>
