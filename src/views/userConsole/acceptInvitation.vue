@@ -42,7 +42,8 @@
                     captainName:'@captainName',
                 },
                 arr:["第一，绝对不意气用事；","第二，绝对不漏判任何一件坏事；","第三，绝对裁判得公正漂亮;","裁判机器人蜻蜓队长前来觐见！"],
-                isLogin:false,
+                isLogin: false,//判断是否登录
+                effectiveLink: true, //链接是否有效
             }
         },
         methods:{
@@ -56,6 +57,18 @@
                             token: this.$route.query.token
                         }
                     })
+                    return false;
+                }
+
+                //判断当前链接token与this.token是否相等
+                if (this.$route.query.token !== this.token) {
+                    this.effectiveLink = true;
+                    this.getTeamInfo();
+                }
+
+                if (!this.effectiveLink) {
+                    this.$message.error('链接已失效，请使用最新链接')
+                    return false;
                 }
 
                 const data = new FormData();
@@ -67,29 +80,32 @@
                         sessionStorage.removeItem('groupList');
                         this.$router.push('/myProject');
                     } else {
-                        this.$message(response.data.data);
+                        this.$message.error(response.data.data);
                     }
 
                 })
             },
             //根据token获取队伍信息
-            getTeamInfo() {
+            async getTeamInfo() {
                 this.token = this.$route.query.token;
                 const data = new FormData();
                 data.append('token', this.token)
-                tokenInfo(data).then(response => {
+                await tokenInfo(data).then(response => {
                     const groupInfo = this.groupInfo
                     groupInfo.name = response.data.data.name;
                     groupInfo.captainName = response.data.data.captainName;
+                    this.isLogin = true;
+                }).catch( error => {
+                    this.$message.error(error.response.data);
+                    this.effectiveLink = false;
                 })
             },
             //检验登录状态
             checkLogin() {
                 if (getCode() === '0') {
-                    personalInfo().then( async response => {
-                        await this.getTeamInfo();
+                    personalInfo().then( response => {
                         this.groupInfo.username = response.data.data.name;
-                        this.isLogin = true;
+                        this.getTeamInfo();
                     })
                 }
             }

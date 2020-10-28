@@ -32,20 +32,26 @@
                 <el-button type="primary" @click="uploadFile">确 定</el-button>
             </span>
         </el-dialog>
+        <progress-loading :visible.sync="loading"
+                          :is-finished.sync="finish"></progress-loading>
     </div>
 </template>
 
 <script>
     import {upload} from "@/api/userConsole";
+    import progressLoading from "@/components/progressLoading";
 
     export default {
         name: "upload",
+        components:{progressLoading},
         data() {
             return {
                 projectName:'',//项目名称
                 dialogVisible: false,
                 file:'',//文件
                 fileList:[],//文件列表
+                loading: false,
+                finish:false,
             }
         },
         props:{
@@ -93,7 +99,6 @@
                     this.$message.error('上传文件大小不超过 10MB!');
                     return false;
                 }
-
                 const data = new FormData();
                 data.append('file', this.file);
                 data.append('stageId', this.stageId);
@@ -104,7 +109,9 @@
                 // else if (isZIP) {
                 //     data.append('fileName', this.projectName + '.zip')
                 // }
+                this.loading = true;
                 upload(data).then(response => {
+                    this.finish = true;
                     this.$emit('success')
                     this.$message.success(response.data.data);
                     this.dialogClose();
