@@ -78,8 +78,9 @@
                                 <template v-else>
                                     <div class="noTeammate">无其他成员</div>
                                 </template>
-                                <div v-if="stepActive >= 0 && stepActive < 100 && stages[stepActive].name==='报名阶段' && isLeader">
+                                <div v-if="stepActive >= 0 && stepActive < 100 && stages[stepActive].name.indexOf('报名')!==-1 && isLeader">
                                     <el-button type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
+                                    <el-button type="primary" size="small" @click="deleteTeam">解散队伍</el-button>
                                 </div>
                             </el-form-item>
                         </el-form>
@@ -151,7 +152,8 @@
         deleteTeammate,
         stageFile,
         userDownloadFile,
-        userDeleteFile
+        userDeleteFile,
+        deleteTeam
     } from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import {competitionDetail} from "@/api/login";
@@ -467,6 +469,19 @@
             uploadFile(stageIndex) {
                 this.uploadDialog = true;
                 this.clickIndex = stageIndex;
+            },
+
+            //解散队伍
+            deleteTeam() {
+                const data = new FormData;
+                data.append('groupId', this.groupInfo.id);
+                deleteTeam(data).then( response => {
+                    if (response.data.data.success === true) {
+                        this.$message.success('解散成功');
+                        this.$router.push('/myProject');
+                        sessionStorage.removeItem('groupList');
+                    }
+                })
             }
 
         },

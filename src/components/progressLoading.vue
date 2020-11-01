@@ -57,7 +57,7 @@
                         clearInterval(normal);
                         this.fastenLoadingNum();
                     }
-                }, 200)
+                }, 75)
             },
             fastenLoadingNum() {
                 const fast = setInterval( () => {

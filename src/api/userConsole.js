@@ -192,3 +192,14 @@ export function userDeleteFile(data) {
         data: data
     })
 }
+
+/**
+ * 解散队伍
+ */
+export function deleteTeam(data) {
+    return service.request({
+        method: "delete",
+        url: '/groups/delete',
+        data: data
+    })
+}
