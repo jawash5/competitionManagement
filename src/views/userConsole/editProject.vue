@@ -473,17 +473,29 @@
 
             //解散队伍
             deleteTeam() {
-                const data = new FormData;
-                data.append('groupId', this.groupInfo.id);
-                deleteTeam(data).then( response => {
-                    if (response.data.data.success === true) {
-                        this.$message.success('解散成功');
-                        this.$router.push('/myProject');
-                        sessionStorage.removeItem('groupList');
+                this.$prompt('请输入队伍名称确认', '删除队伍', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    console.log(value)
+                    if (value === this.groupInfo.name) {
+                        const data = new FormData;
+                        data.append('groupId', this.groupInfo.id);
+                        deleteTeam(data).then( response => {
+                            if (response.data.data.success === true) {
+                                this.$message.success('解散成功');
+                                this.$router.push('/myProject');
+                                sessionStorage.removeItem('groupList');
+                            }
+                        })
                     }
-                })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消删除'
+                    });
+                });
             }
-
         },
         mounted() {
             this.getGroupInfo();
