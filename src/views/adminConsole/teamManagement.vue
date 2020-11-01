@@ -325,20 +325,18 @@
                     getStageFile(this.stageValue).then( res => {
                         const signUpGroups = res.data.data;
                         for (const signUpGroup of signUpGroups) {
-                            let index = -1;
                             for (let i=0; i<tableData.length; i++) {
                                 if (tableData[i].id === signUpGroup.groupId) {
-                                    index = i;
+                                    tableData[i].file = '⭕';
+                                    break;
                                 }
                             }
-                            tableData[index].file = '⭕';
                         }
                         for (const group of tableData) {
                             if(!Object.prototype.hasOwnProperty.call(group, 'file')) {
                                 group.file = '❌';
                             }
                         }
-
                         //获取组别
                         this.getType(tableData);
                     })
@@ -368,22 +366,22 @@
                 let tableData = this.tableData;
                 getStageFile(this.stageValue).then( response => {
                     const signUpGroups = response.data.data;
-
-                    if (signUpGroups.length === 0) {
-                        for (const group of tableData) {
-                                group.file = '❌';
-                        }
-                    } else {
+                    //初始化上交情况
+                    for (const group of tableData) {
+                        group.file = '❌';
+                    }
+                    //提交小组单独处理
+                    if (signUpGroups.length !== 0) {
                         for (const signUpGroup of signUpGroups) {
-                            for (const group of tableData) {
-                                if(group.id === signUpGroup.groupId) {
-                                    group.file = '⭕';
-                                } else {
-                                    group.file = '❌';
+                            for (let i=0; i<tableData.length; i++) {
+                                if (tableData[i].id === signUpGroup.groupId) {
+                                    tableData[i].file = '⭕';
+                                    break;
                                 }
                             }
                         }
                     }
+
                 } )
             },
             //获取比赛年，表现在年份下拉框中
