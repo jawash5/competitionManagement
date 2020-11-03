@@ -1,89 +1,93 @@
 <template>
-    <div id="myProject">
-        <div id="wrapTitle">个人资料</div>
-        <div id="infoWrap">
-            <div id="infoForm">
-                <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item label="用户名：">
-                        <br class="diff">
-                        <el-input v-model="form.username" :disabled="isDisabled"></el-input>
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="姓名：">
-                                <br class="diff">
-                            <el-input v-model="form.name" :disabled="isDisabled" class="itemInput"></el-input>
-                        </el-form-item></el-col>
-                        <el-col :span="12" class="needTurn">
-                            <el-form-item label="学号：">
-                                <br class="diff">
-                                <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="学号：" class="needShow">
-                        <br class="diff">
-                        <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
-                    </el-form-item>
-                    <el-form-item label="学校：" class="needShow">
-                        <br class="diff">
-                        <el-input v-model="form.university" :disabled="isDisabled"></el-input>
-                    </el-form-item>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="学院：">
-                                <br class="diff">
-                                <el-input v-model="form.school" :disabled="isDisabled"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12" class="needTurn">
-                            <el-form-item label="学校：">
-                                <br class="diff">
-                                <el-input v-model="form.university" :disabled="isDisabled"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-form-item label="邮箱：">
-                        <br class="diff">
-                        <el-input v-model="form.email" :disabled="emailVisible" style="width: 14vw;margin-right: 10px"></el-input>
-                        <el-button type="primary"
-                                   size="small"
-                                   icon="el-icon-edit"
-                                   circle
-                                   class="bDif"
-                                   v-if="emailVisible"
-                                   @click="emailVisible = false"></el-button>
-                        <el-button type="primary"
-                                   size="small"
-                                   :icon="icon"
-                                   circle
-                                   class="bDif"
-                                   v-if="!emailVisible"
-                                   @click="editEmail"></el-button>
-                    </el-form-item>
-                    <el-form-item label="电话：">
-                        <br class="diff">
-                        <el-input v-model="form.phone" :disabled="phoneVisible" style="width: 10vw;margin-right: 10px"></el-input>
-                        <el-button type="primary"
-                                   size="small"
-                                   icon="el-icon-edit"
-                                   circle
-                                   class="bDif"
-                                   v-if="phoneVisible"
-                                   @click="phoneVisible = false"></el-button>
-                        <el-button type="primary"
-                                   size="small"
-                                   :icon="icon"
-                                   circle
-                                   class="bDif"
-                                   v-if="!phoneVisible"
-                                   @click="editPhone"></el-button>
-                    </el-form-item>
-                    <el-form-item label="密码：">
-                        <el-button size="small" type="primary" @click="editPassword">修改密码</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
+    <div>
+        <div class="wrapTitle">个人资料</div>
+        <div class="infoForm">
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item label="用户名：">
+                    <br class="diff">
+                    <el-input v-model="form.username" :disabled="isDisabled"></el-input>
+                </el-form-item>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="姓名：">
+                            <br class="diff">
+                        <el-input v-model="form.name" :disabled="isDisabled" class="itemInput"></el-input>
+                    </el-form-item></el-col>
+                    <el-col :span="12" class="needTurn">
+                        <el-form-item label="学号：">
+                            <br class="diff">
+                            <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-form-item label="学号：" class="needShow">
+                    <br class="diff">
+                    <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
+                </el-form-item>
+                <el-form-item label="学校：" class="needShow">
+                    <br class="diff">
+                    <el-input v-model="form.university" :disabled="isDisabled"></el-input>
+                </el-form-item>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="学院：">
+                            <br class="diff">
+                            <el-input v-model="form.school" :disabled="isDisabled"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12" class="needTurn">
+                        <el-form-item label="学校：">
+                            <br class="diff">
+                            <el-input v-model="form.university" :disabled="isDisabled"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-form-item label="邮箱：">
+                    <br class="diff">
+                    <el-input ref="email"
+                              v-model="form.email"
+                              :disabled="emailVisible"
+                              style="width: 20vw; margin-right: 10px"></el-input>
+                    <el-button type="primary"
+                               size="small"
+                               icon="el-icon-edit"
+                               circle
+                               class="bDif"
+                               v-if="emailVisible"
+                               @click="showEditEmail"></el-button>
+                    <el-button type="primary"
+                               size="small"
+                               :icon="icon"
+                               circle
+                               class="bDif"
+                               v-if="!emailVisible"
+                               @click="editEmail"></el-button>
+                </el-form-item>
+                <el-form-item label="电话：">
+                    <br class="diff">
+                    <el-input ref="phone"
+                              v-model="form.phone"
+                              :disabled="phoneVisible"
+                              style="width: 20vw;margin-right: 10px"></el-input>
+                    <el-button type="primary"
+                               size="small"
+                               icon="el-icon-edit"
+                               circle
+                               class="bDif"
+                               v-if="phoneVisible"
+                               @click="showEditPhone"></el-button>
+                    <el-button type="primary"
+                               size="small"
+                               :icon="icon"
+                               circle
+                               class="bDif"
+                               v-if="!phoneVisible"
+                               @click="editPhone"></el-button>
+                </el-form-item>
+                <el-form-item label="密码：">
+                    <el-button size="small" type="primary" @click="editPassword">修改密码</el-button>
+                </el-form-item>
+            </el-form>
         </div>
     </div>
 
@@ -119,6 +123,12 @@
                     this.form = response.data.data
                 })
             },
+            showEditEmail() {
+                this.emailVisible = false;
+                this.$nextTick(() => {
+                    this.$refs.email.focus()
+                })
+            },
             editEmail() {
                 const data = this.form;
                 if(!validateEmail(data.email)) {
@@ -141,6 +151,12 @@
                     this.getPersonalInfo();
                     this.emailVisible = true;
                     this.icon = 'el-icon-check';
+                })
+            },
+            showEditPhone() {
+                this.phoneVisible = false;
+                this.$nextTick(() => {
+                    this.$refs.phone.focus()
                 })
             },
             editPhone() {
@@ -185,11 +201,6 @@
                     }).catch( error => {
                         this.$message.error(error.response.data);
                     })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消修改'
-                    });
                 });
             }
         },
@@ -201,30 +212,15 @@
 
 <style lang="scss" scoped>
 
-    #myProject {
-        display: flex;
-        flex-direction: column;
+    .infoForm {
+        width: 80%;
+        max-width: 600px;
+        margin: 40px auto;
     }
 
-    #infoForm {
-        width: 500px;
-        margin: 0 auto;
-        background-color: #FFFFFF;
-    }
-
-    #infoWrap {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        margin: 0 auto;
-        padding: 50px 0;
-        width: 1000px;
-        background-color: #FFFFFF;
-    }
-
-    #wrapTitle {
+    .wrapTitle {
         font-size: 26px;
-        margin: 0 auto;
+        text-align: center;
         font-family: "幼圆" , serif;
     }
 
@@ -236,9 +232,9 @@
         cursor: auto;
         color: #303133;
         background-color: #fff;
-        border-top: none;
-        border-left: none;
-        border-right: none;
+        border-top: 1px solid transparent;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
     }
 
 
