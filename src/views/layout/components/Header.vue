@@ -106,10 +106,10 @@
 
         .avatar {
             position: absolute;
-            top: 1vh;
+            top: 10px;
             left: 10vw;
+            margin-left: 0;
             border: #409EFF solid 1px;
-            z-index: 1;
         }
 
         .close {

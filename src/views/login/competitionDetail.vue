@@ -1,5 +1,5 @@
 <template>
-    <div id="competitionDetail">
+    <div class="competitionDetail">
         <head-login :state="state"></head-login>
         <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
         <el-image :src="competitionInfo.mainImage"
@@ -18,6 +18,7 @@
                                  :title="item.name"
                                  :description="item.startDate + ' 至 ' + item.endDate"></el-step>
             </el-steps>
+            <div class="div-15"></div>
 
             <el-button v-if="stepActive > 0" class="pull-right" type="success" round disabled>已过报名时间</el-button>
             <el-button v-else
@@ -36,7 +37,7 @@
                     </el-card>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-card class="announcement pull-right">
+                    <el-card class="announcement">
                         <div class="title">公告栏</div>
                         <div class="div-30"></div>
                         <div v-if="announcement.length === 0">
@@ -230,7 +231,7 @@
 <style lang="scss" scoped>
     @import '../../styles/config';
 
-    #competitionDetail {
+    .competitionDetail {
         min-width: 1200px;
 
         .header {
@@ -260,8 +261,8 @@
         }
 
         .announcement {
-            width: 350px;
             min-height: 400px;
+            margin: 20px 0;
         }
 
         .title {
@@ -275,7 +276,8 @@
         }
 
         .content {
-            padding: 50px;
+            margin: 20px 0;
+            padding: 30px;
         }
 
         /deep/.el-collapse-item__header {
@@ -306,42 +308,39 @@
         }
     }
 
+    @media screen and (max-width: 1200px){
+
+        .competitionDetail {
+            min-width: 0;
+
+            .wrap {
+                padding: 30px 20px;
+            }
+        }
+    }
+
     @media screen and (max-width: 420px){
 
-        .pull-right{
-            position: absolute;
-            right: 10vw;
-        }
-
         .infoButton{
-            position: absolute;
-            left: 10vw;
+            float: left;
         }
 
-        .infoButton{
-
-        }
-
-        #competitionDetail {
+        .competitionDetail {
             min-width: 0;
         }
 
-        /deep/ .el-card.announcement.pull-right.is-always-shadow{
-            position: absolute;
-            right: -23vw;
+        .el-col-6 {
+            width: 100%;
+        }
+
+        .el-col-offset-2 {
+            margin-left: 0;
         }
 
         .dif{
             display: none;
         }
 
-    }
-
-    @media screen and (max-width: 330px){
-        /deep/ .el-card.announcement.pull-right.is-always-shadow{
-            position: absolute;
-            right: -31.5vw;
-        }
     }
 
     @media screen and (min-width: 421px){

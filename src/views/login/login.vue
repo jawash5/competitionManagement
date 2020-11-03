@@ -195,6 +195,10 @@
             min-height: 700px;
         }
 
+        .login_hr {
+            display: none;
+        }
+
         img{
             display: none;
         }

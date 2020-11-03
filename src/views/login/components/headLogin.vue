@@ -14,6 +14,7 @@
                 </el-avatar>
             </el-popover>
         </div>
+
         <el-menu :default-active="$route.path"
                  mode="horizontal"
                  class="pull-right plus"
@@ -21,23 +22,18 @@
             <el-menu-item index="/checkCompetition">查看比赛</el-menu-item>
             <el-menu-item v-if="!state" index="/login">登录</el-menu-item>
             <el-menu-item v-if="!state" index="/register">注册</el-menu-item>
-        </el-menu>
-        <el-menu :default-active="$route.path"
-                 mode="horizontal"
-                 class="pull-right"
-                 router>
-            <el-menu-item v-if="!state">
-                <el-dropdown :style="{'float' : 'right' , 'right':'2vw'}">
-                    <i class="el-icon-menu" :style="{'font-size' : '20px'}"></i>
-                    <el-dropdown-menu slot="dropdown" :style="{'width' : '94vw'}">
-                        <el-dropdown-item><router-link to="/login">登陆</router-link></el-dropdown-item>
-                        <el-dropdown-item><router-link to="/register">注册</router-link></el-dropdown-item>
-                        <el-dropdown-item><router-link to="/checkCompetition">查看比赛</router-link></el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </el-menu-item>
             <el-menu-item v-if="state" :index="url">个人中心</el-menu-item>
         </el-menu>
+
+        <el-dropdown class="dropdown" style="float: right">
+            <i class="el-icon-menu" style="font-size: 20px"></i>
+            <el-dropdown-menu slot="dropdown" style="width: 94vw">
+                <el-dropdown-item v-if="!state"><router-link to="/login">登陆</router-link></el-dropdown-item>
+                <el-dropdown-item v-if="!state"><router-link to="/register">注册</router-link></el-dropdown-item>
+                <el-dropdown-item><router-link to="/checkCompetition">查看比赛</router-link></el-dropdown-item>
+                <el-dropdown-item v-if="state"><router-link :to="url">个人中心</router-link></el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
 
     </div>
 </template>
@@ -50,7 +46,6 @@
         data() {
             return{
                 url:'',
-                routerIndex: '/checkCompetition'
             }
         },
         props: {
@@ -62,26 +57,23 @@
         methods:{
             exit() {
                 this.$store.dispatch('app/exit').then(() => {
-                    this.routerIndex = '/login';
                     this.$router.push({
                         path:'/login'
                     })
                 }).catch( () => {
-                    this.routerIndex = '/login';
                     this.$router.push({
                         path:'/login'
                     })
                 })
             },
             setUrl() {
-                this.routerIndex = '/checkCompetition';
                 const role = getRole();
                 if (role === '参赛者') {
-                    this.url = '/myProject'
+                    this.url = '/myProject';
                 } else if (role === '管理员') {
-                    this.url = '/teamManagement'
+                    this.url = '/teamManagement';
                 } else if (role === '老师') {
-                    this.url = '/teacherConsole/scoringWork'
+                    this.url = '/teacherConsole/scoringWork';
                 }
             },
         },
@@ -91,7 +83,7 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
     .loginHead {
         height: 60px;
@@ -130,7 +122,10 @@
         display: block;
         width: 100%;
         border: none;
+    }
 
+    .dropdown {
+        display: none;
     }
 
 
@@ -140,19 +135,21 @@
             min-width: 0;
         }
 
-        .pull-right.plus{
+        .plus{
             display: none;
         }
 
+        .dropdown {
+            display: inline-block;
+        }
+
         i{
-            float: right;
             padding: 18px;
         }
 
-        a{
-            color: #222222;
+        a {
+            color: #303133;
             font-weight: 600;
-            font-family: 幼圆,serif;
         }
 
         /deep/.el-dropdown-menu__item{
@@ -161,7 +158,11 @@
         }
 
         .menuPlus {
-            width: 0;
+            float: left;
+
+            .avatar {
+                margin-left: 10vw;
+            }
         }
 
         .loginHeadTitle {
@@ -175,12 +176,6 @@
             cursor: default;
         }
 
-        /deep/ .avatar{
-            position: absolute;
-            left: 57vw;
-            top: 1.4vh;
-        }
-
         /deep/.popper__arrow{
             display: none;
         }
@@ -188,11 +183,9 @@
     }
 
     @media screen and (min-width: 421px){
-
         i{
             display: none;
         }
-
     }
 
 </style>
