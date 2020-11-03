@@ -45,7 +45,7 @@
         name: "headLogin",
         data() {
             return{
-                url:'',
+                url:'/myProject',
             }
         },
         props: {
