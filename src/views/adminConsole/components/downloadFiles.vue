@@ -8,8 +8,8 @@
                    :close-on-click-modal="false"
                    :close-on-press-escape="false">
             <div class="pull-center">
-                <el-radio v-model="fileType" label="1">技术组</el-radio>
-                <el-radio v-model="fileType" label="2">商务组</el-radio>
+                <el-radio v-model="fileType" label="技术组">技术组</el-radio>
+                <el-radio v-model="fileType" label="商务组">商务组</el-radio>
             </div>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogClose">取 消</el-button>
