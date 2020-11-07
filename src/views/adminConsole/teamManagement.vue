@@ -86,9 +86,9 @@
                 tooltip-effect="dark"
                 stripe
                 style="width: 100%;height: 60vh;overflow: auto"
+                v-loading="dataLoading"
                 :default-sort = "{ prop: 'type', order: 'descending'}"
                 @selection-change="handleChange">
-
             <el-table-column
                     type="selection"
                     width="50"
@@ -289,7 +289,8 @@
                 selectedTeacherName:'',
                 stageId: '',
                 fileIds:[],
-                tnames:''
+                tnames:'',
+                dataLoading: false,
             };
         },
         methods: {
@@ -300,6 +301,7 @@
             },
             //比赛年发生变化
             handleYearChange(year) {
+                this.dataLoading = true;
                 this.getCompetitionGroups(year);
                 this.getCompetitionStage(year);
                 this.getCompetitionId(year);
@@ -318,11 +320,11 @@
             },
             //获取比赛组,添加文件上交情况，组别情况
             getCompetitionGroups(year) {
-                getCompetitionGroups(year).then( response => {
+                getCompetitionGroups(year).then( async response => {
                     let tableData = response.data.data;
 
                     //获取队伍文件上交情况
-                    getStageFile(this.stageValue).then( res => {
+                    await getStageFile(this.stageValue).then( res => {
                         const signUpGroups = res.data.data;
                         for (const signUpGroup of signUpGroups) {
                             for (let i=0; i<tableData.length; i++) {
@@ -340,6 +342,7 @@
                         //获取组别
                         this.getType(tableData);
                     })
+                    this.dataLoading = false;
                 })
             },
             //获取各小组的组别
