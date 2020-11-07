@@ -78,7 +78,7 @@
                                 <template v-else>
                                     <div class="noTeammate">无其他成员</div>
                                 </template>
-                                <div v-if="stepActive >= 0 && stepActive < 100 && stages[stepActive].name.indexOf('报名')!==-1 && isLeader">
+                                <div v-if="isLeader">
                                     <el-button type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
                                     <el-button type="primary" size="small" @click="deleteTeam">解散队伍</el-button>
                                 </div>
@@ -489,11 +489,6 @@
                             }
                         })
                     }
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '取消删除'
-                    });
                 });
             }
         },
