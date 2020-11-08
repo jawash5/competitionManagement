@@ -81,7 +81,7 @@
         }
 
         .title--long {
-            padding: 0 2 * $standard;
+            padding: 0 .5 * $standard;
             text-align: center;
             font-size: 1.2 * $standard;
             font-family: "Microsoft YaHei", serif;
