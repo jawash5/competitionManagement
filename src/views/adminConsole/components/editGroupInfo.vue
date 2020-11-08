@@ -66,7 +66,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit("update:dialogClose",false);
+                this.$emit("update:visible",false);
             },
             //提交修改表单
             submitEditForm() {

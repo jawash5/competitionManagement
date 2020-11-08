@@ -63,7 +63,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit('update:dialogClose',false)
+                this.$emit('update:visible',false)
             },
             getToken() {
                   const time = format('YYYY-MM-DD HH:mm:ss')
@@ -86,7 +86,7 @@
                 })
             },
             setUrl() {
-                const url = this.$router.app.$el.baseURI;
+                const url = window.location.href;
                 if(url.indexOf('editProject') !== -1) {
                     this.url = url.replace('editProject','acceptInvitation')
                 } else if (url.indexOf('competitionDetail') !== -1) {

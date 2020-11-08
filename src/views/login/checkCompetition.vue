@@ -1,8 +1,7 @@
 <template>
-    <div id="checkCompetition">
+    <div class="checkCompetition">
         <head-login :state="state"></head-login>
         <div class="wrap">
-            <div class="div-30"></div>
             <div class="competitionSelect">
                 <el-select v-model="selectValue" placeholder="请选择">
                     <el-option
@@ -75,17 +74,14 @@
 </script>
 
 <style lang="scss" scoped>
-    #checkCompetition {
-        background-color: #f7f7f7;
+    .checkCompetition {
         height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-width: 0;
         min-height: 800px;
+        background-color: #f7f7f7;
 
         .wrap {
             height: 100vh;
+            margin-top: 30px;
             min-height: 680px;
         }
 
@@ -100,26 +96,8 @@
             align-content: flex-start;
             /*justify-content: space-around;*/
             justify-content: flex-start;
-            margin-top: 30px;
-            margin-left: 30px;
+            margin:30px
         }
-    }
-
-    /deep/.el-tabs__item {
-        font-family: "幼圆" , serif;
-        width: 200px;
-        height: 60px;
-        font-size: 18px;
-    }
-
-    /deep/.el-tabs__nav-next {
-        display: block;
-        text-align: left;
-    }
-
-    /deep/.el-tabs__nav-prev{
-        display: block;
-        text-align: left;
     }
 
     @media screen and (max-width: 420px){

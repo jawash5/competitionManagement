@@ -206,17 +206,13 @@
             </div>
 
 
-        <out-status :visible="outStatusVisible"
-                    :dialogClose.sync="outStatusVisible"
+        <out-status :visible.sync="outStatusVisible"
                     :stage-value="stageValue"
                     @success="getCompetitionGroups(yearValue)"></out-status>
-        <edit-group-info :visible="editGroupInfoVisible"
-                         :dialogClose.sync="editGroupInfoVisible"
+        <edit-group-info :visible.sync="editGroupInfoVisible"
                          :groupInfo="groupInfo"></edit-group-info>
-        <send-message :visible="sendMessageVisible"
-                      :dialogClose.sync="sendMessageVisible"></send-message>
-        <download-files :visible="downloadFilesVisible"
-                        :dialogClose.sync="downloadFilesVisible"
+        <send-message :visible.sync="sendMessageVisible"></send-message>
+        <download-files :visible.sync="downloadFilesVisible"
                         :stage="stageValue"></download-files>
         <progress-loading :visible.sync="loading"
                           :isFinished.sync="finish"></progress-loading>

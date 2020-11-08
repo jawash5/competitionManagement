@@ -81,7 +81,7 @@
 
             },
             dialogClose() {
-                this.$emit("update:dialogClose",false);
+                this.$emit("update:visible",false);
                 this.clear = false;
             },
             //打开对话框后的事件

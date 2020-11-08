@@ -1,7 +1,7 @@
 <template>
         <div id="editProject">
             <el-page-header @back="goBack" class="pull-left"></el-page-header>
-            <span id="competitionName">查看资料</span>
+            <div id="competitionName">查看资料</div>
             <el-row>
                 <el-col :span="12" id="desc">
                     <div id="projectForm">
@@ -129,8 +129,7 @@
                 </el-col>
             </el-row>
 
-            <invite :visible="inviteVisible"
-                    :dialogClose.sync="inviteVisible"
+            <invite :visible.sync="inviteVisible"
                     :group-id="groupInfo.id"></invite>
 
             <upload :visible.sync="uploadDialog"
@@ -509,8 +508,9 @@
         background-color: #fff;
 
         #competitionName {
-            font-size: 26px;
             margin: 0 auto;
+            text-align: center;
+            font-size: 26px;
             font-family: "幼圆" , serif;
         }
 

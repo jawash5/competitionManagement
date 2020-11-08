@@ -42,7 +42,7 @@
         },
         methods:{
             dialogClose() {
-                this.$emit("update:dialogClose",false);
+                this.$emit("update:visible",false);
             },
             changeOutStatus() {
                 const chosenGroups = this.$store.getters['sendNotice/chosenGroups']
