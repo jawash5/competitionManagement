@@ -81,3 +81,24 @@ export function getMajor(data){
         url: '/auth/majors?name=' + data,
     })
 }
+
+/**
+ * 忘记密码发送邮件
+ */
+export function forgetPass(data){
+    return service.request({
+        method: "post",
+        url: '/auth/password/forget?studentNo=' + data,
+    })
+}
+
+/**
+ * 修改密码
+ */
+export function editPass(data){
+    return service.request({
+        method: "post",
+        url: '/auth/password/forget/change',
+        data: data
+    })
+}

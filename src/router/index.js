@@ -63,6 +63,22 @@ export const defaultRouterMap = [
         },
         component: ()  => import("../views/userConsole/acceptInvitation")
     },
+    {
+        path: '/modifyPassword',
+        name: '/modifyPassword',
+        meta:{
+            name:'修改密码'
+        },
+        component: ()  => import("../views/login/modifyPassword")
+    },
+    {
+        path: '/forgetPassword',
+        name: '/forgetPassword',
+        meta:{
+            name:'忘记密码'
+        },
+        component: ()  => import("../views/login/forgetPassword")
+    },
 ]
 
 

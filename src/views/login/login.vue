@@ -1,38 +1,38 @@
 <template>
-    <div id="login">
+    <div class="login">
         <head-login :state="state"></head-login>
-        <div id="wrap">
-            <div id="login_with_img" v-loading="loading">
-                <img id="login_img" alt="讨论" src="../../assets/main/login.png">
-                <span class="login_hr"></span>
-                <div id="login_wrap">
-                    <div class="login_title">登&nbsp;&nbsp;录</div>
-                    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="login-ruleForm">
-                        <el-form-item prop="username">
-                            <el-input placeholder="用户名/手机号/学号"
-                                      prefix-icon="iconshequ"
-                                      v-model="ruleForm.username"
-                                      @keyup.enter.native="submitInfo"
-                                      autocomplete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item prop="password">
-                            <el-input placeholder="请输入密码"
-                                      prefix-icon="iconmima"
-                                      type="password"
-                                      show-password
-                                      clearable
-                                      v-model="ruleForm.password"
-                                      @keyup.enter.native="submitInfo"
-                                      autocomplete="off"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <div class="buttons">
-                        <el-button type="primary" round @click="submitInfo" >登录</el-button>
-                        <el-button round @click="gotoRegister">注册</el-button>
-                    </div>
+        <div class="login_with_img" v-loading="loading">
+            <img class="login_img" alt="讨论" src="../../assets/main/login.png">
+            <span class="login_hr"></span>
+            <div class="login_wrap">
+                <div class="login_title">登&nbsp;&nbsp;录</div>
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="login-ruleForm" >
+                    <el-form-item prop="username">
+                        <el-input placeholder="用户名/手机号/学号"
+                                  prefix-icon="iconshequ"
+                                  v-model="ruleForm.username"
+                                  @keyup.enter.native="submitInfo"
+                                  autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input placeholder="请输入密码"
+                                  prefix-icon="iconmima"
+                                  type="password"
+                                  show-password
+                                  clearable
+                                  v-model="ruleForm.password"
+                                  @keyup.enter.native="submitInfo"
+                                  autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <router-link class="forgetPass" to="/forgetPassword">忘记密码?</router-link>
+                <div class="buttons">
+                    <el-button type="primary" round @click="submitInfo" >登录</el-button>
+                    <el-button round @click="gotoRegister">注册</el-button>
                 </div>
             </div>
         </div>
+
         <my-footer></my-footer>
     </div>
 </template>
@@ -53,20 +53,28 @@
             const checkUsername = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('账号/手机/学号不能为空'));
+                } else {
+                    callback();
                 }
             };
             const validatePass = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入密码'));
+                } else if (value.length > 20 && value.length < 11) {
+                    callback(new Error('密码格式错误'));
+                } else {
+                    callback();
                 }
             };
 
             return {
-                loading:false,//加载
+                loading: false,//加载
+                //表单信息
                 ruleForm: {
                     username: '',
                     password: ''
                 },
+                //表单规则
                 rules: {
                     username: [
                         { validator: checkUsername, trigger: 'blur' },
@@ -78,154 +86,153 @@
             };
         },
         computed:{
+            //判断登录状态
             state() {
                 return getCode() === '0';
             }
         },
         methods: {
+            //注册
             gotoRegister() {
                 this.$router.push("/register");
             },
 
+            //登录信息提交
             submitInfo() {
-                if(this.ruleForm.username === '' || this.ruleForm.password === '') {
-                    this.$message.error('用户名或密码不能为空!');
-                    return false;
-                }
-                if(this.ruleForm.password.length < 6 || this.ruleForm.password.length > 20) {
-                    this.$message.error('密码输入有误!');
-                    return false;
-                }
-                this.loading = true;
-                const data = new FormData();
-                data.append('username',this.ruleForm.username);
-                data.append('password',this.ruleForm.password);
+                let that = this;
+                //表单信息验证
+                that.$refs['ruleForm'].validate( (valid) => {
+                    if (valid) {
+                        that.loading = true;//加载状态打开
+                        const data = new FormData();
+                        data.append('username',that.ruleForm.username);
+                        data.append('password',that.ruleForm.password);
 
-                this.$store.dispatch("app/login", data).then(() => {
-                    this.$router.push({
-                        path: this.$route.query.redirect || '/checkCompetition',
-                        query: {
-                            token: this.$route.query.token
-                        }
-                    });
-                    this.loading = false;
-                }).catch(error => {
-                    this.loading = false;
-                    this.$message.error(error.response.data);
-                });
+                        that.$store.dispatch("app/login", data).then( () => {
+                            that.$router.push({
+                                path: that.$route.query.redirect || '/checkCompetition',
+                                query: {
+                                    token: that.$route.query.token //重定向后带参
+                                }
+                            });
+                            that.loading = false;//加载状态关闭
+                        }).catch(error => {
+                            that.loading = false;
+                            that.$message.error(error.response.data);
+                        });
+                    } else {
+                        return false;
+                    }
+                })
             },
         },
     }
 </script>
 
 <style lang="scss" scoped>
-    #login {
-        background-color: #f7f7f7;
-        height: 100vh;
+    .login {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-width: 0;
+        height: 100vh;
         min-height: 700px;
-    }
-
-    #wrap {
         background-color: #f7f7f7;
-        height: 80vh;
-        display: flex;
-        align-items: center;
+
+        .login_with_img {
+            background-color: #FFFFFF;
+            margin: 0 auto;
+            height: 500px;
+            width: 1000px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+
+            .login_img {
+                width: 400px;
+                margin: 0 auto;
+            }
+
+            .login_hr {
+                border: .5px solid #DCDFE6;
+                height:400px;
+            }
+
+            .login_wrap {
+                height: 360px;
+                width: 360px;
+                padding: 20px;
+                margin: 0 auto;
+
+                .login_title {
+                    color: #303133;
+                    margin: 30px;
+                    font-weight: 900;
+                    font-size: 30px;
+                    font-family: "幼圆" , serif;
+                    text-align: center;
+                }
+
+                .login-ruleForm {
+                    margin: 50px 0 30px 0;
+                }
+
+                .forgetPass {
+                    float: right;
+                    margin-right: 10px;
+                    font-size: 12px;
+                    color: #303133;
+
+                    &:hover {
+                        color: #409EFF;
+                        text-decoration: underline;
+                    }
+                }
+
+                .buttons {
+                    text-align: center;
+
+                    &:before {
+                        content: "";
+                        height: 15px;
+                        display: block;
+                        clear: both;
+                    }
+                }
+            }
+        }
     }
 
-    #login_wrap {
-        background-color: #FFFFFF;
-        min-width: 320px;
-        height: 320px;
-        width: 320px;
-        padding: 20px;
-        margin: 0 auto;
-        border-radius: 4px;
-    }
+    @media screen and (max-width: 1000px) {
 
-    .login_hr {
-        border:0.5px solid #DCDFE6;
-        height:400px;
-    }
+        .login {
+            .login_with_img {
+                width: 80vw;
 
-    .login_title {
-        color: black;
-        margin: 30px;
-        font-weight: 900;
-        font-size: 30px;
-        font-family: "幼圆" , serif;
-        text-align: center;
-    }
+                .login_hr {
+                    display: none;
+                }
 
-    #login_img {
-        width: 400px;
-        margin: 0 auto;
-    }
-
-    #login_with_img {
-        background-color: #FFFFFF;
-        margin: 0 auto;
-        height: 500px;
-        width: 1000px;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-    }
-
-    .login-ruleForm {
-        margin: 50px 0;
-    }
-
-    .buttons {
-        text-align: center;
+                .login_img{
+                    display: none;
+                }
+            }
+        }
     }
 
     @media screen and (max-width: 420px){
 
-        #login {
-            background-color: #f7f7f7;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-width: 0;
-            min-height: 700px;
+        .login {
+            .login_with_img{
+                width: 100vw;
+            }
         }
-
-        .login_hr {
-            display: none;
-        }
-
-        img{
-            display: none;
-        }
-
     }
 
     @media screen and (max-width: 363px){
 
-        #login_wrap {
-            background-color: #FFFFFF;
-            min-width: 0;
-            height: 320px;
-            width: 270px;
-            padding: 20px;
-            margin: 0 auto;
-            border-radius: 4px;
-        }
-
-        .login-ruleForm {
-            margin: 0;
-        }
-
-        /deep/ .el-input__inner{
+        /deep/.el-input__inner{
             width: 90vw;
         }
-
-
     }
 
 </style>
