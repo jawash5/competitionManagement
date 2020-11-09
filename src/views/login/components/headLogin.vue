@@ -56,7 +56,7 @@
         },
         methods:{
             exit() {
-                this.$store.dispatch('app/exit').then(() => {
+                this.$store.dispatch('app/exit').then( () => {
                     this.$router.push({
                         path:'/login'
                     })

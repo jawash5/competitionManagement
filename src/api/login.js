@@ -95,7 +95,7 @@ export function forgetPass(data){
 /**
  * 修改密码
  */
-export function editPass(data){
+export function modifyPass(data){
     return service.request({
         method: "post",
         url: '/auth/password/forget/change',

@@ -85,7 +85,10 @@
                                @click="editPhone"></el-button>
                 </el-form-item>
                 <el-form-item label="密码：">
-                    <el-button size="small" type="primary" @click="editPassword">修改密码</el-button>
+                    <el-button size="small"
+                               type="primary"
+                               :disabled="sendBtn.isSend"
+                               @click="editPassword">{{sendBtn.text}}</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -96,6 +99,7 @@
 <script>
     import {modifyPersonalInfo, personalInfo} from "@/api/userConsole";
     import {validateEmail, validatePhoneNo } from "@/utils/validator";
+    import {forgetPass} from "@/api/login";
 
     export default {
         name: "personalInfo",
@@ -115,6 +119,10 @@
                     username: '',
                     password:''
                 },
+                sendBtn:{
+                    isSend: false,
+                    text: '修改密码'
+                }
             }
         },
         methods: {
@@ -184,24 +192,28 @@
                 })
             },
             editPassword() {
-                this.$prompt('请输入新密码', '修改密码', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{11,}$/,
-                    inputErrorMessage: '密码长度至少为11位，由数字和字母组成'
-                }).then(({ value }) => {
-                    const data = {
-                        password: value,
-                    };
-                    modifyPersonalInfo(data).then( () => {
-                        this.$message({
-                            type:"success",
-                            message:"修改成功！"
-                        })
-                    }).catch( error => {
-                        this.$message.error(error.response.data);
-                    })
-                });
+                forgetPass(this.form.studentNo).then( () => {
+                    this.sendBtn.isSend = true;
+                    this.sendBtn.text = '发送中';
+                    this.countDown(60);
+                    this.$message.success('邮件已发送，请注意查收')
+                }).catch( error => {
+                    this.$message.error( error.response.data);
+                })
+            },
+            //倒计时
+            countDown(time) {
+                let timeNum = time + 1;
+                const timer = setInterval( () => {
+                    timeNum--;
+                    if (timeNum === -1) {
+                        clearInterval(timer);
+                        this.sendBtn.text = '重新发送';
+                        this.sendBtn.isSend = false;
+                    } else {
+                        this.sendBtn.text = `${timeNum} 秒`;
+                    }
+                },1000)
             }
         },
         mounted() {

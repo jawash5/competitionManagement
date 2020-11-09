@@ -2,7 +2,8 @@ import router from "@/router/index";
 import {getCode, removeCode, removeRole} from "@/utils/app";
 import store from "../store/index";
 
-const whiteRouter = ['/login', '/register', '/checkCompetition', '/competitionDetail','/acceptInvitation','/forgetPassword'];
+const whiteRouter = ['/login', '/register', '/checkCompetition', '/competitionDetail',
+    '/acceptInvitation','/forgetPassword'];
 
 router.beforeEach((to, from, next) =>{
     if(getCode() === '0') {
@@ -33,10 +34,16 @@ router.beforeEach((to, from, next) =>{
         }
 
     } else {
-        if(whiteRouter.indexOf(to.path) !== -1) {
-            next();
+        if (to.path === '/modifyPassword') {
+            if (Object.prototype.hasOwnProperty.call(to.query, 'token')) {
+                next();
+            }
         } else {
-            next('/login');
+            if(whiteRouter.indexOf(to.path) !== -1) {
+                next();
+            } else {
+                next('/login');
+            }
         }
     }
 })

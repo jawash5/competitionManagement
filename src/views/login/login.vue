@@ -27,7 +27,7 @@
                 </el-form>
                 <router-link class="forgetPass" to="/forgetPassword">忘记密码?</router-link>
                 <div class="buttons">
-                    <el-button type="primary" round @click="submitInfo" >登录</el-button>
+                    <el-button type="primary" round @click="submitInfo">登录</el-button>
                     <el-button round @click="gotoRegister">注册</el-button>
                 </div>
             </div>
