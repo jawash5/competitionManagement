@@ -65,9 +65,10 @@
                 //发送邮件
 
                 forgetPass(this.studentNo).then( () => {
+                    this.sendBtn.isSend = true;
                     this.sendBtn.text = '发送中';
                     this.countDown(60);
-                    this.$message.success('邮件已发送')
+                    this.$message.success('邮件已发送');
                 }).catch( error => {
                     this.$message.error( error.response.data);
                 })
