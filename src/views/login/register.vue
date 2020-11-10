@@ -1,10 +1,10 @@
 <template>
-    <div id="register">
+    <div class="register">
         <head-login :state='false'></head-login>
-        <div id="registerWithImg">
-            <img id="registerImg" alt="讨论" src="../../assets/main/register.png">
+        <div class="registerWithImg">
+            <img class="registerImg" alt="讨论" src="../../assets/main/register.png">
             <span class="registerHr"></span>
-            <div id="registerWrap">
+            <div class="registerWrap">
                 <h1 class="registerTitle">注&nbsp;&nbsp;册</h1>
                 <el-form class="registerRuleForm"
                          :model="ruleForm"
@@ -94,7 +94,7 @@
                     <el-form-item label="邮箱" prop="email">
                         <el-input prefix-icon="iconxiaoxi"
                                   v-model="ruleForm.email"
-                                  placeholder="队长必须填写此项"></el-input>
+                                  placeholder="绑定邮箱可找回密码"></el-input>
                     </el-form-item>
 
                     <el-form-item label="电话" prop="phoneNo">
@@ -126,9 +126,7 @@
         },
         data() {
             const validatePass = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入密码'));
-                } else if (!validatePassword(value)){
+                if (!validatePassword(value)){
                     callback(new Error('长度为11至20位，由数字和字母组成'));
                 } else {
                     if (this.ruleForm.checkPass !== '') {
@@ -139,9 +137,7 @@
             };
 
             const validatePass2 = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请再次输入密码'));
-                } else if (value !== this.ruleForm.password) {
+                if (value !== this.ruleForm.password) {
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                     callback();
@@ -149,10 +145,10 @@
             };
 
             const validateMail = (rule, value, callback) => {
-                if (value === '') {
-                    callback();
-                } else if(!validateEmail(value)){
+                if(!validateEmail(value)){
                     callback(new Error('请输入正确的邮箱'));
+                } else {
+                    callback();
                 }
             };
 
@@ -161,6 +157,8 @@
                     callback();
                 } else if(!validatePhoneNo(value)){
                     callback(new Error('请输入正确的手机号'));
+                } else {
+                    callback();
                 }
             };
             const validateStudentNo = (rule, value, callback) => {
@@ -173,8 +171,6 @@
                 }
             };
 
-
-
             return {
                 ruleForm: {
                     username: '',
@@ -185,7 +181,7 @@
                     school: '',
                     email: '',
                     phoneNo: '',
-                    university: '杭州电子科技大学',
+                    university: '杭州电子科技大学', //学校默认
                     major:'',
                     gender:'',
                     className:''
@@ -211,7 +207,7 @@
                         { required: true, message: '请选择性别', trigger: 'blur' },
                     ],
                     email: [
-                        { required: false, validator: validateMail, trigger: 'blur' }
+                        { required: true, validator: validateMail, trigger: 'blur' }
                     ],
                     phoneNo: [
                         { required: false, validator: validatePhone, trigger: 'blur' }
@@ -232,56 +228,26 @@
         },
         methods:{
             submitInfo() {
-                // 提交表单前验证
-                // 空值验证
-                if(this.ruleForm.username === '' || this.ruleForm.password === '' || this.ruleForm.name === ''||
-                    this.ruleForm.studentNo === '' || this.ruleForm.school === '' || this.ruleForm.major === ''||
-                    this.ruleForm.gender === '' || this.ruleForm.className === '') {
-                    this.$message.error('请填写完整注册内容!');
-                    return false;
-                }
-                //密码验证
-                if(!validatePassword(this.ruleForm.password)) {
-                    this.$message.error('密码格式不正确!');
-                    return false;
-                }
-
-                //重复密码验证
-                if(this.ruleForm.checkPass !== this.ruleForm.password) {
-                    this.$message.error('两次密码不一致!');
-                    return false;
-                }
-
-                //姓名验证
-                if(this.ruleForm.name.length < 2) {
-                    this.$message.error('请输入正确的姓名!');
-                    return false;
-                }
-
-                //学号验证
-                if(!validateStudentNumber(this.ruleForm.studentNo)) {
-                    this.$message.error('请输入正确的学号!');
-                    return false;
-                }
-
-                //班级
-                if(this.ruleForm.className.length !== 8) {
-                    this.$message.error('请输入正确的班级号!');
-                    return false;
-                }
-
-                register(this.ruleForm).then( () => {
-                    this.$message({
-                        message: '注册成功！',
-                        type: 'success'
-                    });
-                    this.$router.push({
-                        path:'/login'
-                    })
-                }).catch(error => {
-                    this.$message.error(error.response.data);
-                });
+                // 提交表单前验证，el-form属性validate验证
+                this.$refs['ruleForm'].validate( (valid) => {
+                    if (valid) {
+                        register(this.ruleForm).then( () => {
+                            this.$message({
+                                message: '注册成功！',
+                                type: 'success'
+                            });
+                            this.$router.push({
+                                path:'/login'
+                            })
+                        }).catch(error => {
+                            this.$message.error(error.response.data);
+                        });
+                    } else {
+                        return false;
+                    }
+                })
             },
+            //获取学院信息
             getSchool() {
                 this.schoolOptions = [];
                 getSchool(this.ruleForm.university).then( response => {
@@ -291,6 +257,7 @@
                     }
                 })
             },
+            //获取专业信息
             getMajor() {
                 this.majorOptions = [];
                 getMajor(this.ruleForm.school).then( response => {
@@ -308,106 +275,113 @@
 </script>
 
 <style lang="scss" scoped>
-    #register {
+    .register {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         min-width: 420px;
-        min-height: 800px;
-    }
+        min-height: 920px;
 
-    #registerWithImg {
-        display: flex;
-        align-items: center;
-        height: 800px;
-        width: 1000px;
-        background-color: #FFFFFF;
-        margin: 60px auto;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-    }
+        .registerWithImg {
+            display: flex;
+            align-items: center;
+            height: 800px;
+            width: 1000px;
+            background-color: #FFFFFF;
+            margin: 60px auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 
-    #registerImg {
-        width: 400px;
-        margin: 0 auto;
-    }
+            .registerImg {
+                width: 400px;
+                margin: 0 auto;
+            }
 
-    .registerHr {
-        border: .5px solid #DCDFE6;
-        height: 600px;
-    }
+            .registerHr {
+                border: .5px solid #DCDFE6;
+                height: 600px;
+            }
 
-    #registerWrap {
-        background-color: #fff;
-        min-width: 400px;
-        height: 650px;
-        width: 400px;
-        margin: 0 auto;
+            .registerWrap {
+                min-width: 400px;
+                height: 680px;
+                width: 400px;
+                margin: 0 auto;
 
-        .registerTitle {
-            color: #303133;
-            margin: 0 0 30px 0;
-            font-weight: 900;
-            font-size: 30px;
-            font-family: "幼圆" , serif;
-            text-align: center;
+                .registerTitle {
+                    color: #303133;
+                    margin: 0 0 30px 0;
+                    font-weight: 900;
+                    font-size: 30px;
+                    font-family: "幼圆" , serif;
+                    text-align: center;
+                }
+
+                .registerRuleForm {
+                    margin: 30px 0;
+                }
+
+                .buttons {
+                    text-align: center;
+                }
+            }
         }
-
-        .registerRuleForm {
-            margin: 30px 0;
-        }
     }
 
-    .buttons {
-        text-align: center;
-    }
-
-    @media screen and (max-width: 800px){
-
-        #register {
+    @media screen and (max-width: 825px){
+        .register {
             min-width: 0;
             min-height: 0;
-        }
 
-        img{
-            display: none;
-        }
+            .registerWithImg {
+                display: block;
+                align-items: center;
+                width: 80vw;
+                height: auto;
+                padding: 20px 0 20px 0;
 
-        .registerHr {
-            display: none;
-        }
+                .registerImg {
+                    display: none;
+                }
 
-        #registerWithImg {
-            display: block;
-            align-items: center;
-            width: 100vw;
-            padding: 20px 0 20px 0;
-        }
+                .registerHr {
+                    display: none;
+                }
 
-        #registerWrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: auto;
-            width: auto;
-            min-width: 0;
-            padding: 20px 0;
+                .registerWrap {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    height: auto;
+                    width: auto;
+                    min-width: 0;
+                    padding: 20px 0;
 
-            .registerTitle{
-                margin: 10px 0 0 0;
-                font-size: 20px;
+                    .registerTitle{
+                        margin: 10px 0 0 0;
+                        font-size: 20px;
+                    }
+
+                    .registerRuleForm {
+                        margin: 0;
+                    }
+
+                    /deep/ .el-form-item{
+                        margin-top: 3vh;
+                    }
+
+                    /deep/ .el-input__inner{
+                        width: 60vw;
+                    }
+                }
             }
+        }
+    }
 
-            .registerRuleForm {
-                margin: 0;
+    @media screen and (max-width: 426px) {
+        .register {
+            .registerWithImg {
+                width: 100vw;
             }
-        }
-
-        /deep/ .el-form-item{
-            margin-top: 3.2vh;
-        }
-
-        /deep/ .el-input__inner{
-            width: 60vw;
         }
     }
 
