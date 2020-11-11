@@ -9,18 +9,19 @@
                           placeholder="请输入学号"
                           @keydown.enter.native="sendEmail"
                           autocomplete="off">
-                <el-button class="sendEmail"
+                <el-button class="btn--sendMail"
                            type="danger"
                            :disabled="sendBtn.isSend"
                            slot="suffix"
                            @click="sendEmail">{{ sendBtn.text }}</el-button>
                 </el-input>
                 <div class="div-30"></div>
-                <div class="btn">
-                    <el-button type="primary"
-                               round
-                               @click="$router.push('/login')">返回登录</el-button>
-                </div>
+
+                <el-button class="btn--back"
+                           type="primary"
+                           round
+                           @click="$router.push('/login')">返回登录</el-button>
+
             </div>
 
             <div class="divider"></div>
@@ -63,7 +64,6 @@
                     return false;
                 }
                 //发送邮件
-
                 forgetPass(this.studentNo).then( () => {
                     this.sendBtn.isSend = true;
                     this.sendBtn.text = '发送中';
@@ -130,9 +130,12 @@
                     right: 0;
                 }
 
+                .btn--sendMail {
+                    border-radius: 0 3px 3px 0;
+                }
 
-                .btn {
-                    text-align: center;
+                .btn--back {
+                    margin: 0 auto;
                 }
             }
 
@@ -165,7 +168,7 @@
         }
     }
 
-    @media screen and (max-width: 420px){
+    @media screen and (max-width: 426px){
         .forgetPassword {
             .wrap {
                 width: 100vw;

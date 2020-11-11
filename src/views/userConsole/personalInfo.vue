@@ -211,7 +211,7 @@
                         this.sendBtn.text = '重新发送';
                         this.sendBtn.isSend = false;
                     } else {
-                        this.sendBtn.text = `${timeNum} 秒`;
+                        this.sendBtn.text = `${timeNum}s 后可重新发送`;
                     }
                 },1000)
             }

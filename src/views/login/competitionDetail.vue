@@ -16,7 +16,7 @@
                         <el-step v-for="item in competitionInfo.stages"
                                  :key="item.id"
                                  :title="item.name"
-                                 :description="item.startDate + ' 至 ' + item.endDate"></el-step>
+                                 :description="item.startDate.slice(0, -3) + ' 至 ' + item.endDate.slice(0, -3)"></el-step>
             </el-steps>
             <div class="div-15"></div>
 
@@ -27,17 +27,18 @@
                        round
                        :disabled="haveSignedUp"
                        @click="signUpCompetition">{{haveSignedUp ? '已报名': '立即报名'}}</el-button>
-            <el-button round class="infoButton" type="success" @click="dVisible = true">比赛介绍</el-button>
+            <el-button round class="infoButton" type="success" @click="visible.dVisible = true">比赛介绍</el-button>
             <div class="div-60"></div>
+
             <el-row>
                 <el-col :span="16" class="dif">
-                    <el-card class="content">
-                        <div v-if="this.mdContent === ''">管理员很懒，什么也没有留下...</div>
+                    <el-card class="describeContent">
+                        <div v-if="competitionInfo.information === ''">管理员很懒，什么也没有留下...</div>
                         <div class="markdown-body" v-html="content"></div>
                     </el-card>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-card class="announcement">
+                    <el-card class="announcements">
                         <div class="title">公告栏</div>
                         <div class="div-30"></div>
                         <div v-if="announcement.length === 0">
@@ -55,18 +56,17 @@
                     </el-card>
                 </el-col>
             </el-row>
-            <el-dialog :visible.sync="dVisible" width="90vw">
-                    <div v-if="mdContent === ''">管理员很懒，什么也没有留下...</div>
+            <el-dialog :visible.sync="visible.dVisible" width="90vw">
+                    <div v-if="competitionInfo.information === ''">管理员很懒，什么也没有留下...</div>
                     <div class="markdown-body" v-html="content"></div>
             </el-dialog>
-            <new-team :visible="newTeamVisible"
-                      :dialogClose.sync="newTeamVisible"
+
+            <new-team :visible.sync="visible.newTeamVisible"
                       @success="inviteMembers"
                       :competition-name="competitionInfo.name"
-                      :id="competitionInfo.id"></new-team>
+                      :id="parseInt(competitionInfo.id)"></new-team>
 
-            <invite :visible="inviteVisible"
-                    :dialogClose.sync="inviteVisible"
+            <invite :visible.sync="visible.inviteVisible"
                     :group-id="groupId"></invite>
         </div>
     </div>
@@ -89,23 +89,29 @@
         data() {
             return{
                 competitionInfo: {
-                    mainImage: ''
+                    mainImage: '', //背景图片
+                    information: '', //比赛介绍信息'
+                    year: '', //比赛年份
+                    name: '', //比赛名称
+                    id: '', //比赛id
+                    session: '' // 比赛届数
                 },
-                dVisible:false,
-                newTeamVisible:false,
-                inviteVisible:false,
+                visible:{
+                    dVisible:false,
+                    newTeamVisible:false,
+                    inviteVisible:false,
+                },
                 activeName: '',//默认公告
                 announcement:[],//公告
-                mdContent:'',
                 groupId: 0,
                 haveSignedUp:false,
-                stepActive: 100//默认步骤条高亮值
+                stepActive: -1//默认步骤条高亮值
             }
         },
         computed:{
             content() {
                 let markdownIt = mavonEditor.getMarkdownIt()
-                return markdownIt.render(this.mdContent)
+                return markdownIt.render(this.competitionInfo.information)
             },
             state() {
                 return getCode() === '0';
@@ -113,32 +119,35 @@
 
         },
         methods: {
-            //获取比赛信息
-            getCompetitionInfo() {
+            //获取初始化信息
+            getInitInfo() {
+                //获取比赛id值
                 const id = this.$route.query.id
                 //检验是否已经报名
                 this.checkSignUp(id);
-
+                //获取比赛信息
                 competitionDetail(id).then(response => {
                     let competitionInfo = response.data.data;
+                    //检验是否有背景图片属性
                     if(Object.prototype.hasOwnProperty.call(competitionInfo, 'mainImage')) {
                         competitionInfo.mainImage = competitionInfo.mainImage.replace('-internal', '');
+                    } else {
+                        competitionInfo.mainImage = 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg'
                     }
-                    this.mdContent = competitionInfo.information;
+                    //按照开始时间排序
+                    competitionInfo.stages.sort((a, b) => {
+                        const data1 = Date.parse(a['startDate'].replace(/-/g, '/'));
+                        const data2 = Date.parse(b['startDate'].replace(/-/g, '/'));
+                        return data1 - data2;
+                    })
+                    //获取当前阶段
                     this.competitionInfo = competitionInfo;
-                    this.sortStages('startDate')//按开始时间排序
                     this.getNowStage();
-                    this.getBoard()//获取公告
+                    //获取公告
+                    this.getBoard()
                 })
             },
-            //阶段排序
-            sortStages(key) {
-                this.competitionInfo.stages.sort((a, b) => {
-                  const data1 = Date.parse(a[key].replace(/-/g, '/'));
-                  const data2 = Date.parse(b[key].replace(/-/g, '/'));
-                  return data1 - data2;
-              })
-            },
+
             //检验是否报名
             checkSignUp(id) {
                 if(getCode() === '0' && getRole() === '参赛者') {
@@ -176,6 +185,22 @@
                     }
                 }
             },
+
+            //获取公告
+            getBoard() {
+                const data = {
+                    competitionName: this.competitionInfo.name,
+                    year: this.competitionInfo.year
+                }
+                getBoard(data).then( response => {
+                    let announcement = response.data.data;
+                    if (announcement) {
+                        this.announcement = announcement;
+                        this.activeName = announcement[0].id;
+                    }
+                })
+            },
+
             //比赛报名
             signUpCompetition() {
                 if(getCode() !== '0') {
@@ -190,7 +215,7 @@
                     if(getRole() === '管理员') {
                         this.$message('管理员大大不能报名哦!')
                     } else {
-                        this.newTeamVisible = true;
+                        this.visible.newTeamVisible = true;
                     }
                 }
             },
@@ -200,30 +225,17 @@
                     path:'/checkCompetition',
                 })
             },
-            //获取公告栏
-            getBoard() {
-                const data = {
-                    competitionName: this.competitionInfo.name,
-                    year: this.competitionInfo.year
-                }
-                getBoard(data).then( response => {
-                    let announcement = response.data.data;
-                    for(let i=0; i<announcement.length; i++) {
-                        if(announcement[i].title.length > 16) {
-                            announcement[i].title = announcement[i].title.slice(0,14) + '...'
-                        }
-                    }
-                    this.announcement = announcement;
-                })
-            },
+
+            //邀请队友
             inviteMembers(id) {
-                this.getCompetitionInfo(this.$route.query.id);
+                //重新检验检验是否已经报名
+                this.haveSignedUp = true;
                 this.groupId = id;
-                this.inviteVisible = true;
+                this.visible.inviteVisible = true;
             }
         },
         mounted() {
-            this.getCompetitionInfo();
+            this.getInitInfo();
         },
     }
 </script>
@@ -241,109 +253,114 @@
             padding: 5px 10px;
             border-radius: 15px;
             background-color: rgba(127, 127, 127, 0.3);
+
+            /deep/.el-page-header__left .el-icon-back {
+                color: #fff;
+            }
+
+            /deep/.el-page-header__content {
+                font-size: 20px;
+                color: #fff;
+            }
+
+            /deep/.el-page-header__title {
+                font-size: 18px;
+                color: #fff;
+            }
         }
 
         .wrap {
             padding: 30px 100px;
+            background-image: url("../../assets/main/backgroud.png");
+            background-repeat: repeat;
+            background-clip: padding-box;
 
             .competitionName {
-                margin: 30px 0 50px 0;
-                font-size: 26px;
+                margin: 30px 0 100px 0;
+                font-size: 38px;
+                font-weight: bold;
+                color: #303133;
                 text-align: center;
             }
-        }
 
-        .noAnnouncement {
-            color: $noInfo;
-            text-align: center;
-            font-size: 16px;
-            margin-top: 30px;
-        }
+            /*比赛介绍内容*/
+            .describeContent {
+                border-radius: 15px;
+                margin: 20px 0;
+                padding: 30px;
 
-        .announcement {
-            min-height: 400px;
-            margin: 20px 0;
-        }
+                /deep/.markdown-body img {
+                    width: 300px;
+                }
+            }
 
-        .title {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+            .announcements {
+                min-height: 500px;
+                margin: 20px 0;
+                border-radius: 15px;
 
-        /deep/.markdown-body img {
-            width: 300px;
-        }
+                .title {
+                    margin-bottom: 10px;
+                    color: #303133;
+                    text-align: center;
+                    font-size: 24px;
+                }
 
-        .content {
-            margin: 20px 0;
-            padding: 30px;
-        }
+                .noAnnouncement {
+                    color: $noInfo;
+                    text-align: center;
+                    font-size: 14px;
+                    margin-top: 30px;
+                }
 
-        /deep/.el-collapse-item__header {
-           font-size: 14px;
-           text-indent: 2em;
-        }
+                /deep/.el-collapse-item__header {
+                    padding: 0 0 0 2em;
+                    font-size: 14px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
 
-        /deep/.el-collapse-item__content {
-            padding-top:10px;
-            padding-left: 20px;
-            padding-right: 20px;
-            background-color: #f7f7f7;
-            white-space: pre-wrap;
-        }
-
-        /deep/.el-page-header__left .el-icon-back {
-            color: #fff;
-        }
-
-        /deep/.el-page-header__content {
-            font-size: 20px;
-            color: #fff;
-        }
-
-        /deep/.el-page-header__title {
-            font-size: 18px;
-            color: #fff;
+                /deep/.el-collapse-item__content {
+                    margin: 0 0 0 2em;
+                    padding-top:.5em;
+                    padding-left: 1em;
+                    padding-right: 1em;
+                    background-color: #f7f7f7;
+                    white-space: pre-wrap;
+                }
+            }
         }
     }
 
-    @media screen and (max-width: 1200px){
-
+    @media screen and (max-width: 426px){
         .competitionDetail {
             min-width: 0;
 
             .wrap {
                 padding: 30px 20px;
+
+                .infoButton{
+                    float: left;
+                }
+
+                .dif{
+                    display: none;
+                }
+            }
+
+            .el-col-6 {
+                width: 100%;
+            }
+
+            .el-col-offset-2 {
+                margin-left: 0;
             }
         }
     }
 
-    @media screen and (max-width: 420px){
+    @media screen and (min-width: 427px){
 
-        .infoButton{
-            float: left;
-        }
-
-        .competitionDetail {
-            min-width: 0;
-        }
-
-        .el-col-6 {
-            width: 100%;
-        }
-
-        .el-col-offset-2 {
-            margin-left: 0;
-        }
-
-        .dif{
-            display: none;
-        }
-
-    }
-
-    @media screen and (min-width: 421px){
         .infoButton{
             display: none;
         }

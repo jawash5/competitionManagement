@@ -193,7 +193,7 @@
 
                     &:before {
                         content: "";
-                        height: 15px;
+                        height: 30px;
                         display: block;
                         clear: both;
                     }

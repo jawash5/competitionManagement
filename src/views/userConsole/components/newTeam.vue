@@ -89,7 +89,7 @@
         },
         methods: {
             dialogClose() {
-                this.$emit('update:dialogClose',false)
+                this.$emit('update:visible',false)
             },
             //前表单提交，端验证还没有加
             submitForm() {
