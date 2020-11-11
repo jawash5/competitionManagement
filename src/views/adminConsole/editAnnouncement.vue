@@ -1,44 +1,36 @@
 <template>
-    <div id="adminManagement">
-        <div>
-            <el-select v-model="year"
-                       size="medium"
-                       placeholder="请选择"
-                       style="margin-left: 80px"
-                       @change="getAnnouncement">
-                <el-option
-                        v-for="item in competitionYearOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
+    <div class="adminManagement">
+        <el-select v-model="year"
+                   size="medium"
+                   placeholder="请选择"
+                   style="margin-left: 80px"
+                   @change="getAnnouncement">
+            <el-option
+                    v-for="item in competitionYearOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"></el-option>
+        </el-select>
 
-            <el-button type="primary"
-                       round
-                       class="addAnnouncement pull-right"
-                       @click="newAnnouncement = true">
-                新增公告
-            </el-button>
+        <el-button type="primary"
+                   round
+                   class="addAnnouncement pull-right"
+                   @click="newAnnouncement = true">新增公告</el-button>
 
-        </div>
         <div class="div-30"></div>
 
-        <el-tabs v-model="activeName" tab-position="left" type="border-card" id="tabWrap">
-            <div v-if="announcementList.length === 0" class="noAnnouncement">暂无公告信息</div>
+        <el-tabs class="tabWrap" v-model="activeName" tab-position="left" type="border-card">
+            <div class="noAnnouncement" v-if="announcementList.length === 0">暂无公告信息</div>
             <template v-else>
-                <el-tab-pane v-for="(item,index) in announcementList"
+                <el-tab-pane class="tabTitle"
+                             v-for="(item,index) in announcementList"
                              :key="item.id"
-                             :label="item.title"
-                             class="tabTitle">
+                             :label="item.title">
                     <div class="title">{{item.title}}</div>
-
-                    <div class="content">
-                        {{ item.content }}
-                    </div>
+                    <div class="content">{{ item.content }}</div>
                     <div class="buttons">
-                        <el-button type="danger" @click="deleteAnnouncement(index)">删除</el-button>
-                        <el-button type="success" @click="topping(index)">置顶</el-button>
+                        <el-button round type="danger" @click="deleteAnnouncement(index)">删除</el-button>
+                        <el-button round type="info" @click="topping(index)">置顶</el-button>
                     </div>
                 </el-tab-pane>
             </template>
@@ -51,16 +43,16 @@
                 :close-on-click-modal="false"
                 :close-on-press-escape="false"
                 center>
-            <el-form ref="form" :model="creatAnnouncement" label-width="100px">
-                <el-form-item label="标题">
+            <el-form :model="creatAnnouncement" ref="form" label-width="100px" name="111">
+                <el-form-item label="标题" prop="name">
                     <el-input v-model="creatAnnouncement.name" placeholder="请输入标题"></el-input>
                 </el-form-item>
 
-                <el-form-item label="公告内容">
+                <el-form-item label="公告内容" prop="content">
                     <el-input type="textarea" :rows="10" v-model="creatAnnouncement.content"></el-input>
                 </el-form-item>
 
-                <el-form-item label="比赛年份">
+                <el-form-item label="比赛年份" prop="year">
                     <el-select v-model="creatAnnouncement.year"
                                size="medium"
                                placeholder="请选择"
@@ -73,10 +65,6 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-
-<!--                <el-form-item label="发送通知">-->
-<!--                    <el-switch v-model="creatAnnouncement.sendNotice"></el-switch>-->
-<!--                </el-form-item>-->
             </el-form>
             <span slot="footer">
                 <el-button @click="cancel">取 消</el-button>
@@ -100,13 +88,12 @@
                 announcementList:[],//公告列表
                 competitionValue:'电子商务比赛', //比赛名称
                 year:'2020',
-                activeName:'',//标签选择项
-                newAnnouncement:false,//显示dialog
+                activeName:'', //标签选择项
+                newAnnouncement:false, //显示dialog
                 creatAnnouncement: {
                     name: '',
                     year: '',
                     content: '',
-                    // sendNotice: false,
                 },
                 competitionYearOptions:[]
             }
@@ -140,15 +127,15 @@
             //置顶公告
             topping(index) {
                 const announcementId = this.announcementList[index].id;
-                    topAnnouncement(announcementId).then( () => {
-                        this.$message({
-                            type:'success',
-                            message:'置顶公告成功！',
-                        });
-                        this.getAnnouncement();
-                    }).catch(error => {
-                        this.$message.error(error.response.data)
-                    })
+                topAnnouncement(announcementId).then( () => {
+                    this.$message({
+                        type:'success',
+                        message:'置顶公告成功！',
+                    });
+                    this.getAnnouncement();
+                }).catch(error => {
+                    this.$message.error(error.response.data)
+                })
             },
 
             //获取公告
@@ -172,19 +159,16 @@
                 const time = format('YYYY-MM-DD');
                 data.append('date', time);
 
-                addAnnouncement(data).then(response => {
+                addAnnouncement(data).then( response => {
                     this.$message({
                         type:'success',
                         message:response.data.data,
                     });
-                    this.getAnnouncement();
-                    this.newAnnouncement = false;
-                    this.creatAnnouncement = {
-                        name: '',
-                        year: '',
-                        content: '',
-                        // sendNotice: false,
-                    };
+                    this.getAnnouncement();//重新获取公告
+                    this.newAnnouncement = false;//关闭对话框
+                    console.log(this.$refs.form)
+                    console.log(this.$refs['form'])
+                    this.$refs['form'].resetFields();//填写的信息清空
                 }).catch(error => {
                     this.$message.error(error.response.data)
                 })
@@ -236,13 +220,14 @@
 </script>
 
 <style lang="scss" scoped>
-    #adminManagement {
+    .adminManagement {
         margin-left: -30px;
         margin-right: -30px;
 
-        #tabWrap {
+        .tabWrap {
             height: 85vh;
             width: 100%;
+            min-height: calc(50vh + 300px);
 
             .noAnnouncement {
                 margin-top: 50px;
@@ -254,13 +239,16 @@
             .title {
                 margin-top: 30px;
                 font-size: 22px;
+                color: #303133;
                 text-align: center;
             }
 
             .content {
+                height: 50vh;
                 font-size: 16px;
                 padding: 50px;
-                height: 50vh;
+                color: #606266;
+                white-space: pre-wrap;
             }
 
             .buttons {
@@ -270,19 +258,14 @@
 
         .addAnnouncement {
             margin-right: 50px;
-            z-index: .5;
         }
 
         /deep/.el-tabs__item {
             height: 80px;
-            width: 250px;
+            width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 16px;
-            font-family: "幼圆" , serif;
-        }
-
-        /deep/.el-tabs--left .el-tabs__item.is-left {
             line-height: 80px;
         }
 
@@ -292,94 +275,6 @@
             box-shadow: none;
             border-left: none;
             border-right: none;
-        }
-    }
-
-    @media screen and(max-width: 420px){
-        #adminManagement {
-            margin-left: -30vw;
-
-            #tabWrap {
-                height: 85vh;
-                width: 100%;
-
-                .noAnnouncement {
-                    margin-top: 50px;
-                    font-size: 12px;
-                    color: #909399;
-                    text-align: center;
-                }
-
-                .title {
-                    margin-top: 30px;
-                    font-size: 16px;
-                    text-align: center;
-                }
-
-                .content {
-                    font-size: 12px;
-                    padding: 20px 5px 0 5px;
-                    height: 50vh;
-                }
-
-                .buttons {
-                    text-align: center;
-                }
-            }
-
-            .addAnnouncement {
-                margin-right: 50px;
-                z-index: .5;
-            }
-
-            /deep/ .el-input__inner{
-                width: 30vw;
-            }
-
-            /deep/.el-tabs__item {
-                height: 40px;
-                width: 190px;
-                padding: 1vw;
-                text-align: right;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 12px;
-                font-family: "幼圆" , serif;
-            }
-
-            /deep/.el-tabs--left .el-tabs__item.is-left {
-                line-height: 30px;
-            }
-
-            /deep/.el-tabs--border-card {
-                background: #FFF;
-                border: 1px solid #DCDFE6;
-                box-shadow: none;
-                border-left: none;
-                border-right: none;
-            }
-
-            /deep/.el-button.addAnnouncement{
-                position: absolute;
-                right: -16vw;
-                width: 24vw;
-                font-size: 13px;
-                color: #fffdef;
-            }
-
-            /deep/.el-button.el-button--danger{
-                margin-bottom: 3vh;
-                margin-left: 2vw;
-            }
-
-            /deep/.el-form-item{
-                margin-left: -14vw;
-            }
-
-            /deep/.el-button.el-button--default{
-                margin-bottom: 2vh;
-                margin-left: 1.5vw;
-            }
         }
     }
 

@@ -306,7 +306,7 @@
         }
 
         .title {
-            font-size: 2.2vw;
+            font-size: 2vw;
             text-align: center;
             color: #606266;
         }

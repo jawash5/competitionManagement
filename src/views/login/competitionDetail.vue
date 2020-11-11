@@ -194,7 +194,7 @@
                 }
                 getBoard(data).then( response => {
                     let announcement = response.data.data;
-                    if (announcement) {
+                    if (announcement.length !== 0) {
                         this.announcement = announcement;
                         this.activeName = announcement[0].id;
                     }
@@ -314,7 +314,7 @@
                 }
 
                 /deep/.el-collapse-item__header {
-                    padding: 0 0 0 2em;
+                    padding: 0 0 0 1em;
                     font-size: 14px;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -322,7 +322,6 @@
                 }
 
                 /deep/.el-collapse-item__content {
-                    margin: 0 0 0 2em;
                     padding-top:.5em;
                     padding-left: 1em;
                     padding-right: 1em;
