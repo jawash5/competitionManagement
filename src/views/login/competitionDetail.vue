@@ -228,10 +228,11 @@
 
             //邀请队友
             inviteMembers(id) {
-                //重新检验检验是否已经报名
-                this.haveSignedUp = true;
+                this.haveSignedUp = true; //状态改为已报名
                 this.groupId = id;
-                this.visible.inviteVisible = true;
+                if (this.competitionInfo.signForm.maxPeople !== 1) {
+                    this.visible.inviteVisible = true;
+                }
             }
         },
         mounted() {

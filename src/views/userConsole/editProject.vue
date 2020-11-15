@@ -79,7 +79,7 @@
                                     <div class="noTeammate">无其他成员</div>
                                 </template>
                                 <div v-if="isLeader">
-                                    <el-button type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
+                                    <el-button v-if="maxPeople !== 1" type="primary" size="small" @click="inviteVisible = true">邀请队友</el-button>
                                     <el-button type="primary" size="small" @click="deleteTeam">解散队伍</el-button>
                                 </div>
                             </el-form-item>
@@ -168,8 +168,6 @@
                 inviteVisible:false,//邀请对话框
                 loading:false,//加载框显示
                 finish:false,//加载框是否完成
-                inputValue: '',
-                fileList: [],
                 ruleForm: {
                     name: '',
                     teamName:'',
@@ -198,7 +196,6 @@
                         }
                     ]
                 },
-                stageActiveName:'',//阶段文件选择值
                 stageInfo:[],
                 isLeader:false,
                 captainId: '',
@@ -213,8 +210,10 @@
                         requireUploadFile: "",
                         startDate: "",
                         uploadEndDate: "",
-                        uploadStartDate: ""}
+                        uploadStartDate: ""
+                    }
                 ],
+                maxPeople: '',
                 clickIndex: 0,
             }
         },
@@ -299,6 +298,7 @@
             //获取比赛阶段
             getStages(competitionId) {
                     competitionDetail(competitionId).then( async response => {
+                        this.maxPeople = response.data.data.signForm.maxPeople;
                         let stages = response.data.data.stages;
                         this.sortStages('startDate',stages)//按开始时间排序
                         this.stages = stages;
