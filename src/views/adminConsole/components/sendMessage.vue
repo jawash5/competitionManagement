@@ -2,64 +2,57 @@
     <div>
         <el-dialog :visible.sync="visible"
                    title="发送通知"
-                   width="1000px"
+                   width="900px"
                    center
                    :show-close="false"
                    :close-on-click-modal="false"
                    :close-on-press-escape="false"
                    @open="getChosenGroup">
-            <div class="title">主题</div>
-            <el-input v-model="subject"></el-input>
+            <el-row :gutter="20">
+                <el-col :span="11">
+                    <div class="title">主题</div>
+                    <el-input v-model="form.subject"></el-input>
+                    <div class="div-30"></div>
 
-            <div class="div-30"></div>
-            <div class="title">{{tip}}</div>
-            <editor @content="getContent" :clear="clear"></editor>
-
-            <div class="div-30"></div>
-            <div class="title">预览区</div>
-            <el-tabs tab-position="top" @tab-click="chosenTap">
-                <el-tab-pane v-for="(item,index) in chosenGroups"
-                             :key="index"
-                             :label="item.captainName"
-                             :lazy="true">
-                    <div class="markdown-body" v-html="myContent"></div>
-                </el-tab-pane>
-            </el-tabs>
-
-            <div class="div-30"></div>
+                    <div class="title">{{tip}}
+                        <span class="addInfo" @click="addLeaderName">队长姓名</span>）
+                    </div>
+                    <el-input type="textarea" v-model="form.content" :autosize="{ minRows: 5}"></el-input>
+                    <div class="div-30"></div>
+                </el-col>
+                <div class="divider"></div>
+                <el-col :span="11" :offset="2">
+                    <div class="title pull-center">预览区
+                        <el-select v-model="showGroupIndex"
+                                   class="pull-right"
+                                   size="small"
+                                   placeholder="请选择预览小组">
+                            <el-option
+                                    v-for="(item,index) in chosenGroups"
+                                    :key="index"
+                                    :label="item.captainName"
+                                    :value="index">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="preview">
+                        {{ groupsContent }}
+                    </div>
+                </el-col>
+            </el-row>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogClose()">取 消</el-button>
+                <el-button @click="dialogClose">取 消</el-button>
                 <el-button type="primary" @click="conform">确 定</el-button>
             </div>
         </el-dialog>
-
     </div>
 </template>
 
 <script>
-    import editor from "@/components/editor"
-    import { mavonEditor } from 'mavon-editor';
-    import 'mavon-editor/dist/css/index.css';
     import {sendNotice} from '@/api/adminConsole'
 
     export default {
         name: "sendMessage",
-        components:{editor},
-        data() {
-            return {
-                subject:'',
-                tip:'通知内容（可用属性 {{队长姓名}}）',
-                content:'',//输入的内容
-                chosenGroups:[],//选择的小组
-                groupsContent:'',//内容替换后的数据
-                clear:false,//编辑器清空
-                submitInfo:{
-                    subject: "",
-                    format: {},
-                    groups: [],
-                },
-            }
-        },
         props:{
             visible:{
                 type:Boolean,
@@ -67,56 +60,66 @@
                 default:false,
             },
         },
+        data() {
+            return {
+                form:{
+                    subject:'',
+                    content:'',//输入的内容
+                },
+                tip:'通知内容（可用属性',
+                chosenGroups:[],//选择的小组
+                showGroupIndex:'',
+
+            }
+        },
         computed:{
-            myContent() {
-                let markdownIt = mavonEditor.getMarkdownIt()
-                return markdownIt.render(this.groupsContent)
+            //内容替换后的数据
+            groupsContent() {
+                let name;
+                if (this.showGroupIndex === '') {
+                    name = '小明'
+                } else {
+                    name = this.chosenGroups[this.showGroupIndex].captainName
+                }
+                return this.form.content.replace(new RegExp("{{队长姓名}}","gm"), name)
             }
         },
         methods:{
-            getContent(data) {
-                this.content = data;
-                let content = this.content;
-                this.groupsContent = content.replace(new RegExp("{{队长姓名}}","gm"), this.chosenGroups[0].captainName)
-
-            },
             dialogClose() {
                 this.$emit("update:visible",false);
-                this.clear = false;
             },
             //打开对话框后的事件
             getChosenGroup() {
-                this.subject = '';
-                this.clear = true;
+                this.form.subject = '';
+                this.form.content = '';
                 this.chosenGroups = this.$store.getters['sendNotice/chosenGroups'];
             },
-            chosenTap(data) {
-                const index = data.index;
-                let content = this.content;
-                this.groupsContent = content.replace(new RegExp("{{队长姓名}}","gm"), this.chosenGroups[index].captainName)
-
+            addLeaderName() {
+                this.form.content += '{{队长姓名}}';
             },
+
             conform() {
-                if(this.subject === '') {
+                if(this.form.subject === '') {
                     this.$message.error('通知主题不同为空！');
                     return false;
                 }
-
-                this.submitInfo.subject = this.subject;
-                this.submitInfo.groups = [];
+                const submitInfo = {
+                    subject: '',
+                    format: {},
+                    groups: [],
+                }
+                submitInfo.subject = this.form.subject;
 
                 //统一修改format信息
-                const content = this.content;
+                const content = this.form.content;
                 let format = '';
                 for(const group of this.chosenGroups) {
                     format = content.replace(new RegExp("{{队长姓名}}","gm"), group.captainName);
-                    this.submitInfo.groups.push(group.id);
-                    this.submitInfo.format[group.id] = format || content;
+                    submitInfo.groups.push(group.id);
+                    submitInfo.format[group.id] = format;
                     format = '';
                 }
-
-                console.log(this.submitInfo);
-                sendNotice(this.submitInfo).then(() => {
+                sendNotice(submitInfo).then(() => {
                     this.$message({
                         type:"success",
                         message:"发送成功！"
@@ -135,9 +138,29 @@
     .title {
         font-size: 16px;
         margin-bottom: 15px;
+        line-height: 32px;
     }
 
-    .markdown-body {
-        padding: 0 50px;
+    .preview {
+        margin: 0 20px;
+        white-space: pre-wrap;
+        line-height: 150%;
+    }
+
+    .addInfo {
+        cursor: pointer;
+
+        &:hover {
+            color: #409EFF;
+            text-decoration: underline;
+        }
+    }
+
+    .divider {
+        position: absolute;
+        right:434px;
+        top:20px;
+        border-left:1px solid #DCDFE6;
+        height:80%;
     }
 </style>
