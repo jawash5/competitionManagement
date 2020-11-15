@@ -175,7 +175,7 @@ export function toggleRelated(data) {
 /**
  * 比赛关联/取消关联评委
  */
-export function relatedT(getData) {
+export function relatedTeacher(getData) {
     return service.request({
         method: "post",
         url: '/manager/getTeacher',

@@ -27,7 +27,7 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-button @click="selectJudges = true" size="small" style="margin-left: 22px;color: #909399">关联评委{{tnames}}</el-button>
+                        <el-button @click="relatedTeacher" size="small" style="margin-left: 22px;">关联评委</el-button>
                     </el-form-item>
                     <hr class="dif3"/>
                 </el-col>
@@ -45,41 +45,10 @@
                             </el-option>
                         </el-select>
                         <el-input placeholder="请输入搜索内容" v-model="search" size="small" style="width: 130px"></el-input>
-                        <hr class="dif4">
-                        <span class="dif4">请右划查看相关信息</span>
                     </el-form-item>
-
                 </el-col>
             </el-row>
         </el-form>
-
-        <el-dialog
-                :visible.sync="selectJudges">
-            <el-form class="sform">
-                <el-form-item label="教师工号">
-                    <el-input style="display: block; width: 50%"
-                              v-model="selectedTeacherId"
-                              placeholder="请输入教师工号">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="教师姓名">
-                    <el-input style="display: block; width: 50%"
-                              v-model="selectedTeacherName"
-                              placeholder="请输入教师姓名">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="查询教师">
-                    <el-button @click="getT" round>查询并选择</el-button>
-                </el-form-item>
-                <el-form-item label="查询结果">
-                    <span v-for="item in getTeachers" :key="item.teacherId"><span>{{item.teacherName+','}}</span></span>
-                </el-form-item>
-                <el-form-item label="关联查询到的第一个评委">
-                    <el-button round @click="cRelatedT">关联/取消关联</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-
         <el-table
                 ref="multipleTable"
                 :data="searchInfo()"
@@ -99,16 +68,16 @@
                 <template slot-scope="props">
                     <el-form label-position="left" class="demo-table-expand">
                         <el-form-item label="队伍名称">
-                            <span>{{ props.row.name }}</span>
+                            <span>{{ props.row['name'] }}</span>
                         </el-form-item>
                         <el-form-item label="队长姓名">
-                            <span>{{ props.row.captainName }}</span>
+                            <span>{{ props.row['captainName'] }}</span>
                         </el-form-item>
                         <el-form-item label="队伍邮箱">
-                            <span>{{ props.row.email }}</span>
+                            <span>{{ props.row['email'] }}</span>
                         </el-form-item>
                         <el-form-item label="领队电话">
-                            <span>{{ props.row.captainPhone }}</span>
+                            <span>{{ props.row['captainPhone'] }}</span>
                         </el-form-item>
                         <el-form-item label="小组成员">
                             <div style="margin-left: 90px">
@@ -201,7 +170,7 @@
                 <el-button size="small" type="primary" round @click="downloadGroupInfo">下载信息</el-button>
                 <el-button size="small" type="primary" round @click="sendNotice">发送通知</el-button>
                 <el-button size="small" type="primary" round @click="downloadFile">文件下载</el-button>
-                <el-button size="small" type="primary" round @click="tRelated">任务分派/取消</el-button>
+                <el-button size="small" type="primary" round @click="handUpTask">任务分派/取消</el-button>
 <!--                <el-button size="small">成绩添加</el-button>-->
             </div>
 
@@ -216,33 +185,32 @@
                         :stage="stageValue"></download-files>
         <progress-loading :visible.sync="loading"
                           :isFinished.sync="finish"></progress-loading>
+        <select-judges :visible.sync="selectJudgesVisible"
+                       :competition-id="competitionId"></select-judges>
     </div>
 
 </template>
 
 <script>
     import {
-        getTeachersInfo,
         getAdminCompetition,
         getCompetitionGroups,
         getStageFile,
         downloadGroupInfo,
-        toggleRelated,
-        relatedT,
         yearCompetitionId,
         showType
     } from "@/api/adminConsole";
-    import {getGroupFiles} from '@/api/userConsole';
     import sendMessage from "@/views/adminConsole/components/sendMessage";
     import downloadFiles from "@/views/adminConsole/components/downloadFiles";
     import editGroupInfo from "@/views/adminConsole/components/editGroupInfo";
     import outStatus from "@/views/adminConsole/components/outStatus";
     import sortValue from "@/utils/sort";
     import progressLoading from "@/components/progressLoading";
+    import selectJudges from "@/views/adminConsole/components/selectJudges";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage,editGroupInfo,outStatus,downloadFiles,progressLoading},
+        components:{sendMessage,editGroupInfo,outStatus,downloadFiles,progressLoading,selectJudges},
         data() {
             return {
                 //比赛阶段选项
@@ -273,19 +241,12 @@
                 sendMessageVisible:false,//发送通知对话框
                 downloadFilesVisible:false,//下载文件对话框
                 outStatusVisible:false,//晋级选项框
+                selectJudgesVisible:false,//裁判对话框
                 loading:false,//加载框
                 finish:false,//加载是否完成
                 chosenGroups:[],//左侧多选数组
                 search:'',//搜索参数
-                competitionId:'',//比赛id
-                selectJudges:false,
-                getTeachers: [],
-                getTeacherIds:[],
-                selectedTeacherId: '',
-                selectedTeacherName:'',
-                stageId: '',
-                fileIds:[],
-                tnames:'',
+                competitionId: '',//比赛id
                 dataLoading: false,
             };
         },
@@ -406,47 +367,6 @@
                     this.competitionId = response.data.data;
                 })
             },
-            //选择被派发任务教师
-            getT()  {
-                getTeachersInfo({staffId:this.selectedTeacherId,teacherName:this.selectedTeacherName}).then(res => {
-                    this.getTeachers.push(res.data.data[0]);
-                    this.getTeacherIds.push(res.data.data[0].teacherId)
-                })
-            },
-            //将选中教师与competitionId关联
-            cRelatedT(){
-                let data = new FormData();
-                data.append('teacherId',this.getTeachers[0].teacherId);
-                data.append('competitionId',this.competitionId);
-                relatedT(data).then( res => {
-                    alert(res.data.data.msg);
-                });
-                this.selectJudges = false;
-            },
-            //将选中教师和fileId关联
-            tRelated() {
-                for (let group of this.chosenGroups){
-                    this.tnames += (group.name+',');
-                    getGroupFiles(group.id).then(async res => {
-                        const info = res.data.data;
-                        for (let i of info){
-                            this.fileIds.push(i.fileId)
-                        }
-                    })
-                }
-                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发/(取消派发）给已选择关联教师？`).then(async () => {
-                    let dataz = {
-                        fileId:this.fileIds,
-                        teacherId:this.getTeacherIds
-                    };
-                    await toggleRelated(dataz).then(res => {
-                        alert(res.data.data.msg);
-                    });
-                    this.fileIds = [];
-                    this.tnames = '';
-                });
-            },
-
             //获取比赛阶段信息
             getCompetitionStage(year) {
                 const competitionList =  JSON.parse(sessionStorage.getItem('competitionList'));
@@ -465,7 +385,6 @@
                     }
                 }
             },
-
             //发送通知
             sendNotice() {
                 if(this.chosenGroups.length === 0) {
@@ -482,6 +401,18 @@
                     return false;
                 }
                 this.downloadFilesVisible = true;
+            },
+            //关联评委
+            relatedTeacher() {
+                if (this.stageValue === '') {
+                    this.$message('请先选择比赛与比赛阶段');
+                    return false;
+                }
+                this.selectJudgesVisible = true;
+            },
+            //任务分派
+            handUpTask() {
+
             },
             //左侧多选选中事件
             handleChange(selection) {
@@ -532,7 +463,6 @@
                 this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
                 this.outStatusVisible = true;
             },
-
             //搜索
             searchInfo() {
                 if(this.searchKeyValue === 'name') {

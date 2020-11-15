@@ -9,11 +9,11 @@
                           placeholder="请输入学号"
                           @keydown.enter.native="sendEmail"
                           autocomplete="off">
-                <el-button class="btn--sendMail"
-                           type="danger"
-                           :disabled="sendBtn.isSend"
-                           slot="suffix"
-                           @click="sendEmail">{{ sendBtn.text }}</el-button>
+                    <el-button class="btn--sendMail"
+                               type="danger"
+                               :disabled="sendBtn.isSend"
+                               slot="suffix"
+                               @click="sendEmail">{{ sendBtn.text }}</el-button>
                 </el-input>
                 <div class="div-30"></div>
 

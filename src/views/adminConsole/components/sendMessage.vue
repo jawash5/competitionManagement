@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog :visible="visible"
+        <el-dialog :visible.sync="visible"
                    title="发送通知"
                    width="1000px"
                    center
