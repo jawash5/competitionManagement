@@ -203,3 +203,13 @@ export function showType(data) {
         data:data
     })
 }
+
+/**
+ * 获取某个比赛的评委老师列表
+ */
+export function showTeacher(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/competition/teacher?competitionId=' + data,
+    })
+}

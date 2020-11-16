@@ -1,17 +1,14 @@
 <template>
     <div class="competitionDetail">
-        <head-login :state="state"></head-login>
-        <el-page-header class="header" @back="goBack" content="比赛列表"></el-page-header>
-        <el-image :src="competitionInfo.mainImage"
-                  style="width: 100%; z-index: -1"
-                  fit="cover"></el-image>
-        <div class="wrap">
+        <div class="head">
             <div class="competitionName">
-                <span v-if="competitionInfo.hasOwnProperty('year')">{{competitionInfo.year}} 年 </span>
+                <span v-if="competitionInfo.hasOwnProperty('year')">{{competitionInfo.year}}年</span>
                 <span v-if="competitionInfo.hasOwnProperty('session')">第 {{competitionInfo.session}} 届 </span>
                 {{competitionInfo.name}}
             </div>
+        </div>
 
+        <div class="wrap">
             <el-steps :space="250" :active="stepActive" align-center finish-status="success">
                         <el-step v-for="item in competitionInfo.stages"
                                  :key="item.id"
@@ -19,7 +16,6 @@
                                  :description="item.startDate.slice(0, -3) + ' 至 ' + item.endDate.slice(0, -3)"></el-step>
             </el-steps>
             <div class="div-15"></div>
-
             <el-button v-if="stepActive > 0" class="pull-right" type="success" round disabled>已过报名时间</el-button>
             <el-button v-else
                        class="pull-right"
@@ -27,18 +23,18 @@
                        round
                        :disabled="haveSignedUp"
                        @click="signUpCompetition">{{haveSignedUp ? '已报名': '立即报名'}}</el-button>
-            <el-button round class="infoButton" type="success" @click="visible.dVisible = true">比赛介绍</el-button>
-            <div class="div-60"></div>
+            <el-button round class="infoButton" type="success" @click="visible.dVisible = true">查看公告</el-button>
 
+            <div style="height: 60px; clear: both"></div>
             <el-row>
-                <el-col :span="16" class="dif">
-                    <el-card class="describeContent">
+                <el-col :span="16">
+                    <div class="describeContent">
                         <div v-if="competitionInfo.information === ''">管理员很懒，什么也没有留下...</div>
                         <div class="markdown-body" v-html="content"></div>
-                    </el-card>
+                    </div>
                 </el-col>
-                <el-col :span="6" :offset="2">
-                    <el-card class="announcements">
+                <el-col :span="6" :offset="2" class="dif">
+                    <div class="announcements">
                         <div class="title">公告栏</div>
                         <div class="div-30"></div>
                         <div v-if="announcement.length === 0">
@@ -53,12 +49,23 @@
                                 {{item.content}}
                             </el-collapse-item>
                         </el-collapse>
-                    </el-card>
+                    </div>
                 </el-col>
             </el-row>
-            <el-dialog :visible.sync="visible.dVisible" width="90vw">
-                    <div v-if="competitionInfo.information === ''">管理员很懒，什么也没有留下...</div>
-                    <div class="markdown-body" v-html="content"></div>
+
+            <el-dialog title="公告栏" center :visible.sync="visible.dVisible" width="90vw">
+                <div v-if="announcement.length === 0">
+                    <el-divider></el-divider>
+                    <div class="noAnnouncement">暂无公告信息</div>
+                </div>
+                <el-collapse v-else class="collapse" v-model="activeName">
+                    <el-collapse-item v-for="item in announcement"
+                                      :key="item.id"
+                                      :title="item.title"
+                                      :name="item.id">
+                        {{item.content}}
+                    </el-collapse-item>
+                </el-collapse>
             </el-dialog>
 
             <new-team :visible.sync="visible.newTeamVisible"
@@ -69,6 +76,7 @@
             <invite :visible.sync="visible.inviteVisible"
                     :group-id="groupId"></invite>
         </div>
+        <my-footer></my-footer>
     </div>
 </template>
 
@@ -81,11 +89,11 @@
     import {checkGroup, getBoard} from "@/api/userConsole";
     import invite from "@/views/userConsole/components/invite";
     import format from "@/utils/timeFormat";
-    import headLogin from "@/views/login/components/headLogin";
+    import MyFooter from "@/views/login/components/myFooter";
 
     export default {
         name: "competitionDetail",
-        components: {newTeam,invite,headLogin},
+        components: {MyFooter, newTeam,invite},
         data() {
             return{
                 competitionInfo: {
@@ -113,9 +121,6 @@
                 let markdownIt = mavonEditor.getMarkdownIt()
                 return markdownIt.render(this.competitionInfo.information)
             },
-            state() {
-                return getCode() === '0';
-            }
 
         },
         methods: {
@@ -219,13 +224,6 @@
                     }
                 }
             },
-            //返回
-            goBack() {
-                this.$router.push({
-                    path:'/checkCompetition',
-                })
-            },
-
             //邀请队友
             inviteMembers(id) {
                 this.haveSignedUp = true; //状态改为已报名
@@ -245,44 +243,37 @@
     @import '../../styles/config';
 
     .competitionDetail {
-        min-width: 1200px;
 
-        .header {
-            position: absolute;
-            left: 30px;
-            top: 90px;
-            padding: 5px 10px;
-            border-radius: 15px;
-            background-color: rgba(127, 127, 127, 0.3);
+        .head {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            height: 600px;
+            background-image: url("https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0 40%;
 
-            /deep/.el-page-header__left .el-icon-back {
-                color: #fff;
-            }
-
-            /deep/.el-page-header__content {
-                font-size: 20px;
-                color: #fff;
-            }
-
-            /deep/.el-page-header__title {
-                font-size: 18px;
-                color: #fff;
+            .competitionName {
+                margin: 0 100px;
+                text-align: center;
+                font-size: 60px;
+                font-weight: bold;
+                letter-spacing: .5em;
+                color: #ffffff;
+                z-index: 1;
             }
         }
 
         .wrap {
-            padding: 30px 100px;
-            background-image: url("../../assets/main/backgroud.png");
-            background-repeat: repeat;
-            background-clip: padding-box;
-
-            .competitionName {
-                margin: 30px 0 100px 0;
-                font-size: 38px;
-                font-weight: bold;
-                color: #303133;
-                text-align: center;
-            }
+            position: relative;
+            top: -100px;
+            margin: 0 100px;
+            padding: 100px 100px 30px 100px;
+            background-color: #fff;
+            border-radius: 15px;
+            background-image: linear-gradient(#ffffff 40%, #f7f7f7 80%);
 
             /*比赛介绍内容*/
             .describeContent {
@@ -305,6 +296,7 @@
                     color: #303133;
                     text-align: center;
                     font-size: 24px;
+                    letter-spacing: .5em;
                 }
 
                 .noAnnouncement {
@@ -313,34 +305,43 @@
                     font-size: 14px;
                     margin-top: 30px;
                 }
-
-                /deep/.el-collapse-item__header {
-                    padding: 0 0 0 1em;
-                    font-size: 14px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-
-                /deep/.el-collapse-item__content {
-                    padding-top:.5em;
-                    padding-left: 1em;
-                    padding-right: 1em;
-                    background-color: #f7f7f7;
-                    white-space: pre-wrap;
-                }
             }
         }
     }
 
-    @media screen and (max-width: 426px){
+    /deep/.el-collapse-item__header {
+        padding: 0 0 0 1em;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background-color: transparent;
+    }
+
+    /deep/.el-collapse-item__content {
+        padding-top:.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+        background-color: #f7f7f7;
+        white-space: pre-wrap;
+    }
+
+    @media screen and (max-width: 800px) {
         .competitionDetail {
-            min-width: 0;
+            .head {
+                height: 50vh;
+
+                .competitionName {
+                    margin: 10px;
+                    font-size: 30px;
+                }
+            }
 
             .wrap {
                 padding: 30px 20px;
+                margin: 0 5vw;
 
-                .infoButton{
+                .infoButton {
                     float: left;
                 }
 
@@ -349,17 +350,13 @@
                 }
             }
 
-            .el-col-6 {
+            .el-col-16 {
                 width: 100%;
-            }
-
-            .el-col-offset-2 {
-                margin-left: 0;
             }
         }
     }
 
-    @media screen and (min-width: 427px){
+    @media screen and (min-width: 801px){
 
         .infoButton{
             display: none;

@@ -187,6 +187,9 @@
                           :isFinished.sync="finish"></progress-loading>
         <select-judges :visible.sync="selectJudgesVisible"
                        :competition-id="competitionId"></select-judges>
+        <hand-up-tasks :visible.sync="handUpTaskVisible"
+                       :competition-id="competitionId"></hand-up-tasks>
+
     </div>
 
 </template>
@@ -207,10 +210,11 @@
     import sortValue from "@/utils/sort";
     import progressLoading from "@/components/progressLoading";
     import selectJudges from "@/views/adminConsole/components/selectJudges";
+    import handUpTasks from "@/views/adminConsole/components/handUpTasks";
 
     export default {
         name: "teamManagement",
-        components:{sendMessage,editGroupInfo,outStatus,downloadFiles,progressLoading,selectJudges},
+        components:{sendMessage,editGroupInfo,outStatus,downloadFiles,progressLoading,selectJudges,handUpTasks},
         data() {
             return {
                 //比赛阶段选项
@@ -242,6 +246,7 @@
                 downloadFilesVisible:false,//下载文件对话框
                 outStatusVisible:false,//晋级选项框
                 selectJudgesVisible:false,//裁判对话框
+                handUpTaskVisible:false,//任务分派
                 loading:false,//加载框
                 finish:false,//加载是否完成
                 chosenGroups:[],//左侧多选数组
@@ -412,7 +417,7 @@
             },
             //任务分派
             handUpTask() {
-
+                this.handUpTaskVisible = true;
             },
             //左侧多选选中事件
             handleChange(selection) {
