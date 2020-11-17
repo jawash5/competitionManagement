@@ -2,7 +2,7 @@
     <div id="teamManagement">
         <el-form>
             <el-row>
-                <el-col :span="12">
+                <el-col :span="14">
                     <el-form-item>
                         <el-select v-model="yearValue"
                                    placeholder="比赛年份"
@@ -31,7 +31,7 @@
                     </el-form-item>
                     <hr class="dif3"/>
                 </el-col>
-                <el-col :span="8" :offset="4" class="dif2">
+                <el-col :span="8" :offset="2" class="dif2">
                     <el-form-item class="pull-right">
                         <el-select v-model="searchKeyValue"
                                    placeholder="搜索关键字"
@@ -417,7 +417,12 @@
             },
             //任务分派
             handUpTask() {
-                this.handUpTaskVisible = true;
+                if(this.chosenGroups.length === 0) {
+                    this.$message('请先选择比赛组！')
+                } else {
+                    this.handUpTaskVisible = true;
+                    this.$store.commit('sendNotice/SET_CHOSEN_GROUPS', this.chosenGroups)
+                }
             },
             //左侧多选选中事件
             handleChange(selection) {

@@ -1,6 +1,6 @@
 <template>
     <el-dialog :visible.sync="visible"
-               title="关联老师"
+               title="关联 / 取消关联评委"
                width="600px"
                center
                :show-close="false"
@@ -33,14 +33,13 @@
             </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible">取 消</el-button>
+            <el-button @click="dialogClose">取 消</el-button>
         </span>
     </el-dialog>
 </template>
 
 <script>
-    import {getTeachersInfo, relatedTeacher, toggleRelated} from "@/api/adminConsole";
-    import {getGroupFiles} from "@/api/userConsole";
+    import {getTeachersInfo, relatedTeacher} from "@/api/adminConsole";
 
     export default {
         name: "selectJudges",
@@ -65,9 +64,10 @@
             }
         },
         methods: {
-            dialogVisible() {
+            dialogClose() {
                 this.$refs['form'].resetFields();
                 this.selectTeacherId = '';
+                this.form.getTeachers = [];
                 this.$emit('update:visible', false);
             },
 
@@ -105,31 +105,6 @@
                     this.$message.error(error.response.data)
                 });
             },
-
-            //将选中教师和fileId关联
-            tRelated() {
-                for (let group of this.chosenGroups){
-                    this.tnames += (group.name+',');
-                    getGroupFiles(group.id).then(async res => {
-                        const info = res.data.data;
-                        for (let i of info){
-                            this.fileIds.push(i.fileId)
-                        }
-                    })
-                }
-                this.$confirm(`是否将小队${this.tnames.substring(0,this.tnames.length-1)}的项目文件派发/(取消派发）给已选择关联教师？`).then(async () => {
-                    let dataz = {
-                        fileId:this.fileIds,
-                        teacherId:this.getTeacherIds
-                    };
-                    await toggleRelated(dataz).then(res => {
-                        alert(res.data.data.msg);
-                    });
-                    this.fileIds = [];
-                    this.tnames = '';
-                });
-            },
-
         }
     }
 </script>
