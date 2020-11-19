@@ -6,7 +6,7 @@
                     trigger="hover">
                 <el-button class="logoutButton" @click="exit">退出登录</el-button>
                 <el-avatar :size="40"
-                           src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                           :src= "avatarUrl"
                            class="avatar pull-right"
                            slot="reference">
                 </el-avatar>
@@ -23,11 +23,12 @@
 </template>
 
 <script>
+
     export default {
         name: "Header",
         data() {
             return{
-
+                avatarUrl: ''
             }
         },
         methods:{
@@ -42,11 +43,12 @@
                     })
                 })
             },
-        },
-        computed:{
-            username: function (){
-                return this.$store.state.app.userName;
+            getAvatar() {
+                this.avatarUrl = this.$store.getters['avatar/avatarUrl'];
             }
+        },
+        mounted() {
+            this.getAvatar();
         }
     }
 </script>

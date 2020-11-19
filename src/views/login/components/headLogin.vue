@@ -8,7 +8,7 @@
                     v-if="state">
                 <el-button class="logoutButton" @click="exit">退出登录</el-button>
                 <el-avatar :size="40"
-                           src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                           :src="avatarUrl"
                            class="avatar pull-right"
                            slot="reference">
                 </el-avatar>
@@ -46,6 +46,7 @@
         data() {
             return{
                 url:'/myProject',
+                avatarUrl: '',
             }
         },
         props: {
@@ -76,9 +77,13 @@
                     this.url = '/teacherConsole/scoringWork';
                 }
             },
+            getAvatar() {
+                this.avatarUrl = this.$store.getters['avatar/avatarUrl'];
+            }
         },
         mounted() {
             this.setUrl();
+            this.getAvatar();
         }
     }
 </script>

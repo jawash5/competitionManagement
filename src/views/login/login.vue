@@ -41,6 +41,7 @@
     import headLogin from "@/views/login/components/headLogin";
     import myFooter from "@/views/login/components/myFooter";
     import {getCode} from "@/utils/app";
+    import {getAvatar} from "@/api/userConsole";
 
     export default {
         name: "login",
@@ -108,14 +109,30 @@
                         data.append('username',that.ruleForm.username);
                         data.append('password',that.ruleForm.password);
 
-                        that.$store.dispatch("app/login", data).then( () => {
-                            that.$router.push({
-                                path: that.$route.query.redirect || '/checkCompetition',
-                                query: {
-                                    token: that.$route.query.token //重定向后带参
-                                }
-                            });
-                            that.loading = false;//加载状态关闭
+                        that.$store.dispatch("app/login", data).then( res => {
+                            if (res === '参赛者') {
+                                getAvatar().then( response => {
+                                    const res = response.data.data;
+                                    this.$store.dispatch('avatar/setAvatarUrl', res.msg)
+                                }).finally( () => {
+                                    that.$router.push({
+                                        path: that.$route.query.redirect || '/checkCompetition',
+                                        query: {
+                                            token: that.$route.query.token //重定向后带参
+                                        }
+                                    });
+                                    that.loading = false;//加载状态关闭
+                                })
+                            } else {
+                                this.$store.dispatch('avatar/setAvatarUrl', "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png")
+                                that.$router.push({
+                                    path: that.$route.query.redirect || '/checkCompetition',
+                                    query: {
+                                        token: that.$route.query.token //重定向后带参
+                                    }
+                                });
+                                that.loading = false;//加载状态关闭
+                            }
                         }).catch(error => {
                             that.loading = false;
                             that.$message.error(error.response.data);

@@ -2,102 +2,117 @@
     <div>
         <div class="wrapTitle">个人资料</div>
         <div class="infoForm">
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="用户名：">
-                    <br class="diff">
-                    <el-input v-model="form.username" :disabled="isDisabled"></el-input>
-                </el-form-item>
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="姓名：">
+            <el-row >
+                <el-col :span="5" :offset="2">
+                    <el-avatar class="avatar" :size="150" :src="avatarUrl"></el-avatar>
+                    <div class="editAvatar">
+                        <el-button type="primary" size="small" @click="editAvatar">修改头像</el-button>
+                        <input type="file" style="display: none;" ref="files" accept="image/jpeg,image/png" @change="upload"/>
+                    </div>
+                </el-col>
+                <el-col :span="1">
+                    <div style="height: 400px; border-left: 1px solid #E4E7ED"></div>
+                </el-col>
+                <el-col :span="14">
+                    <el-form ref="form" :model="form" label-width="80px">
+                        <el-form-item label="用户名：">
                             <br class="diff">
-                        <el-input v-model="form.name" :disabled="isDisabled" class="itemInput"></el-input>
-                    </el-form-item></el-col>
-                    <el-col :span="12" class="needTurn">
-                        <el-form-item label="学号：">
+                            <el-input v-model="form.username" :disabled="isDisabled"></el-input>
+                        </el-form-item>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="姓名：">
+                                    <br class="diff">
+                                    <el-input v-model="form.name" :disabled="isDisabled" class="itemInput"></el-input>
+                                </el-form-item></el-col>
+                            <el-col :span="12" class="needTurn">
+                                <el-form-item label="学号：">
+                                    <br class="diff">
+                                    <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-form-item label="学号：" class="needShow">
                             <br class="diff">
                             <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
                         </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-form-item label="学号：" class="needShow">
-                    <br class="diff">
-                    <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
-                </el-form-item>
-                <el-form-item label="学校：" class="needShow">
-                    <br class="diff">
-                    <el-input v-model="form.university" :disabled="isDisabled"></el-input>
-                </el-form-item>
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="学院：">
-                            <br class="diff">
-                            <el-input v-model="form.school" :disabled="isDisabled"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12" class="needTurn">
-                        <el-form-item label="学校：">
+                        <el-form-item label="学校：" class="needShow">
                             <br class="diff">
                             <el-input v-model="form.university" :disabled="isDisabled"></el-input>
                         </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-form-item label="邮箱：">
-                    <br class="diff">
-                    <el-input ref="email"
-                              v-model="form.email"
-                              :disabled="emailVisible"
-                              style="width: 20vw; margin-right: 10px"></el-input>
-                    <el-button type="primary"
-                               size="small"
-                               icon="el-icon-edit"
-                               circle
-                               class="bDif"
-                               v-if="emailVisible"
-                               @click="showEditEmail"></el-button>
-                    <el-button type="primary"
-                               size="small"
-                               :icon="icon"
-                               circle
-                               class="bDif"
-                               v-if="!emailVisible"
-                               @click="editEmail"></el-button>
-                </el-form-item>
-                <el-form-item label="电话：">
-                    <br class="diff">
-                    <el-input ref="phone"
-                              v-model="form.phone"
-                              :disabled="phoneVisible"
-                              style="width: 20vw;margin-right: 10px"></el-input>
-                    <el-button type="primary"
-                               size="small"
-                               icon="el-icon-edit"
-                               circle
-                               class="bDif"
-                               v-if="phoneVisible"
-                               @click="showEditPhone"></el-button>
-                    <el-button type="primary"
-                               size="small"
-                               :icon="icon"
-                               circle
-                               class="bDif"
-                               v-if="!phoneVisible"
-                               @click="editPhone"></el-button>
-                </el-form-item>
-                <el-form-item label="密码：">
-                    <el-button size="small"
-                               type="primary"
-                               :disabled="sendBtn.isSend"
-                               @click="editPassword">{{sendBtn.text}}</el-button>
-                </el-form-item>
-            </el-form>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="学院：">
+                                    <br class="diff">
+                                    <el-input v-model="form.school" :disabled="isDisabled"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12" class="needTurn">
+                                <el-form-item label="学校：">
+                                    <br class="diff">
+                                    <el-input v-model="form.university" :disabled="isDisabled"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-form-item label="邮箱：">
+                            <br class="diff">
+                            <el-input ref="email"
+                                      v-model="form.email"
+                                      :disabled="emailVisible"
+                                      style="width: 20vw; margin-right: 10px"></el-input>
+                            <el-button type="primary"
+                                       size="small"
+                                       icon="el-icon-edit"
+                                       circle
+                                       class="bDif"
+                                       v-if="emailVisible"
+                                       @click="showEditEmail"></el-button>
+                            <el-button type="primary"
+                                       size="small"
+                                       :icon="icon"
+                                       circle
+                                       class="bDif"
+                                       v-if="!emailVisible"
+                                       @click="editEmail"></el-button>
+                        </el-form-item>
+                        <el-form-item label="电话：">
+                            <br class="diff">
+                            <el-input ref="phone"
+                                      v-model="form.phone"
+                                      :disabled="phoneVisible"
+                                      style="width: 20vw;margin-right: 10px"></el-input>
+                            <el-button type="primary"
+                                       size="small"
+                                       icon="el-icon-edit"
+                                       circle
+                                       class="bDif"
+                                       v-if="phoneVisible"
+                                       @click="showEditPhone"></el-button>
+                            <el-button type="primary"
+                                       size="small"
+                                       :icon="icon"
+                                       circle
+                                       class="bDif"
+                                       v-if="!phoneVisible"
+                                       @click="editPhone"></el-button>
+                        </el-form-item>
+                        <el-form-item label="密码：">
+                            <el-button size="small"
+                                       type="primary"
+                                       round
+                                       :disabled="sendBtn.isSend"
+                                       @click="editPassword">{{sendBtn.text}}</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
         </div>
     </div>
 
 </template>
 
 <script>
-    import {modifyPersonalInfo, personalInfo} from "@/api/userConsole";
+    import {modifyPersonalInfo, personalInfo, uploadAvatar} from "@/api/userConsole";
     import {validateEmail, validatePhoneNo } from "@/utils/validator";
     import {forgetPass} from "@/api/login";
 
@@ -109,7 +124,7 @@
                 emailVisible: true,
                 phoneVisible: true,
                 icon:'el-icon-check',
-                form: {
+                form: JSON.parse(sessionStorage.getItem('personalInfo')) || {
                     studentNo: '',
                     name: '',
                     school: '',
@@ -122,14 +137,19 @@
                 sendBtn:{
                     isSend: false,
                     text: '修改密码'
-                }
+                },
+                avatarUrl: sessionStorage.getItem('avatar') || 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
             }
         },
         methods: {
             getPersonalInfo() {
-                personalInfo().then(response => {
-                    this.form = response.data.data
-                })
+                if (this.form.name === '') {
+                    personalInfo().then(response => {
+                        const res = response.data.data
+                        this.form = res;
+                        sessionStorage.setItem('personalInfo', JSON.stringify(res))
+                    })
+                }
             },
             showEditEmail() {
                 this.emailVisible = false;
@@ -192,14 +212,25 @@
                 })
             },
             editPassword() {
-                forgetPass(this.form.studentNo).then( () => {
-                    this.sendBtn.isSend = true;
-                    this.sendBtn.text = '发送中';
-                    this.countDown(60);
-                    this.$message.success('邮件已发送，请注意查收')
-                }).catch( error => {
-                    this.$message.error( error.response.data);
-                })
+                this.$prompt('请输入学号确认', '确认', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    if (value !== this.form.studentNo) {
+                        this.$message('学号输入有误')
+                        return false;
+                    }
+                    forgetPass(this.form.studentNo).then( () => {
+                        this.sendBtn.isSend = true;
+                        this.sendBtn.text = '发送中';
+                        this.countDown(60);
+                        this.$message.success('邮件已发送，请注意查收')
+                    }).catch( error => {
+                        this.$message.error( error.response.data);
+                    })
+                }).catch(() => {});
+
+
             },
             //倒计时
             countDown(time) {
@@ -214,10 +245,36 @@
                         this.sendBtn.text = `${timeNum}s 后可重新发送`;
                     }
                 },1000)
+            },
+            editAvatar() {
+                this.$refs.files.click();
+            },
+            upload(event) {
+                const files = event.target.files || event.dataTransfer.files;
+                if (!files.length) {
+                    return false;
+                }
+                const data = new FormData;
+                data.append("file", files[0])
+                uploadAvatar(data).then( response => {
+                    const res = response.data.data;
+                    if (res.success) {
+                            this.$store.dispatch('avatar/setAvatarUrl', res.msg).then( () => {
+                            this.$router.go(0);
+                        })
+                    }
+                }).catch( error => {
+                    this.$message.error(error.response.data)
+                })
+            },
+            getAvatar() {
+                this.avatarUrl = this.$store.getters['avatar/avatarUrl'];
             }
+
         },
         mounted() {
-            this.getPersonalInfo()
+            this.getPersonalInfo();
+            this.getAvatar();
         }
     }
 </script>
@@ -225,9 +282,9 @@
 <style lang="scss" scoped>
 
     .infoForm {
-        width: 80%;
-        max-width: 600px;
-        margin: 40px auto;
+        position: relative;
+        margin: 80px 100px 0 100px;
+        min-width: 800px;
     }
 
     .wrapTitle {
@@ -240,6 +297,7 @@
         margin: 20px auto;
     }
 
+
     /deep/.el-input.is-disabled .el-input__inner {
         cursor: auto;
         color: #303133;
@@ -249,6 +307,11 @@
         border-right: 1px solid transparent;
     }
 
+    .editAvatar {
+        margin-top: 30px;
+        width: 150px;
+        text-align: center;
+    }
 
     @media screen and (max-width: 420px){
 

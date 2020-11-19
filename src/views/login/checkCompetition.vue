@@ -55,19 +55,12 @@
                         this.competitionList = response.data.data
                         sessionStorage.setItem('competitionList', JSON.stringify(this.competitionList))
                     }).catch(error => {
-                        this.$message.error('服务器开小差啦~');
-                        console.log(error);
+                        this.$message.error(error.response.data);
                     });
                 }
             },
-            flesh() {
-                if(this.$route.params.flesh === 'true') {
-                    sessionStorage.removeItem('competitionList')
-                }
-            }
         },
         mounted() {
-            this.flesh();
             this.getCompetitionList();
         }
     }

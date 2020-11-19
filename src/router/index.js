@@ -166,6 +166,16 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/adminConsole/competitionRelease")
             },
+            {
+                path: '/editCompetitionInfo',
+                name: '/editCompetitionInfo',
+                meta:{
+                    name:'比赛信息修改',
+                    icon:'el-icon-setting'
+
+                },
+                component: ()  => import("../views/adminConsole/editCompetitionInfo")
+            },
         ]
     },
     {

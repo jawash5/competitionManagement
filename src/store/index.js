@@ -8,6 +8,7 @@ import permission from './modules/permission'
 import group from "./modules/group";
 import competition from "./modules/competition";
 import sendNotice from "./modules/sendNotice";
+import avatar from "@/store/modules/avatar";
 
 export default new Vuex.Store({
     modules:{
@@ -16,6 +17,7 @@ export default new Vuex.Store({
         permission,
         group,
         competition,
-        sendNotice
+        sendNotice,
+        avatar
     }
 });

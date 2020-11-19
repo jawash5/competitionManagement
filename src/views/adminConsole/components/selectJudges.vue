@@ -78,6 +78,7 @@
                     this.$message('请输入查询教师信息');
                     return false;
                 }
+                this.form.getTeachers = [];
                 const data = {
                     staffId: /^\d+$/.test(selectedTeacherInfo) ? selectedTeacherInfo : '',
                     teacherName: /^\d+$/.test(selectedTeacherInfo) ? '' : selectedTeacherInfo,

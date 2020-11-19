@@ -203,3 +203,24 @@ export function deleteTeam(data) {
         data: data
     })
 }
+
+/**
+ * 用户上传头像
+ */
+export function uploadAvatar(data) {
+    return service.request({
+        method: "post",
+        url: '/user/photo',
+        data: data
+    })
+}
+
+/**
+ * 用户头像获取
+ */
+export function getAvatar() {
+    return service.request({
+        method: "get",
+        url: '/user/getphoto',
+    })
+}

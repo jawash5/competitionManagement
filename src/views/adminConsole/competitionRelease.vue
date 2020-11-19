@@ -254,11 +254,9 @@
                             type:"success",
                             message:response.data.data
                         })
+                        sessionStorage.removeItem('competitionList');
                         this.$router.push({
                             name: '/checkCompetition',
-                            params: {
-                                flesh: 'true'
-                            }
                         })
                     }).catch(error => {
                         this.$message.error(error.response.data)

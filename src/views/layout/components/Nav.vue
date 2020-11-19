@@ -1,11 +1,6 @@
 <template>
     <div id="navWrap">
-        <div class="pull-center">
-            <el-avatar :size="80"
-                       src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                       class="avatar">
-
-            </el-avatar>
+        <div style="margin-top: 150px" class="pull-center">
         </div>
         <el-menu :default-active="childrenRoute || $route.path || active"
                  class="el-menu-vertical-demo"
