@@ -3,12 +3,13 @@ import Router from 'vue-router'
 
 Vue.use(Router);
 
+//重复点击路由报错解决
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, onResolve, onReject) {
     if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
     return originalPush.call(this, location).catch(err => err)
 }
-//重复点击路由报错解决
+
 Router.prototype.push = function push(location) {
     return originalPush.call(this, location).catch(err => err)
 }
@@ -167,12 +168,21 @@ export const asnycRouterMap = [
                 component: ()  => import("../views/adminConsole/competitionRelease")
             },
             {
-                path: '/editCompetitionInfo',
-                name: '/editCompetitionInfo',
+                path: '/competitionList',
+                name: '/competitionList',
                 meta:{
-                    name:'比赛信息修改',
+                    name:'管理比赛列表',
                     icon:'el-icon-setting'
 
+                },
+                component: ()  => import("../views/adminConsole/competitionList")
+            },
+            {
+                path: '/competitionList/editCompetitionInfo',
+                name: '/editAnnouncement',
+                hidden:true,
+                meta:{
+                    name:'比赛信息修改',
                 },
                 component: ()  => import("../views/adminConsole/editCompetitionInfo")
             },

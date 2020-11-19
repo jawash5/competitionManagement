@@ -16,7 +16,8 @@
             {{ competition.end.slice(0,-3) }}
         </div>
         <div class="div-content"></div>
-        <el-button class="btn" type="primary" size="small" round @click="getCompetitionDetail">查看详情</el-button>
+        <slot name="footer"></slot>
+<!--        <el-button class="btn" type="primary" size="small" round @click="getCompetitionDetail">查看详情</el-button>-->
 
     </div>
 </template>
@@ -38,15 +39,6 @@
             }
         },
         methods:{
-            getCompetitionDetail () {
-                const {href} = this.$router.resolve({
-                    path: '/competitionDetail',
-                    query: {
-                        id: this.competition.id
-                    }
-                });
-                window.open( href, '_blank');
-            }
         },
         props:{
             competition:{
@@ -112,13 +104,6 @@
         .div-content {
             height: .5 * $standard;
             clear: both;
-        }
-
-        .btn {
-            display: block;
-            margin: 0 auto;
-            clear: both;
-
         }
 
         /deep/.el-divider--horizontal {

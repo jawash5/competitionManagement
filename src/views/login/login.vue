@@ -113,7 +113,11 @@
                             if (res === '参赛者') {
                                 getAvatar().then( response => {
                                     const res = response.data.data;
-                                    this.$store.dispatch('avatar/setAvatarUrl', res.msg)
+                                    if (res.msg) {
+                                        this.$store.dispatch('avatar/setAvatarUrl', res.msg)
+                                    } else {
+                                        this.$store.dispatch('avatar/setAvatarUrl', "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png")
+                                    }
                                 }).finally( () => {
                                     that.$router.push({
                                         path: that.$route.query.redirect || '/checkCompetition',
@@ -124,14 +128,16 @@
                                     that.loading = false;//加载状态关闭
                                 })
                             } else {
-                                this.$store.dispatch('avatar/setAvatarUrl', "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png")
-                                that.$router.push({
-                                    path: that.$route.query.redirect || '/checkCompetition',
-                                    query: {
-                                        token: that.$route.query.token //重定向后带参
-                                    }
-                                });
-                                that.loading = false;//加载状态关闭
+                                this.$store.dispatch('avatar/setAvatarUrl',
+                                    "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png").then( () => {
+                                    that.$router.push({
+                                        path: that.$route.query.redirect || '/checkCompetition',
+                                        query: {
+                                            token: that.$route.query.token //重定向后带参
+                                        }
+                                    });
+                                    that.loading = false;//加载状态关闭
+                                })
                             }
                         }).catch(error => {
                             that.loading = false;

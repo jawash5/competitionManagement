@@ -49,6 +49,8 @@
                     return '/myProject'
                 } else if(this.$route.path === '/teacherConsole/markGroup') {
                     return '/teacherConsole/scoringWork'
+                } else if(this.$route.path === '/competitionList/editCompetitionInfo') {
+                    return '/competitionList'
                 }
                 return '';
             }

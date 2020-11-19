@@ -20,6 +20,19 @@
     export default {
         name: "editor",
         components:{mavonEditor},
+        props:{
+            year:{
+                type: String
+            },
+            clear:{
+                type: Boolean,
+                default: false
+            },
+            initValue:{
+                type: String,
+                default: ''
+            }
+        },
         data() {
             return {
                 handbook:'',
@@ -61,23 +74,25 @@
                 url:'',
             }
         },
-        props:{
-            year:{type: String},
-            clear:{type: Boolean, default: false}
-        },
         watch:{
             clear(val) {
                 if(val === true) {
                     this.handbook = '';
                 }
+            },
+            initValue: {
+                handler:function (val) {
+                    if (val !== '') {
+                        this.handbook = val;
+                    }
+                },
+                immediate:true
             }
         },
         methods:{
             //内容变化
             changeContent() {
                 this.$emit('content',this.handbook)
-                // const str = "https://cm-web-files.oss-cn-shanghai.aliyuncs.com/public/电子商务比赛/2019/13e351bc-d993-4c94-8549-05ae5e4e4f5a2.jpg"
-                // console.log(str.slice(57,-47))
 
             },
             //保存

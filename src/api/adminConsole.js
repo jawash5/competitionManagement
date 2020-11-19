@@ -213,3 +213,25 @@ export function showTeacher(data) {
         url: '/manager/competition/teacher?competitionId=' + data,
     })
 }
+
+/**
+ * 比赛基本信息修改
+ */
+export function editBasicInfo(data) {
+    return service.request({
+        method: "post",
+        url: '/manager/modify/common',
+        data:data
+    })
+}
+
+/**
+ * 比赛介绍信息修改
+ */
+export function editDescInfo(data) {
+    return service.request({
+        method: "post",
+        url: '/manager/modify/description',
+        data:data
+    })
+}

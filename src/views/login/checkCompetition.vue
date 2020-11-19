@@ -16,6 +16,12 @@
                 <competition-card v-for="item in competitionList"
                                   :key="item.id"
                                   :competition="item">
+                    <el-button class="btns"
+                               slot="footer"
+                               type="primary"
+                               round
+                               size="small"
+                               @click="getCompetitionDetail(item.id)">查看详情</el-button>
                 </competition-card>
             </div>
         </div>
@@ -59,6 +65,15 @@
                     });
                 }
             },
+            getCompetitionDetail (competitionId) {
+                const {href} = this.$router.resolve({
+                    path: '/competitionDetail',
+                    query: {
+                        id: competitionId
+                    }
+                });
+                window.open( href, '_blank');
+            }
         },
         mounted() {
             this.getCompetitionList();
@@ -89,7 +104,12 @@
             align-content: flex-start;
             /*justify-content: space-around;*/
             justify-content: flex-start;
-            margin:30px
+            margin:30px;
+
+            .btns {
+                display: block;
+                margin: 0 auto;
+            }
         }
     }
 
