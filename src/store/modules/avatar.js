@@ -16,7 +16,7 @@ const mutations = {
 const actions = {
     setAvatarUrl({commit}, data) {
         return new Promise(resolve => {
-            commit('SET_AVATAR_URL', data)
+            commit('SET_AVATAR_URL', data.replace('-internal'))
             sessionStorage.setItem('avatar', data)
             return resolve();
         })

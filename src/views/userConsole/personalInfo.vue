@@ -6,7 +6,7 @@
                 <el-col :span="5" :offset="2">
                     <el-avatar class="avatar" :size="150" :src="avatarUrl"></el-avatar>
                     <div class="editAvatar">
-                        <el-button type="primary" size="small" @click="editAvatar">修改头像</el-button>
+                        <el-button type="primary" size="small" @click="$refs.files.click()">修改头像</el-button>
                         <input type="file" style="display: none;" ref="files" accept="image/jpeg,image/png" @change="upload"/>
                     </div>
                 </el-col>
@@ -245,9 +245,6 @@
                         this.sendBtn.text = `${timeNum}s 后可重新发送`;
                     }
                 },1000)
-            },
-            editAvatar() {
-                this.$refs.files.click();
             },
             upload(event) {
                 const files = event.target.files || event.dataTransfer.files;
