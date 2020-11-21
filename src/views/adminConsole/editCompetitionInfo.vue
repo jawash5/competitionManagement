@@ -1,50 +1,57 @@
 <template>
     <div class="formDesign">
-        <div class="title">基本信息
-            <el-button class="pull-right"
-                       type="danger"
-                       v-show="!isEdit.basicInfo"
-                       @click="isEdit.basicInfo = true">修改信息</el-button>
-            <el-button class="pull-right"
-                       type="danger"
-                       v-show="isEdit.basicInfo"
-                       @click="editBasicInfo">确认修改</el-button>
-        </div>
+        <div class="title">基本信息</div>
         <div class="div-30"></div>
         <el-card>
-            <el-form ref="form" :disabled="!isEdit.basicInfo" :model="form" label-width="100px" class="elForm">
+            <el-form ref="form" :model="form" label-width="100px" class="elForm">
                 <el-form-item label="比赛年">
-                    <el-input placeholder="请输入比赛年" style="width: 150px" v-model="form.year" maxlength="4"></el-input>
+                    <el-input placeholder="请输入比赛年"
+                              :disabled="true"
+                              style="width: 150px"
+                              v-model="form.year"
+                              maxlength="4"></el-input>
                 </el-form-item>
 
                 <el-form-item label="比赛时间">
                     <el-date-picker
                             v-model="form.allTime"
+                            :disabled="!isEdit.basicInfo"
                             type="datetimerange"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
                             value-format="yyyy-MM-dd HH:mm:ss">
                     </el-date-picker>
+                    <el-button size="small"
+                               type="danger"
+                               v-show="!isEdit.basicInfo"
+                               @click="isEdit.basicInfo = true"
+                               style="margin-left: 10px">修改信息</el-button>
+                    <el-button size="small"
+                               type="primary"
+                               v-show="isEdit.basicInfo"
+                               @click="editBasicInfo"
+                               style="margin-left: 10px">确认修改</el-button>
                 </el-form-item>
 
                 <el-form-item label="人数限制">
-                    <el-input class="peopleLimited" v-model="form.signForm.minPeople" maxlength="2" placeholder="最少人数"></el-input>
+                    <el-input class="peopleLimited"
+                              :disabled="true"
+                              v-model="form.signForm.minPeople"
+                              maxlength="2"
+                              placeholder="最少人数"></el-input>
                     <span style="margin:0 5px">至</span>
-                    <el-input class="peopleLimited" v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
+                    <el-input class="peopleLimited"
+                              :disabled="true"
+                              v-model="form.signForm.maxPeople"
+                              maxlength="2"
+                              placeholder="最大人数"></el-input>
                 </el-form-item>
 
                 <el-form-item label="背景图片">
-                    <el-upload
-                            action="#"
-                            :limit="1"
-                            :on-change="fileChange"
-                            :on-remove="handleRemove"
-                            :file-list="fileList"
-                            :auto-upload="false">
-                        <el-button size="small" type="primary">重新上传</el-button>
-                        <div slot="tip" class="el-upload__tip">至多上传一张图片</div>
-                    </el-upload>
+                <el-button type="primary" size="small" @click="$refs.img.click()">重新上传</el-button>
+                <input type="file" style="display: none;" ref="img" @change="editImage"/>
+                <div style="font-size: 12px; color: #606266">至多上传一张图片</div>
                 </el-form-item>
             </el-form>
         </el-card>
@@ -95,7 +102,6 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        @change="changStageTime"
                         value-format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
 
@@ -109,7 +115,6 @@
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
-                            @change="changUploadTime"
                             value-format="yyyy-MM-dd HH:mm:ss">
                     </el-date-picker>
                 </div>
@@ -195,7 +200,7 @@
 <script>
     import editor from "@/components/editor";
     import {competitionDetail} from "@/api/login";
-    import {addStage, deleteStage, editBasicInfo, editDescInfo, modifyStage} from "@/api/adminConsole";
+    import {addStage, deleteStage, editBasicInfo, editDescInfo, modifyStage, uploadPicture} from "@/api/adminConsole";
     import {mavonEditor} from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
 
@@ -251,8 +256,12 @@
             },
             handleRemove() {
                 console.log(11)
-
             },
+            //获取editor内容
+            getContent(data) {
+                this.form.information = data;
+            },
+            //新增阶段
             addDiv() {
                 const requireUploadFile = this.newStage.requireUploadFile;
                 const stageData = this.newStage;
@@ -302,7 +311,11 @@
                     data.append('stageId', this.form.competitionTime[index].id);
                     deleteStage(data).then( () => {
                         this.$message.success('删除成功');
-                        this.getInfo();
+                        this.num--;
+                        this.form.competitionTime.splice(index, 1);
+                        this.inputBT.splice(index,1);
+                        this.isEdit.stageInfo.splice(index, 1);
+                        this.form.requireUploadFile.splice(index, 1)
                     }).catch( error => {
                         this.$message.error(error.response.data);
                     })
@@ -313,12 +326,7 @@
                     });
                 });
             },
-            changStageTime(value) {
-                console.log(value)
-            },
-            changUploadTime(value) {
-                console.log(value)
-            },
+            //修改比赛阶段信息
             modifyStage(index) {
                 let newForm = this.form;
                 let data;
@@ -341,15 +349,58 @@
                 }
                 modifyStage(data).then( () => {
                     this.$message.success('修改成功');
-                    this.getInfo();
+                    this.isEdit.stageInfo.splice(index, 1, false);
                 }).catch( error => {
                     this.$message.error(error.response.data);
                 })
             },
-            //获取editor内容
-            getContent(data) {
-                this.form.information = data;
+            //修改基本信息
+            editBasicInfo() {
+                const data = new FormData;
+                data.append('competitionId', this.$route.query.id + '');
+                data.append('start', this.form.allTime[0]);
+                data.append('end', this.form.allTime[0]);
+
+                editBasicInfo(data).then( () => {
+                    this.$message.success('修改成功');
+                    this.isEdit.basicInfo = false;
+                }).catch( error => {
+                    this.$message.error(error.response.data);
+                })
             },
+            //修改背景图片
+            editImage(event) {
+                const files = event.target.files || event.dataTransfer.files;
+                const data = new FormData;
+                data.append('file', files[0]);
+                data.append('year', this.form.year)
+                uploadPicture(data).then( response => {
+                    const img = response.data.data
+                    const data2 = new FormData;
+                    data2.append('competitionId', this.$route.query.id + '');
+                    data2.append('image', img);
+                    editBasicInfo(data2).then( () => {
+                        this.$message.success('修改成功');
+                    }).catch( error => {
+                        this.$message.error(error.response.data);
+                    })
+                })
+            },
+            //修改比赛介绍
+            editDescInfo() {
+                const data = new FormData;
+                data.append('des', this.form.information);
+                data.append('competitionId', this.$route.query.id + '');
+
+                editDescInfo(data).then( () => {
+                    this.$message.success('修改成功');
+                    this.isEdit.descInfo = false;
+                }).catch( error => {
+                    this.$message.error(error.response.data);
+                })
+
+            },
+            //初始化信息
             getInfo() {
                 const competitionId = this.$route.query.id;
                 if (competitionId) {
@@ -388,36 +439,7 @@
                         }
                     })
                 }
-            },
-            //修改基本信息
-            editBasicInfo() {
-                const data = {
-                    competitionId: this.$route.query.id,
-                    year: this.form.year,
-                    start: this.form.allTime[0],
-                    end: this.form.allTime[0],
-                    session: this.form.session,
-                    signForm: {
-                        maxPeople: this.form.signForm.maxPeople,
-                        minPeople: this.form.signForm.minPeople
-                    },
-                }
-                editBasicInfo(data)
-            },
-            editDescInfo() {
-                const data = new FormData;
-                data.append('des', this.form.information);
-                data.append('competitionId', this.$route.query.id + '');
-
-                editDescInfo(data).then( () => {
-                    this.$message.success('修改成功');
-                    this.isEdit.descInfo = false;
-                }).catch( error => {
-                    this.$message.error(error.response.data);
-                })
-
             }
-
         },
         mounted() {
             this.getInfo();
@@ -432,7 +454,7 @@
         padding: 50px;
 
         .peopleLimited {
-            width: 8vw;
+            width: 4em;
         }
     }
 
