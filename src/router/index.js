@@ -179,7 +179,7 @@ export const asnycRouterMap = [
             },
             {
                 path: '/competitionList/editCompetitionInfo',
-                name: '/editAnnouncement',
+                name: '/editCompetitionInfo',
                 hidden:true,
                 meta:{
                     name:'比赛信息修改',

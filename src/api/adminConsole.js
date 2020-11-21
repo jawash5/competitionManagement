@@ -235,3 +235,36 @@ export function editDescInfo(data) {
         data:data
     })
 }
+
+/**
+ * 阶段删除
+ */
+export function deleteStage(data) {
+    return service.request({
+        method: "delete",
+        url: '/manager/modify/stage/delete',
+        data:data
+    })
+}
+
+/**
+ * 阶段信息修改
+ */
+export function modifyStage(data) {
+    return service.request({
+        method: "post",
+        url: '/manager/modify/stage',
+        data:data
+    })
+}
+
+/**
+ * 阶段信息修改
+ */
+export function addStage(data) {
+    return service.request({
+        method: "put",
+        url: '/manager/modify/stage/add',
+        data:data
+    })
+}
