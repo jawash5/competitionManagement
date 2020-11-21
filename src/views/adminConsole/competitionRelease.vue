@@ -53,44 +53,19 @@
             <div class="title">阶段信息</div>
             <div class="div-30"></div>
 
-            <el-card class="formCard">
-                <div class="pull-center">
-                    <el-tag>{{1}}</el-tag>
-                    <el-input
-                            v-model="inputBT[0]"
-                            disabled
-                            style="width: 50%; margin-left: 30px">
-                    </el-input>
-
-                    <label for="" style="margin-right: 10px;margin-left: 100px">上传文件</label>
-                    <el-switch v-model="form.requireUploadFile[0]"></el-switch>
-                </div>
-                <el-divider></el-divider>
-                <div class="pull-center">
-                    <label for="" style="margin-right: 20px">阶段持续时间</label>
-                    <el-date-picker
-                            v-model="form.signUptime"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            value-format="yyyy-MM-dd HH:mm:ss">
-                    </el-date-picker>
-                </div>
-            </el-card>
-
             <el-card class="formCard" v-for="i in num" :key="i">
                 <div class="pull-center">
-                    <el-tag>{{i+1}}</el-tag>
+                    <el-tag>{{i}}</el-tag>
                     <el-input
+                            class="stageName"
+                            :disabled="!(i-1)"
                             placeholder="请输入赛事阶段名称"
-                            v-model="inputBT[i]"
+                            v-model="inputBT[i-1]"
                             clearable
                             style="width: 50%; margin-left: 30px">
                     </el-input>
-
                     <label for="" style="margin-right: 10px;margin-left: 100px">上传文件</label>
-                    <el-switch v-model="form.requireUploadFile[i]"></el-switch>
+                    <el-switch v-model="form.requireUploadFile[i-1]"></el-switch>
                 </div>
                 <el-divider></el-divider>
                 <div class="pull-center">
@@ -105,15 +80,27 @@
                     </el-date-picker>
 
                     <div class="div-15"></div>
-                    <label for="" style="margin-right: 20px">作品提交时间</label>
+                    <label for=""
+                           v-show="form.requireUploadFile[i-1]"
+                           style="margin-right: 20px; margin-left: 42px">作品提交时间</label>
                     <el-date-picker
                             v-model="form.competitionTime[i-1].uploadTime"
+                            v-show="form.requireUploadFile[i-1]"
                             type="datetimerange"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
                             value-format="yyyy-MM-dd HH:mm:ss">
                     </el-date-picker>
+                    <el-tooltip effect="light" content="复制阶段持续时间" placement="right">
+                        <el-button style="margin-left: 10px" v-show="form.requireUploadFile[i-1]"
+                                   size="small"
+                                   type="primary"
+                                   circle
+                                   @click="copyStageTime(i-1)">
+                            <i class="el-icon-s-check"></i>
+                        </el-button>
+                    </el-tooltip>
                 </div>
             </el-card>
 
@@ -167,16 +154,15 @@
                 dialogVisible: false,
                 num: 1, // 卡片的数量
                 inputBT:['报名阶段'], //输入框
-                stage: '',//阶段
+                stage: '',//初始阶段
                 form:{
                     year:'',
                     session:'',
                     allTime:'',
-                    signUptime:'',
                     competitionTime: [
-                        {name:'', stageTime:'', uploadTime:''}
+                        { stageTime:'', uploadTime:''},
                     ],
-                    requireUploadFile:[true,false],
+                    requireUploadFile:[false],
                     information:'',
                     signForm:{
                         maxPeople: '',
@@ -193,12 +179,12 @@
             addDiv() {
                 this.num += 1;
                 this.inputBT.push('')
-                this.form.competitionTime.push({name:'', stageTime:'',uploadTime:''});
+                this.form.competitionTime.push({stageTime:'',uploadTime:''});
                 this.form.requireUploadFile.push(false);
             },
             //删除组件
             deleteDiv() {
-                if(this.num > 0){
+                if(this.num > 1){
                     this.num -= 1;
                     this.inputBT.pop();
                     this.form.competitionTime.pop();
@@ -207,7 +193,6 @@
             },
             //创建比赛
             createCompetition() {
-                // console.log(this.form)
                 const form = this.form;
                 let submitForm = {};
                 submitForm.year = parseInt(form.year);
@@ -216,35 +201,39 @@
                 submitForm.end = form.allTime[1];
                 submitForm.stages = [];//阶段信息清空
                 const stages = submitForm.stages;
-                stages.push({
-                    name:'报名阶段',
-                    startDate: form.signUptime[0],
-                    endDate:form.signUptime[1],
-                    uploadStartDate: form.signUptime[0],
-                    uploadEndDate: form.signUptime[1],
-                    requireUploadFile: form.requireUploadFile[0]
-                });
+
                 for(let i=0; i<form.competitionTime.length; i++) {
-                    stages.push({
-                        name: this.inputBT[i+1],
-                        startDate:form.competitionTime[i].stageTime[0],
-                        endDate:form.competitionTime[i].stageTime[1],
-                        uploadStartDate: form.competitionTime[i].uploadTime[0],
-                        uploadEndDate: form.competitionTime[i].uploadTime[1],
-                        requireUploadFile: form.requireUploadFile[i+1]
-                    })
+                    if ( form.requireUploadFile[i] ) {
+                        stages.push({
+                            name: this.inputBT[i],
+                            startDate:form.competitionTime[i].stageTime[0],
+                            endDate:form.competitionTime[i].stageTime[1],
+                            uploadStartDate: form.competitionTime[i].uploadTime[0],
+                            uploadEndDate: form.competitionTime[i].uploadTime[1],
+                            requireUploadFile: true
+                        })
+                    } else {
+                        stages.push({
+                            name: this.inputBT[i],
+                            startDate:form.competitionTime[i].stageTime[0],
+                            endDate:form.competitionTime[i].stageTime[1],
+                            requireUploadFile: false
+                        })
+                    }
                 }
                 submitForm.stage = stages[this.stage];
                 form.signForm.minPeople = parseInt(form.signForm.minPeople);
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
                 submitForm.signForm = form.signForm;
-                submitForm.session = this.form.session;
+                submitForm.session = form.session;
+                console.log(submitForm.stages)
+
 
                 const data = new FormData();
                 data.append('file', this.file);
                 data.append('year', submitForm['year']);
                 uploadPicture(data).then( response => {
-                    submitForm.mainImage = response.data.data
+                    submitForm.mainImage = response.data.data;
                     createCompetition(submitForm).then(response => {
                         this.$message({
                             type:"success",
@@ -263,12 +252,6 @@
             getContent(data) {
                 this.form.information = data;
             },
-
-            // //图片上传超出限制
-            // handleExceed() {
-            //     // this.$message.error('至多上传一个文件！')
-            //     console.log(111)
-            // },
             //文件状态改变时的钩子
             fileChange(file) {
                 this.file = file.raw;
@@ -277,6 +260,20 @@
             handleRemove() {
                 this.file = '';
             },
+            //复制阶段持续时间
+            copyStageTime(index) {
+                const stageTime = this.form.competitionTime[index].stageTime;
+                if (stageTime === '') {
+                    return false;
+                }
+                const start = stageTime[0];
+                const end = stageTime[1];
+                const data = {
+                    stageTime: [start, end],
+                    uploadTime: [start, end]
+                }
+                this.form.competitionTime.splice(index, 1, data)
+            }
         },
         mounted() {
             window.scrollTo(0,0);
@@ -294,7 +291,7 @@
             margin: 0 auto;
 
             .peopleLimited {
-                width: 8vw;
+                width: 7em;
             }
         }
 

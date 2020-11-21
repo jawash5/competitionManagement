@@ -409,7 +409,7 @@
                         let newForm = this.form;
                         newForm.year = primaryInfo.year;
                         newForm.session = primaryInfo.session;
-                        newForm.allTime=[new Date(primaryInfo.start), new Date(primaryInfo.end)];
+                        newForm.allTime=[primaryInfo.start, primaryInfo.end];
                         newForm.signForm = primaryInfo.signForm;
                         newForm.mainImage = primaryInfo.mainImage;
                         newForm.information = primaryInfo.information;
@@ -426,12 +426,11 @@
                             this.inputBT[i] = primaryInfo.stages[i].name;
                             newForm.competitionTime.push( {id:'', stageTime: [], uploadTime: ''})
                             newForm.competitionTime[i].id = primaryInfo.stages[i].id;
-                            newForm.competitionTime[i].stageTime = [new Date(primaryInfo.stages[i].startDate),
-                                new Date(primaryInfo.stages[i].endDate)];
+                            newForm.competitionTime[i].stageTime = [primaryInfo.stages[i].startDate,primaryInfo.stages[i].endDate];
                             if (primaryInfo.stages[i].requireUploadFile) {
                                 newForm.requireUploadFile[i] = true;
-                                newForm.competitionTime[i].uploadTime = [new Date(primaryInfo.stages[i].uploadStartDate),
-                                    new Date(primaryInfo.stages[i].uploadEndDate)];
+                                newForm.competitionTime[i].uploadTime = [primaryInfo.stages[i].uploadStartDate,
+                                    primaryInfo.stages[i].uploadEndDate];
                             } else {
                                 newForm.requireUploadFile[i] = false;
                                 newForm.competitionTime[i].uploadTime = '';
@@ -451,7 +450,7 @@
 <style lang="scss" scoped>
     .formDesign {
         margin: 0 auto;
-        padding: 50px;
+        padding: 20px 50px;
 
         .peopleLimited {
             width: 4em;
