@@ -1,6 +1,9 @@
 <template>
     <div class="loginHead">
 <!--        <span class="loginHeadTitle">竞赛管理系统</span>-->
+        <img style="height: 40px; margin: 10px 0 0 50px; display: inline-block"
+             src="../../../assets/main/titleIco.png"
+             alt="logo">
         <div class="menuPlus">
             <el-popover
                     width="80"

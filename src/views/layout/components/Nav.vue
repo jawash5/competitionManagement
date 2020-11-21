@@ -1,7 +1,6 @@
 <template>
     <div id="navWrap">
-        <div style="margin-top: 150px" class="pull-center">
-        </div>
+        <img style="width: 120px; margin: 20px auto" src="../../../assets/main/ico.png" alt="logo">
         <el-menu :default-active="childrenRoute || $route.path || active"
                  class="el-menu-vertical-demo"
                  background-color="transparent"
