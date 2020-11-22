@@ -268,3 +268,16 @@ export function addStage(data) {
         data:data
     })
 }
+
+/**
+ * 检验邮件是否已发送成功
+ */
+export function checkMailStatus(data) {
+    return service.request({
+        method: "get",
+        url: '/manager/status?noticeId=' + data,
+        timeout: 3000,//超时再赋值
+        retry: 4,//重试次数
+        retryDelay: 500 //重试间隔
+    })
+}

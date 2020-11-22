@@ -44,12 +44,37 @@
                 <el-button @click="dialogClose">取 消</el-button>
                 <el-button type="primary" @click="conform">确 定</el-button>
             </div>
+        </el-dialog >
+
+        <el-dialog :visible.sync="noticeStatus"
+                   title="发送进度"
+                   width="500px"
+                   center
+                   :close-on-click-modal="false"
+                   :close-on-press-escape="false"
+                   @open="getProcess">
+            <el-table
+                    :data="tableData"
+                    stripe
+                    max-height="60vh"
+                    style="width: 100%">
+                <el-table-column
+                        prop="name"
+                        label="姓名"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="status"
+                        label="发送状态">
+                </el-table-column>
+            </el-table>
+
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import {sendNotice} from '@/api/adminConsole'
+    import {checkMailStatus, sendNotice} from '@/api/adminConsole'
 
     export default {
         name: "sendMessage",
@@ -68,8 +93,10 @@
                 },
                 tip:'通知内容（可用属性',
                 chosenGroups:[],//选择的小组
-                showGroupIndex:'',
-
+                showGroupIndex:'',//单选下拉框
+                noticeStatus: false,
+                tableData:[],
+                mailMap:''
             }
         },
         computed:{
@@ -87,6 +114,9 @@
         methods:{
             dialogClose() {
                 this.$emit("update:visible",false);
+                this.showGroupIndex = '';
+                this.form.subject = '';
+                this.form.content = '';
             },
             //打开对话框后的事件
             getChosenGroup() {
@@ -97,7 +127,7 @@
             addLeaderName() {
                 this.form.content += '{{队长姓名}}';
             },
-
+            //发送通知
             conform() {
                 if(this.form.subject === '') {
                     this.$message.error('通知主题不同为空！');
@@ -119,17 +149,59 @@
                     submitInfo.format[group.id] = format;
                     format = '';
                 }
-                sendNotice(submitInfo).then(() => {
-                    this.$message({
-                        type:"success",
-                        message:"发送成功！"
-                    })
+                sendNotice(submitInfo).then( response => {
+                    this.mailMap = response.data.data;
+                    this.noticeStatus = true;
                 }).catch(error => {
                     this.$message.error(error.response.data)
                 }).finally( () => {
                     this.dialogClose();
                 });
-            }
+            },
+            //获取进度
+            getProcess() {
+                const chosenGroup = this.chosenGroups;
+                const map = this.mailMap;
+                let tableData = this.tableData;
+                for (let i=0; i<chosenGroup.length; i++) {
+                    tableData.push({
+                        'name': chosenGroup[i].captainName,
+                        'status': '等待发送',
+                        'groupId': chosenGroup[i].id
+                    })
+                    checkMailStatus(map[chosenGroup[i].id]).then( response => {
+                        const res = response.data.data
+                        if ( res === 'success') {
+                            tableData.splice(i, 1, {
+                                'name': chosenGroup[i].captainName,
+                                'status': '发送成功',
+                                'groupId': chosenGroup[i].id
+                            })
+                        } else if (res === '发送中') {
+                            tableData.splice(i, 1, {
+                                'name': chosenGroup[i].captainName,
+                                'status': '发送中',
+                                'groupId': chosenGroup[i].id
+                            })
+                            const key = setInterval( () => {
+                                checkMailStatus(map[chosenGroup[i].id]).then( response => {
+                                    if (response.data.data === 'success') {
+                                        tableData.splice(i, 1, {
+                                            'name': chosenGroup[i].captainName,
+                                            'status': '发送成功',
+                                            'groupId': chosenGroup[i].id
+                                        })
+                                        clearInterval(key);
+                                    }
+                                })
+                            }, 1000)
+
+                        }
+                    }).catch( error => {
+                        console.log(error.config)
+                    })
+                }
+            },
         },
     }
 </script>
