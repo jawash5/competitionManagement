@@ -102,3 +102,24 @@ export function modifyPass(data){
         data: data
     })
 }
+
+/**
+ * 获取轮播图
+ */
+export function getBanner(){
+    return service.request({
+        method: "post",
+        url: '/competition/banner',
+    })
+}
+
+/**
+ * 获取tag
+ */
+export function getTag(data){
+    return service.request({
+        method: "get",
+        url: '/manager/getTag',
+        data: data
+    })
+}

@@ -1,19 +1,20 @@
 <template>
     <div class="card">
-        <div :class="titleClass">{{ competition.name }}</div>
+<!--        <el-image :src="competitionInfo.mainImage"></el-image>-->
+        <div :class="titleClass">{{ competitionInfo.name }}</div>
         <div class="tag">
             <el-tag size="small" disable-transitions class="tagItem">高含金量</el-tag>
             <el-tag size="small" type="success">综合类竞赛</el-tag>
         </div>
         <el-divider></el-divider>
-        <span class="title2" v-if="competition.hasOwnProperty('year')">举办时间：{{ competition.year }} 年 </span>
-        <span class="title2" v-if="competition.hasOwnProperty('session')">| 第 {{ competition.session }} 届</span>
+        <span class="title2" v-if="competition.hasOwnProperty('year')">举办时间：{{ competitionInfo.year }} 年 </span>
+        <span class="title2" v-if="competition.hasOwnProperty('session')">| 第 {{ competitionInfo.session }} 届</span>
         <div class="div-content"></div>
-        <div class="time">比赛时间：{{ competition.start.slice(0,-3) }}
+        <div class="time">比赛时间：{{ competitionInfo.start.slice(0,-3) }}
         </div>
         <div class="time pull-right">
             <span class="left">至</span>
-            {{ competition.end.slice(0,-3) }}
+            {{ competitionInfo.end.slice(0,-3) }}
         </div>
         <div class="div-content"></div>
         <slot name="footer"></slot>
@@ -23,15 +24,25 @@
 </template>
 
 <script>
+    // import {getTag} from "@/api/login";
 
     export default {
         name: "competitionCard",
+        props:{
+            competition:{
+                required: true,
+                type: Object,
+            }
+        },
         data() {
-            return{}
+            return{
+                competitionInfo: this.competition,
+                tag: ''
+            }
         },
         computed:{
             titleClass() {
-                if (this.competition.name.length > 10) {
+                if (this.competitionInfo.name.length > 10) {
                     return 'title--long';
                 } else {
                     return 'title'

@@ -1,19 +1,21 @@
 <template>
-    <div id="project">
-        <div id="projectTop">
-            <span class="title2"
-                  v-if="projectDetail.competitionInfo.hasOwnProperty('year')">
-                {{projectDetail.competitionInfo.year + '年 '}}</span>
-            <span class="title2"
-                v-if="projectDetail.competitionInfo.hasOwnProperty('session')">
-                {{ '第 ' + projectDetail.competitionInfo.session + ' 届'}}</span>
-            <div :class="titleClass">{{ projectDetail.competitionInfo.name }}</div>
-        </div>
+    <div class="project">
+        <div :class="titleClass">{{ projectDetail.competitionInfo.name }}</div>
         <el-divider></el-divider>
-        <div id="projectBottom">
-            <h4 id="teamName">队伍名称：{{ projectDetail.name }}</h4>
-            <el-button type="primary" class="checkInfo" @click="editMaterials">查看资料</el-button>
+        <div class="titleName" v-if="projectDetail.competitionInfo.hasOwnProperty('year')">举办年份：
+            <span class="content" >
+            {{projectDetail.competitionInfo.year + '年 '}}</span>
         </div>
+
+        <div class="titleName" v-if="projectDetail.competitionInfo.hasOwnProperty('session')">比赛届数：
+            <span class="content">
+            {{ projectDetail.competitionInfo.session + ' 届'}}</span>
+        </div>
+
+        <div class="titleName">队伍名称：{{ projectDetail.name }}</div>
+
+        <el-button type="primary" class="checkInfo" @click="editMaterials">查看资料</el-button>
+
     </div>
 </template>
 
@@ -66,110 +68,88 @@
 
 <style lang="scss" scoped>
 
-    #project {
-        width: 280px;
-        height: 250px;
-        margin: 20px;
+    .project {
+        position: relative;
+        width: 220px;
+        height: 210px;
+        margin: 20px calc((100% - 4 * 260px) / 8);
+        padding: 20px;
         border-radius: 15px;
         background-color: #f7f7f7;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
-    }
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
-    #project:hover {
-        box-shadow: 0 0 10px rgba(0, 0, 0, .12), 0 0 12px rgba(0, 0, 0, .04);
-        transition: box-shadow 0.3s;
-    }
-
-    .competitionName{
-        margin-top: 10px;
-        padding: 0 2em;
-        font-size: 20px;
-        color: #303133;
-        font-family: "幼圆" , serif;
-    }
-
-    .competitionName--long{
-        margin-top: 10px;
-        padding: 0 2em;
-        font-size: 16px;
-        color: #303133;
-        font-family: "幼圆" , serif;
-    }
-
-    .title2 {
-        margin-top: 10px;
-        color: #303133;
-        font-size: 16px;
-        font-family: "幼圆" , serif;
-    }
-
-    #projectTop {
-        margin-top: 20px;
-        text-align: center;
-    }
-
-    #projectBottom {
-        height: 150px;
-        margin: 0 40px 20px 40px;
-        text-align: center;
-    }
-
-    #teamName {
-        color: #303133;
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    .checkInfo {
-        margin: 20px 0 0 0;
-        display: block;
-        width: 100%;
-    }
-
-    @media screen and (max-width: 420px){
-
-        #project {
-            margin: 0;
-            width: 40vw;
-            height: 180px;
-            border-radius: 15px;
-            background-color: #f7f7f7;
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+        &:hover{
+            box-shadow: 0 0 10px rgba(0, 0, 0, .12), 0 0 12px rgba(0, 0, 0, .04);
+            transition: box-shadow 0.3s;
         }
 
         .competitionName{
-            font-size: 10px;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            height: 2em;
+            width: 220px;
+            padding: 0 1em;
+            font-size: 20px;
             color: #303133;
-            font-family: "幼圆" , serif;
-            margin-top: 5px;
         }
 
-        .title2 {
-            margin-top: 5px;
+        .competitionName--long{
+            height: 2em;
+            padding: 0 1em;
+            text-align: center;
+            font-size: 18px;
             color: #303133;
-            font-size: 9px;
-            font-family: "幼圆" , serif;
         }
 
-        #projectTop {
+        .titleName {
+            display: inline-block;
             margin-top: 10px;
-            padding: 0 10px;
-            text-align: center;
+            color: #606266;
+            font-size: 14px;
+
+            &:last-of-type {
+                font-size: 16px;
+                color: #303133;
+                line-height: 1.2em;
+            }
         }
 
-        #projectBottom {
-            height: 75px;
-            margin: 0 20px 10px 20px;
-            text-align: center;
+        .content {
+            color: #606266;
+            font-size: 14px;
         }
 
-        #teamName {
-            color: #303133;
-            font-size: 8px;
-            font-weight: 500;
+        .el-divider--horizontal {
+            margin: 18px 0;
         }
 
+        .checkInfo {
+            position: absolute;
+            bottom: 20px;
+            left: 10%;
+            margin: 20px 0 0 0;
+            display: block;
+            width: 80%;
+        }
+    }
 
+    @media screen and (max-width: 1450px){
+        .project {
+            margin: 20px calc((100% - 3 * 260px) / 6);
+        }
+    }
+
+    @media screen and (max-width: 1200px){
+        .project {
+            margin: 20px calc((100% - 2 * 260px) / 4);
+        }
+    }
+
+    @media screen and (max-width: 900px){
+        .project {
+            margin: 20px calc((100% - 1 * 260px) / 2);
+        }
     }
 
 </style>

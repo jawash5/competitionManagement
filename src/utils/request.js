@@ -26,7 +26,7 @@ service.interceptors.response.use(function (response) {
 }, function (error) {
     // 对响应错误做点什么
     const config = error.config;
-    console.log(config)
+
     // If config does not exist or the retry option is not set, reject
     if(!config || !config.retry) return Promise.reject(error);
 

@@ -89,8 +89,9 @@
 
         .wrap {
             height: 100vh;
-            margin-top: 30px;
             min-height: 680px;
+            max-width: 1800px;
+            margin: 30px auto;
         }
 
         .competitionSelect {

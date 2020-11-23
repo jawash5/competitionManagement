@@ -59,7 +59,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         align-content: flex-start;
-        justify-content: space-around;
+        justify-content: flex-start;
 
         .btns {
             display: block;
