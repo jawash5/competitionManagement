@@ -3,11 +3,10 @@
             <el-page-header @back="goBack" class="pull-left"></el-page-header>
             <div id="competitionName">查看资料</div>
             <el-row>
-                <el-col :span="12" id="desc">
+                <el-col :span="14">
                     <div id="projectForm">
                         <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                             <el-form-item label="比赛名称" prop="type">
-                                <br class="dif">
                                 <el-input v-model="groupInfo.competitionName"
                                           class="pull-left"
                                           :disabled="true">
@@ -17,25 +16,18 @@
                             <el-divider></el-divider>
 
                             <el-form-item label="队伍名称" prop="teamName">
-                                <br class="dif">
                                 <el-input v-model="groupInfo.name" :disabled="true"></el-input>
                             </el-form-item>
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="队长姓名"  prop="leader">
-                                        <br class="dif">
-                                        <el-input v-model="groupInfo.captainName" :disabled="true"></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
+
+                            <el-form-item label="队长姓名"  prop="leader">
+                                <el-input v-model="groupInfo.captainName" :disabled="true"></el-input>
+                            </el-form-item>
 
                             <el-form-item label="联系手机" prop="telephoneNumber">
-                                <br class="dif">
                                 <el-input v-model="groupInfo.teammates[0].phoneNo" :disabled="true"></el-input>
                             </el-form-item>
 
                             <el-form-item label="邮箱地址" prop="mail">
-                                <br class="dif">
                                 <el-input v-model="groupInfo.teammates[0].email" :disabled="true"></el-input>
                             </el-form-item>
                             <el-form-item label="项目成员" prop="members">
@@ -103,9 +95,10 @@
                                               :color="item.color"
                                               placement="top">
                                 <el-card>
-                                    <div class="stageTip">阶段持续时间：{{item.start}} 至 {{item.end}}</div>
+                                    <div class="stageTip">阶段持续时间：{{item.start.slice(0,-3)}} 至 {{item.end.slice(0,-3)}}</div>
                                     <div class="div-15"></div>
-                                    <div class="stageTip" v-if="item.uploadStart !== undefined">文件提交时间：{{item.uploadStart}} 至 {{item.uploadEnd}}</div>
+                                    <div class="stageTip" v-if="item.uploadStart !== undefined">
+                                        文件提交时间：{{item.uploadStart.slice(0,-3)}} 至 {{item.uploadEnd.slice(0,-3)}}</div>
                                     <div class="div-15"></div>
                                     <div class="pull-center">
                                         <el-button v-if="isUploadTime[index] && isLeader "
@@ -584,44 +577,12 @@
         }
     }
 
-    @media screen and(max-width: 420px){
+    @media screen and (max-width: 1400px){
 
-        #competitionState{
-            display: none;
-        }
-
-        #desc{
-            margin-left: -25vw;
-        }
-
-        #dif{
+        .dif{
             display: block;
         }
 
-        /deep/ .el-input__inner{
-            margin-left:-19vw;
-            width:45vw;
-            display:block;
-        }
-
-
     }
-
-    @media screen and(max-width: 350px){
-
-        /deep/ .el-input__inner{
-            margin-left:-35vw;
-            width:50vw;
-            display:block;
-        }
-
-    }
-
-    @media screen and (min-width: 421px){
-        .dif{
-            display: none;
-        }
-    }
-
 
 </style>

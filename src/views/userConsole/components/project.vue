@@ -113,6 +113,13 @@
                 color: #303133;
                 line-height: 1.2em;
             }
+
+            &:after {
+                content: '';
+                display: block;
+                height: 0;
+                overflow: hidden;
+            }
         }
 
         .content {
@@ -146,10 +153,10 @@
         }
     }
 
-    @media screen and (max-width: 900px){
-        .project {
-            margin: 20px calc((100% - 1 * 260px) / 2);
-        }
-    }
+    /*@media screen and (max-width: 900px){*/
+    /*    .project {*/
+    /*        margin: 20px calc((100% - 1 * 260px) / 2);*/
+    /*    }*/
+    /*}*/
 
 </style>

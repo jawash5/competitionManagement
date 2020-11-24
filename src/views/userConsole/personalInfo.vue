@@ -11,13 +11,15 @@
                     </div>
                 </el-col>
                 <el-col :span="1">
-                    <div style="height: 400px; border-left: 1px solid #E4E7ED"></div>
+                    <div class="dif" style="height: 400px; border-left: 1px solid #E4E7ED"></div>
                 </el-col>
                 <el-col :span="14">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="用户名：">
                             <br class="diff">
-                            <el-input v-model="form.username" :disabled="isDisabled"></el-input>
+                            <el-input v-model="form.username" :disabled="isDisabled"
+                                      style="width: 20vw"
+                            ></el-input>
                         </el-form-item>
                         <el-row>
                             <el-col :span="12">
@@ -32,11 +34,11 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-form-item label="学号：" class="needShow">
+                        <el-form-item label="学号：">
                             <br class="diff">
                             <el-input v-model="form.studentNo" :disabled="isDisabled"></el-input>
                         </el-form-item>
-                        <el-form-item label="学校：" class="needShow">
+                        <el-form-item label="学校：">
                             <br class="diff">
                             <el-input v-model="form.university" :disabled="isDisabled"></el-input>
                         </el-form-item>
@@ -55,7 +57,6 @@
                             </el-col>
                         </el-row>
                         <el-form-item label="邮箱：">
-                            <br class="diff">
                             <el-input ref="email"
                                       v-model="form.email"
                                       :disabled="emailVisible"
@@ -76,7 +77,6 @@
                                        @click="editEmail"></el-button>
                         </el-form-item>
                         <el-form-item label="电话：">
-                            <br class="diff">
                             <el-input ref="phone"
                                       v-model="form.phone"
                                       :disabled="phoneVisible"
@@ -280,8 +280,8 @@
 
     .infoForm {
         position: relative;
-        margin: 80px 100px 0 100px;
-        min-width: 800px;
+        max-width: 1500px;
+        margin: 80px auto 0 auto;
     }
 
     .wrapTitle {
@@ -359,7 +359,13 @@
         .needShow{
             display: none;
         }
+    }
 
+    @media screen and (max-width: 1100px){
+
+        .dif{
+            display: none;
+        }
     }
 
 </style>
