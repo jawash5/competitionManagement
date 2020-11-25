@@ -21,7 +21,7 @@
                                 :on-exceed="handleExceed"
                                 :auto-upload="false">
                             <el-button size="small" type="primary">点击上传</el-button>
-                            <div slot="tip" class="el-upload__tip" style="line-height: 20px">只能上传 PDF 文件，且不超过10MB,
+                            <div slot="tip" class="el-upload__tip" style="line-height: 20px">只能上传 PDF 或 ZIP 文件，且不超过50MB,
                                 <br/>重复上传会覆盖之前的文件</div>
                         </el-upload>
                     </el-form-item>
