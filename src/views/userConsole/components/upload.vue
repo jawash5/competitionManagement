@@ -85,19 +85,19 @@
                 }
 
                 const isPDF = this.file.type === 'application/pdf';
-                // const isZIP = this.file.type === 'application/x-zip-compressed';
-                const isLt10M = this.file.size / 1024 / 1024 < 10;
+                const isZIP = this.file.type === 'application/x-zip-compressed';
+                const isLt50M = this.file.size / 1024 / 1024 < 50;
 
-                // if (!isPDF && !isZIP) {
-                //     this.$message.error('上传文件只能是 PDF 或 ZIP 格式!');
-                //     return false;
-                // }
-                if (!isPDF) {
-                    this.$message.error('上传文件只能是 PDF 格式!');
+                if (!isPDF && !isZIP) {
+                    this.$message.error('上传文件只能是 PDF 或 ZIP 格式!');
                     return false;
                 }
-                if (!isLt10M) {
-                    this.$message.error('上传文件大小不超过 10MB!');
+                // if (!isPDF) {
+                //     this.$message.error('上传文件只能是 PDF 格式!');
+                //     return false;
+                // }
+                if (!isLt50M) {
+                    this.$message.error('上传文件大小不超过 50MB!');
                     return false;
                 }
                 const data = new FormData();
