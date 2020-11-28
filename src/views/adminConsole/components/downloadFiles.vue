@@ -72,8 +72,8 @@
                                         return false;
                                     } else {
                                         this.finish = true;//下载完成，加速进度条
-
                                         const url = res.replace('-internal', '');
+                                        console.log(url);
                                         window.open( url, '_blank');
                                         clearInterval(status);
                                     }
@@ -98,6 +98,7 @@
                         } else {
                             this.finish = true;//下载完成，加速进度条
                             const url = res.replace('-internal', '');
+                            console.log(url);
                             window.open( url, '_blank');
                             resolve(true);
                         }
