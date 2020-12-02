@@ -186,6 +186,15 @@ export const asnycRouterMap = [
                 },
                 component: ()  => import("../views/adminConsole/editCompetitionInfo")
             },
+            {
+                path: '/commonInfo',
+                name: '/commonInfo',
+                meta:{
+                    name:'基本信息',
+                    icon:'el-icon-setting'
+                },
+                component: ()  => import("../views/superManager/commonInfo")
+            },
         ]
     },
     {

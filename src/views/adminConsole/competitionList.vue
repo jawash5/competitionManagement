@@ -65,6 +65,10 @@
             display: block;
             margin: 0 auto;
         }
+
+        .card {
+            margin: 1.5 * 16px calc((100% - 60 * 16px) / 8);
+        }
     }
 
     @media screen and (max-width: 1400px) {

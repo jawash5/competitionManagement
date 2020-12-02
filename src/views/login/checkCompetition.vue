@@ -2,6 +2,11 @@
     <div class="checkCompetition">
         <head-login :state="state"></head-login>
         <div class="wrap">
+            <el-carousel :interval="5000" arrow="hover" type="card" height="400px">
+                <el-carousel-item v-for="item in banners" :key="item.id">
+                        <el-image :src="item.path" alt="图片" fit="cover" @click="openBanner(item.link)"/>
+                </el-carousel-item>
+            </el-carousel>
             <div class="competitionSelect">
                 <el-select v-model="selectValue" placeholder="请选择">
                     <el-option
@@ -29,7 +34,7 @@
 </template>
 
 <script>
-    import {competitionList} from "@/api/login";
+    import {competitionList, getBanner} from "@/api/login";
     import headLogin from "@/views/login/components/headLogin";
     import competitionCard from "@/views/login/components/competitionCard";
     import {getCode} from "@/utils/app";
@@ -46,6 +51,9 @@
                 selectValue:'全部比赛',
                 options:[
                     {value: '选项1', label: '全部比赛'}
+                ],
+                banners:[
+                    {id: '', path:'', link:''}
                 ]
             }
         },
@@ -73,10 +81,21 @@
                     }
                 });
                 window.open( href, '_blank');
+            },
+            getBanner() {
+                getBanner().then( response => {
+                    this.banners = response.data.data
+                }).catch( error => {
+                    this.$message.error(error.response.data)
+                })
+            },
+            openBanner(url) {
+                window.open(url);
             }
         },
         mounted() {
             this.getCompetitionList();
+            this.getBanner();
         }
     }
 </script>
@@ -111,6 +130,14 @@
                 display: block;
                 margin: 0 auto;
             }
+        }
+
+        /deep/.el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        /deep/.el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
         }
     }
 

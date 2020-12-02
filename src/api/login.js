@@ -108,7 +108,7 @@ export function modifyPass(data){
  */
 export function getBanner(){
     return service.request({
-        method: "post",
+        method: "get",
         url: '/competition/banner',
     })
 }
