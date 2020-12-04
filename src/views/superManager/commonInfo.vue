@@ -73,7 +73,7 @@
                                            size="mini"
                                            icon="el-icon-close"
                                            @click="deleteBanner(item.id)"></el-button>
-                                <el-image :src="item.path" alt="图片" fit="cover"/>
+                                <el-image :src="item.path.replace('-internal', '')" alt="图片" fit="cover"/>
                             </el-carousel-item>
                         </el-carousel>
                     </div>
@@ -202,12 +202,10 @@
                 data.append('link', this.bannerForm.link);
 
                 createBanner(data).then(() => {
-                    console.log(222)
                     this.$message.success('新建成功');
                     this.$refs.bannerForm.resetFields();
                     this.visible.newBanner = false;
                 }).catch( error => {
-                    console.log(111)
                     this.$message.error(error.response.data)
                 })
             }

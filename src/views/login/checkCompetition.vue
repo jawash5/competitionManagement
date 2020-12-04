@@ -5,7 +5,7 @@
             <el-carousel style="width: 90%; margin: 0 auto" :interval="10000" arrow="hover" type="card" height="400px">
                 <el-carousel-item v-for="item in banners" :key="item.id">
                     <el-image style="height: 100%; width: 100%"
-                              :src="item.path"
+                              :src="item.path.replace('-internal', '')"
                               alt="图片"
                               fit="cover"
                               @click="openBanner(item.link)"/>
