@@ -281,3 +281,15 @@ export function checkMailStatus(data) {
         retryDelay: 500 //重试间隔
     })
 }
+
+/**
+ * 管理员增加 / 删除tag
+ */
+export function managerEditTag(data) {
+    return service.request({
+        method: "post",
+        url: '/manager/tag',
+        data:data
+    })
+}
+

@@ -34,6 +34,17 @@
                         <el-input class="peopleLimited" v-model="form.signForm.maxPeople" maxlength="2" placeholder="最大人数"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="比赛标签">
+                        <el-select v-model="form.tags" placeholder="请选择" multiple :multiple-limit="3">
+                            <el-option
+                                    v-for="item in tagList"
+                                    :key="item.tagId"
+                                    :label="item.tagName"
+                                    :value="item.tagId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
                     <el-form-item label="背景图片">
                         <el-upload
                                 action="#"
@@ -141,8 +152,9 @@
 </template>
 
 <script>
-    import {createCompetition,uploadPicture} from '@/api/adminConsole';
+    import {createCompetition, uploadPicture} from '@/api/adminConsole';
     import editor from '../../components/editor';
+    import {getTag} from "@/api/login";
 
     export default {
         name: "competitionRelease",
@@ -168,10 +180,12 @@
                         maxPeople: '',
                         minPeople: '',
                         requireGroupName: false
-                    }
+                    },
+                    tags:[]
                 },
                 fileList:[],
                 file:'', //上传的图片
+                tagList:''
             };
         },
         methods: {
@@ -226,8 +240,7 @@
                 form.signForm.maxPeople = parseInt(form.signForm.maxPeople);
                 submitForm.signForm = form.signForm;
                 submitForm.session = form.session;
-                console.log(submitForm.stages)
-
+                // console.log(submitForm.stages)
 
                 const data = new FormData();
                 data.append('file', this.file);
@@ -273,10 +286,19 @@
                     uploadTime: [start, end]
                 }
                 this.form.competitionTime.splice(index, 1, data)
+            },
+            //获取所有的tag
+            getTags() {
+                getTag().then( response => {
+                    this.tagList = response.data.data;
+                }).catch( error => {
+                    this.$message.error(error.response.data)
+                })
             }
         },
         mounted() {
             window.scrollTo(0,0);
+            this.getTags()
         }
     }
 </script>

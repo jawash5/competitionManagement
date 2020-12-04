@@ -5,24 +5,27 @@
                 <el-card>
                     <div class="title">Tag管理</div>
                     <el-divider></el-divider>
-                    <el-tag
-                            v-for="(tag,index) in tags"
-                            :key="index"
-                            closable
-                            @close="deleteTag(tag.tagName, index)"
-                            :type="tagType[Math.floor(Math.random()* 5)]">
-                        {{tag.tagName}}
-                    </el-tag>
-                    <el-input
-                            class="input-new-tag"
-                            v-if="visible.inputVisible"
-                            v-model="inputValue"
-                            ref="saveTagInput"
-                            size="small"
-                            @keyup.enter.native="handleInputConfirm"
-                            @blur="handleInputConfirm">
-                    </el-input>
-                    <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                    <div class="tagList">
+                        <el-tag class="tag"
+                                v-for="(tag,index) in tags"
+                                :key="index"
+                                closable
+                                @close="deleteTag(tag.tagName, index)"
+                                :type="tagType[Math.floor(Math.random()* 5)]">
+                            {{tag.tagName}}
+                        </el-tag>
+
+                        <el-input
+                                class="input-new-tag"
+                                v-if="visible.inputVisible"
+                                v-model="inputValue"
+                                ref="saveTagInput"
+                                size="small"
+                                @keyup.enter.native="handleInputConfirm"
+                                @blur="handleInputConfirm">
+                        </el-input>
+                        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                    </div>
                 </el-card>
             </el-col>
 
@@ -63,7 +66,7 @@
                     </div>
                     <el-divider></el-divider>
                     <div style="position: relative">
-                        <el-carousel arrow="hover" type="card" height="180px" :autoplay="false">
+                        <el-carousel arrow="hover" type="card" height="150px" :autoplay="false">
                             <el-carousel-item v-for="item in banners" :key="item.id">
                                 <el-button class="button--close"
                                            circle
@@ -113,12 +116,14 @@
                 })
             },
             deleteTag(name, index) {
-                this.$confirm(`此操作将删除tag ${name}, 是否继续?`, '提示', {
+                this.$confirm(`此操作将删除 Tag ${name}, 是否继续?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    editTag(name).then( response => {
+                    let data = new FormData;
+                    data.append('tag', name)
+                    editTag(data).then( response => {
                         const res = response.data.data
                         if (res.success) {
                             this.tags.splice(index, 1);
@@ -147,7 +152,9 @@
             handleInputConfirm() {
                 let inputValue = this.inputValue;
                 if (inputValue) {
-                    editTag(inputValue).then( response => {
+                    let data = new FormData;
+                    data.append('tag', inputValue);
+                    editTag(data).then( response => {
                         const res = response.data.data
                         if (res.success) {
                             this.tags.push({tagName: inputValue, tagId: ''});
@@ -220,12 +227,20 @@
         line-height: 32px;
     }
 
-    .el-tag + .el-tag {
-        margin-left: 10px;
+    .el-tag {
+        margin: 10px 10px 0 0;
+    }
+
+    .tagList {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
     }
 
     .button-new-tag {
-        margin-left: 10px;
+        margin-top: 10px;
         height: 32px;
         line-height: 30px;
         padding-top: 0;
@@ -233,7 +248,7 @@
     }
     .input-new-tag {
         width: 90px;
-        margin-left: 10px;
+        margin-top: 10px;
         vertical-align: bottom;
     }
     .button--close {

@@ -1,20 +1,22 @@
 <template>
     <div class="card">
-<!--        <el-image :src="competitionInfo.mainImage"></el-image>-->
-        <div :class="titleClass">{{ competitionInfo.name }}</div>
+<!--        <el-image :src="competition.mainImage"></el-image>-->
+        <div :class="titleClass">{{ competition.name }}</div>
         <div class="tag">
-            <el-tag size="small" disable-transitions class="tagItem">高含金量</el-tag>
-            <el-tag size="small" type="success">综合类竞赛</el-tag>
+            <el-tag size="small"
+                    :type="tagType[Math.floor(Math.random()* 5)]"
+                    v-for="item in tagList"
+                    :key="item.tagId">{{item.tagName}}</el-tag>
         </div>
         <el-divider></el-divider>
-        <span class="title2" v-if="competition.hasOwnProperty('year')">举办时间：{{ competitionInfo.year }} 年 </span>
-        <span class="title2" v-if="competition.hasOwnProperty('session')">| 第 {{ competitionInfo.session }} 届</span>
+        <span class="title2" v-if="competition.hasOwnProperty('year')">举办时间：{{ competition.year }} 年 </span>
+        <span class="title2" v-if="competition.hasOwnProperty('session')">| 第 {{ competition.session }} 届</span>
         <div class="div-content"></div>
-        <div class="time">比赛时间：{{ competitionInfo.start.slice(0,-3) }}
+        <div class="time">比赛时间：{{ competition.start.slice(0,-3) }}
         </div>
         <div class="time pull-right">
             <span class="left">至</span>
-            {{ competitionInfo.end.slice(0,-3) }}
+            {{ competition.end.slice(0,-3) }}
         </div>
         <div class="div-content"></div>
         <slot name="footer"></slot>
@@ -24,7 +26,7 @@
 </template>
 
 <script>
-    // import {getTag} from "@/api/login";
+    import {getTag} from "@/api/login";
 
     export default {
         name: "competitionCard",
@@ -32,17 +34,18 @@
             competition:{
                 required: true,
                 type: Object,
+                default: () => {}
             }
         },
         data() {
             return{
-                competitionInfo: this.competition,
-                tag: ''
+                tagList: JSON.parse(sessionStorage.getItem(`tag${this.competition.id}`)) || this.getTag(),
+                tagType: ['success', 'info', 'warning', 'danger'],
             }
         },
         computed:{
             titleClass() {
-                if (this.competitionInfo.name.length > 10) {
+                if (this.competition.name.length > 10) {
                     return 'title--long';
                 } else {
                     return 'title'
@@ -50,11 +53,12 @@
             }
         },
         methods:{
-        },
-        props:{
-            competition:{
-                required: true,
-                type: Object,
+            getTag() {
+                getTag(this.competition.id).then( response => {
+                    const res = response.data.data
+                    sessionStorage.setItem(`tag${this.competition.id}`, JSON.stringify(res));
+                    return res
+                })
             }
         }
     }
@@ -95,9 +99,10 @@
         .tag {
             text-align: center;
             margin: 1 * $standard 0 0 0;
+            min-height: 24px    ;
 
-            .tagItem {
-                margin: 0 .5 * $standard;
+            .el-tag + .el-tag {
+                margin-left: 10px;
             }
         }
 

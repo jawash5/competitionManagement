@@ -48,6 +48,38 @@
                               placeholder="最大人数"></el-input>
                 </el-form-item>
 
+                <el-form-item label="比赛标签">
+                    <el-tag class="tag"
+                            v-for="(tag,index) in form.tags"
+                            :key="tag.id"
+                            closable
+                            @close="deleteTag(tag.tagId, index)"
+                            :type="tagType[Math.floor(Math.random()* 5)]">
+                        {{tag.tagName}}
+                    </el-tag>
+
+                    <el-select class="new-tag-select"
+                               v-if="newTagVisible"
+                               v-model="newTagId"
+                               placeholder="请选择"
+                               size="mini"
+                               @change="addTag">
+                        <el-option
+                                v-for="item in form.allTags"
+                                :key="item.tagId"
+                                :label="item.tagName"
+                                :value="item.tagId">
+                        </el-option>
+                    </el-select>
+                    <el-button v-else
+                               type="primary"
+                               circle
+                               class="button-new-tag"
+                               size="mini"
+                               icon="el-icon-plus"
+                               @click="newTagVisible = true"></el-button>
+                </el-form-item>
+
                 <el-form-item label="背景图片">
                 <el-button type="primary" size="small" @click="$refs.img.click()">重新上传</el-button>
                 <input type="file" style="display: none;" ref="img" @change="editImage"/>
@@ -199,8 +231,16 @@
 
 <script>
     import editor from "@/components/editor";
-    import {competitionDetail} from "@/api/login";
-    import {addStage, deleteStage, editBasicInfo, editDescInfo, modifyStage, uploadPicture} from "@/api/adminConsole";
+    import {competitionDetail, getTag} from "@/api/login";
+    import {
+        addStage,
+        deleteStage,
+        editBasicInfo,
+        editDescInfo,
+        managerEditTag,
+        modifyStage,
+        uploadPicture
+    } from "@/api/adminConsole";
     import {mavonEditor} from 'mavon-editor';
     import 'mavon-editor/dist/css/index.css';
 
@@ -211,6 +251,7 @@
         },
         data() {
             return {
+                competitionId: this.$route.query.id,
                 form:{
                     year:'',
                     session:'',
@@ -224,7 +265,9 @@
                         maxPeople: '',
                         minPeople: '',
                         requireGroupName: false
-                    }
+                    },
+                    tags:[],
+                    allTags:[]
                 },
                 fileList:[],
                 file:'', //上传的图片
@@ -241,7 +284,10 @@
                     stageTime:'',
                     uploadTime:'',
                     requireUploadFile: false
-                }
+                },
+                tagType:['success','info','warning','danger'],
+                newTagVisible: false,
+                newTagId:''
             }
         },
         computed:{
@@ -251,12 +297,6 @@
             },
         },
         methods: {
-            fileChange() {
-                console.log(11)
-            },
-            handleRemove() {
-                console.log(11)
-            },
             //获取editor内容
             getContent(data) {
                 this.form.information = data;
@@ -268,7 +308,7 @@
                 let data;
                 if (requireUploadFile) {
                     data = {
-                        competitionId: this.$route.query.id,
+                        competitionId: this.competitionId,
                         start: stageData.stageTime[0],
                         end: stageData.stageTime[1],
                         uploadStart: stageData.uploadTime[0],
@@ -278,7 +318,7 @@
                     }
                 } else {
                     data = {
-                        competitionId: this.$route.query.id,
+                        competitionId: this.competitionId,
                         start: stageData.stageTime[0],
                         end: stageData.stageTime[1],
                         requireUpload: false,
@@ -357,13 +397,72 @@
             //修改基本信息
             editBasicInfo() {
                 const data = new FormData;
-                data.append('competitionId', this.$route.query.id + '');
+                data.append('competitionId', this.competitionId + '');
                 data.append('start', this.form.allTime[0]);
                 data.append('end', this.form.allTime[0]);
 
                 editBasicInfo(data).then( () => {
                     this.$message.success('修改成功');
                     this.isEdit.basicInfo = false;
+                }).catch( error => {
+                    this.$message.error(error.response.data);
+                })
+            },
+            //修改Tag
+            deleteTag(tagId, index) {
+                this.$confirm(`此操作将删除 Tag ${name}, 是否继续?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let data = new FormData;
+                    data.append('tagId', tagId);
+                    data.append('competitionId', this.competitionId);
+                    managerEditTag(data).then( response => {
+                        const res = response.data.data
+                        if (res.success) {
+                            this.form.tags.splice(index, 1);
+                            sessionStorage.removeItem(`tag${this.competitionId}`)
+                            this.$message({
+                                type: 'success',
+                                message: res.msg
+                            });
+                        }
+                    }).catch( () => {
+                        this.$message({
+                            type: 'error',
+                            message: '删除失败'
+                        });
+                    });
+                }).catch( () => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            addTag(tagId) {
+                for (let tag of this.form.tags) {
+                    if (tagId === tag.tagId) {
+                        this.$message('请勿重复选择');
+                        return false;
+                    }
+                }
+
+                let data = new FormData;
+                data.append('competitionId', this.competitionId + '');
+                data.append('tagId', tagId);
+                managerEditTag(data).then( response => {
+                    const res = response.data.data;
+                    if (res.success) {
+                        this.$message.success(res.msg);
+                        this.newTagVisible = false;
+                        this.newTagId = '';
+                        sessionStorage.removeItem(`tag${this.competitionId}`)
+                        return getTag(this.competitionId);
+                    }
+                }).then( response => {
+                    this.form.tags = response.data.data;
                 }).catch( error => {
                     this.$message.error(error.response.data);
                 })
@@ -377,7 +476,7 @@
                 uploadPicture(data).then( response => {
                     const img = response.data.data
                     const data2 = new FormData;
-                    data2.append('competitionId', this.$route.query.id + '');
+                    data2.append('competitionId', this.competitionId + '');
                     data2.append('image', img);
                     editBasicInfo(data2).then( () => {
                         this.$message.success('修改成功');
@@ -390,7 +489,7 @@
             editDescInfo() {
                 const data = new FormData;
                 data.append('des', this.form.information);
-                data.append('competitionId', this.$route.query.id + '');
+                data.append('competitionId', this.competitionId + '');
 
                 editDescInfo(data).then( () => {
                     this.$message.success('修改成功');
@@ -398,11 +497,10 @@
                 }).catch( error => {
                     this.$message.error(error.response.data);
                 })
-
             },
             //初始化信息
             getInfo() {
-                const competitionId = this.$route.query.id;
+                const competitionId = this.competitionId;
                 if (competitionId) {
                     competitionDetail(competitionId).then( response => {
                         const primaryInfo = response.data.data;
@@ -436,9 +534,18 @@
                                 newForm.competitionTime[i].uploadTime = '';
                             }
                         }
+                        return getTag(competitionId)
+                    }).then( response => {
+                        this.form.tags = response.data.data;
+                        return getTag()
+                    }).then( response => {
+                        let allTags = response.data.data;
+                        this.form.allTags = allTags
+                    }).catch( error => {
+                        this.$message.error(error.response.data)
                     })
                 }
-            }
+            },
         },
         mounted() {
             this.getInfo();
@@ -454,6 +561,15 @@
 
         .peopleLimited {
             width: 4em;
+        }
+
+        .button-new-tag {
+            margin-left: 10px;
+        }
+
+        .new-tag-select {
+            margin-left: 10px;
+            width: 90px;
         }
     }
 
@@ -502,6 +618,10 @@
     .addCard {
         text-align: right;
         margin-top: 10px;
+    }
+
+    .el-tag + .el-tag {
+        margin-left: 10px;
     }
 
 
