@@ -119,6 +119,6 @@ export function getBanner(){
 export function getTag(data){
     return service.request({
         method: "get",
-        url: data ? `/manager/getTag?competitionId=${data}` : '/manager/getTag',
+        url: data ? `/competition/getTag?competitionId=${data}` : '/competition/getTag',
     })
 }

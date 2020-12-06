@@ -39,7 +39,7 @@
         },
         data() {
             return{
-                tagList: JSON.parse(sessionStorage.getItem(`tag${this.competition.id}`)) || this.getTag(),
+                tagList: JSON.parse(sessionStorage.getItem(`tag${this.competition.id}`)) || '',
                 tagType: ['success', 'info', 'warning', 'danger'],
             }
         },
@@ -54,12 +54,17 @@
         },
         methods:{
             getTag() {
-                getTag(this.competition.id).then( response => {
-                    const res = response.data.data
-                    sessionStorage.setItem(`tag${this.competition.id}`, JSON.stringify(res));
-                    return res
-                })
+                if (!sessionStorage.getItem(`tag${this.competition.id}`)) {
+                    getTag(this.competition.id).then( response => {
+                        const res = response.data.data;
+                        sessionStorage.setItem(`tag${this.competition.id}`, JSON.stringify(res));
+                        this.tagList = res;
+                    })
+                }
             }
+        },
+        mounted() {
+            this.getTag();
         }
     }
 </script>
